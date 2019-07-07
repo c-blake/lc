@@ -57,7 +57,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     when defined(lcMagic): mc: magic_t
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
-clCfg.version = "version 1.0"
+clCfg.version = "version 0.1"
 let cfDfl* = LsCf(format:"%f", glyph:" -> ", recurse:1, nColumn:999, padMax:999)
 
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
