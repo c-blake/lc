@@ -57,7 +57,8 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
 
-For the impatient, here is a
+For the impatient, here is a screenshot:
+
 ![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/ss.png)
 
 The most osbcure of these is likely "multi-dimensional".  I mean this in its
