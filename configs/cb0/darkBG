@@ -1,0 +1,36 @@
+#A light bkgd (white BG, really) color theme with heatmap doing purple..red.
+colors = "fhot- = BLACK"        #default fg => useless
+colors = "fhot0 = PURPLE"
+colors = "fhot1 = BLUE"
+colors = "fhot2 = CYAN"
+colors = "fhot3 = GREEN"
+colors = "fhot4 = YELLOW"
+colors = "fhot5 = RED"
+colors = "fhot+ = WHITE"
+
+colors = "FHOT- = black"
+colors = "FHOT0 = purple"
+colors = "FHOT1 = blue"
+colors = "FHOT2 = cyan"
+colors = "FHOT3 = green"
+colors = "FHOT4 = yellow"
+colors = "FHOT5 = red"
+colors = "FHOT+ = white"        #default bg => usless
+
+colors = "bhot- = on_BLACK"     #default fg => useless
+colors = "bhot0 = on_PURPLE"
+colors = "bhot1 = on_BLUE"
+colors = "bhot2 = on_CYAN"
+colors = "bhot3 = on_GREEN"
+colors = "bhot4 = on_YELLOW"
+colors = "bhot5 = on_RED"
+colors = "bhot+ = on_WHITE"
+
+colors = "BHOT- = on_black"
+colors = "BHOT0 = on_purple"
+colors = "BHOT1 = on_blue"
+colors = "BHOT2 = on_cyan"
+colors = "BHOT3 = on_green"
+colors = "BHOT4 = on_yellow"
+colors = "BHOT5 = on_red"
+colors = "BHOT+ = on_white"     #default bg => usless

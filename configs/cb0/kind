@@ -1,0 +1,47 @@
+#File kinds; Built-in kinds are (dtype): reg,dir, bdev,cdev, fifo,sock, symlink,
+#and (stat): +-sym (ok|broken), hard, exec, suid,sgid, tmpD,worldWr,odd.
+
+#To support non-exclusive kinding, most all tests are run on most all files.
+#Built-in & string cks add up to ~130 tests for EVERY SINGLE FILE or on 20teens
+#CPUs, about 1 ms CPU/2000 files= ~few us or =~ 1 Linux cached local stat/file.
+#"lc >/dev/null" runs in 2.0 ms on my default config on my 2964 dent /usr/bin
+#while less flexible GNU ls w/Gentoo DIR_COLORS takes about 1.5 ms on the same.
+#In Soviet dosimeter terms: Not great, not terrible. ;-) Fairly warned be thee.
+#
+#pcr is quite a bit slower than PFX/SFX and as you add things like the libmagic
+#tests (eg. ELF) or `ext` tests performance will crash but may remain tolerable.
+
+kind = "numeric  cset 0123456789-_.:,%"
+kind = "capsdoc  cset ABCDEFGHIJKLMNOPQRSTUVWXYZ_-."
+kind = "object   SFX .o .a .la .so core .pyc .pyo .dvi .elc .obj"
+kind = "script   SFX .pl .awk .sed .sh .csh .gpi akefile .log .nims .R .js .scm .lsp .cfg .cf .conf"
+kind = "compress SFX .z .gz .bz .bz2 .lz .Lz .xz 4z .zs .zs"
+kind = "tarchive SFX .tar .tgz .tbz .tbz2 .tlz .txz .tLz .tzs"
+kind = "archive  SFX .zip .rar .deb .rpm"
+kind = "pointer  SFX .torrent .uri .url .urls"
+kind = "backup   SFX .swp .vim .bak .orig ~"
+kind = "header   sfx .h .hh .pxi .pxd .diff .patch"
+kind = "source   sfx .s .c .cc .cpp .d .i .java .f .f95 .m .nb .py .pyx .nim .vim .el .tex .fig .jl"
+#Both man pages and many versioned entities end in .[0-9]
+kind = "document sfx .txt .doc .html .htm .ps .eps .pdf .prn .mif .fm .md .rst"
+kind = "image    sfx .img .bmp .jpg .gif .jpeg .png .ppm"
+kind = "audio    sfx .au .mp3 .wav .ogg .m4a"
+kind = "video    sfx .mpg .mpeg .mp4 .avi .flv .ogm .mkv .m4v .mts .m2ts .wmv .mov .swf .asf .rm webm"
+kind = "dot      PFX ."                 #classic Unix dot file/dir/ln/etc.
+kind = "onOutErr PFX o. e."             #outputs from cb's "on hosts cmd" system
+#NOTE: below ELF works, but can be very slow on large directories.
+#kind = "ELF      mag ELF.*64.*exec"     #proper 64-bit elf executables.
+#NOTE: below pcr tests work fine, but can be slow on large directories.
+#kind = "test1    pcr [@%+_-]"           #Test perl-compatible-regexes.
+#kind = "test2    pcr [,:]"              #These are general but slow.
+#kind = "media    any image audio video" #combo
+#kind = "special  none reg"
+#kind = "sWithL   PFX l"
+#kind = "eWithC   SFX c"
+#kind = "combo    all sWithL eWithC ELF"
+#kind = "sysOwn   uid 0 1 2 3 4 5 6 7 8 9"  #call first 10 owners "sys"
+#kind = "sysGrp   gid 0 1 2 3 4 5 6 7 8 9"  #call first 10 group ids "sys"
+#kind = "rootCb   usr root cb"           #ad hoc user set
+#kind = "wheelCb  grp root cb"           #ad hoc group set
+#kind = "mye1     ext $HOME/bin/te1"     #ad hoc category
+#kind = "mye2     ext $HOME/bin/te2"     #ad hoc category

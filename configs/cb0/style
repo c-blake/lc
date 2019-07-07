@@ -1,0 +1,46 @@
+#LISTING STYLES/ALIASES; Increasing "L-ness" gives increasing detail. NOTE: Use
+#%r if you worry about automounters/NFS hanging on link tgts.  Also, -f below
+#should really end in "*4 if you ask me,but stdlib parsecfg sez "invalid token".
+
+Style = r"""s   = -X./       "-f%s %f"""
+Style = r"""S   = -DLss"""
+Style = r"""psa = -l -X./    "-f%P %S %f%R"""
+Style = r"""ps  = -s psa -xdot"""
+# Same as above+ showing times
+Style = r"""la  = -l -X./    "-f%P %s %m %f%R"""
+Style = r"""l   = -s la -xdot"""
+Style = r"""ls  = -s l  -os"""
+Style = r"""lu  = -s l  -oa  "-f%P %s %a %f%R"""
+Style = r"""lm  = -s l  -om  "-f%P %s %m %f%R"""
+Style = r"""lt  = -s l  -om  "-f%P %s %m %f%R"""
+Style = r"""lv  = -s l  -ov  "-f%P %s %v %f%R"""
+Style = r"""lc  = -s l  -oc  "-f%P %s %c %f%R"""
+Style = r"""lb  = -s l  -ob  "-f%P %s %b %f%R"""
+# Same as above+ showing owner
+Style = r"""lla = -Hl -X./    "-f%P %{bold}U %s %m %f%R"""
+Style = r"""ll  = -Hslla -xdot"""
+Style = r"""lls = -Hsll  -os"""
+Style = r"""llu = -Hsll  -oa "-f%{bold}U %P %s %a %f%R"""
+Style = r"""llm = -Hsll  -om "-f%{bold}U %P %s %m %f%R"""
+Style = r"""llt = -Hsll  -om "-f%{bold}U %P %s %m %f%R"""
+Style = r"""llv = -Hsll  -ov "-f%{bold}U %P %s %v %f%R"""
+Style = r"""llc = -Hsll  -oc "-f%{bold}U %P %s %c %f%R"""
+Style = r"""llb = -Hsll  -ob "-f%{bold}U %P %s %b %f%R"""
+# Show most things:
+Style = r"""La =  -Hl -X./    "-f%K %P %n %{bold}U %{italic}G %S %M %f%R"""
+Style = r"""L  =  -HsLa -xdot"""
+Style = r"""Ls =  -HsL  -os"""
+Style = r"""Lu =  -HsL  -oa  "-f%n %K %{bold}U %{italic}G %P %S %A %f%R"""
+Style = r"""Lm =  -HsL  -om  "-f%n %K %{bold}U %{italic}G %P %S %M %f%R"""
+Style = r"""Lt =  -HsL  -om  "-f%n %K %{bold}U %{italic}G %P %S %M %f%R"""
+Style = r"""Lv =  -HsL  -ov  "-f%n %K %{bold}U %{italic}G %P %S %V %f%R"""
+Style = r"""Lc =  -HsL  -oc  "-f%n %K %{bold}U %{italic}G %P %S %C %f%R"""
+Style = r"""Lb =  -HsL  -ob  "-f%n %K %{bold}U %{italic}G %P %S %B %f%R"""
+#All but rdev. 4 time stamps => either terse file ages | wide terminals.
+Style = r"""LLa = -He./ "-f%n %o %S %P %{bold}U %{italic}G %B %C %M %A %f%R"""
+Style = r"""LL  = -HsLLa -xdot"""
+Style = r"""LLai = -He./ "-f%i %n %o %S %P %{bold}U %{italic}G %B %C %M %A %f%R"""
+Style = r"""LLi = -HsLLai -xdot"""
+Style = r"""debug = -H "-f%0%1%2%3%4%5%6%7%8%9%.%/ %f%R"""
+#Almost exactly GNU ls -lA --no-color
+Style = r"""gls = "-tp1g -> " --ageFmt,= --ageFmt,= "-a-15778476@%b %e  %Y" "-a-0@%b %e %H:%M" -of "-f%l%p%Q %n %U %G %S %m %f%r"""

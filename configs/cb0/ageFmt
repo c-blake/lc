@@ -1,0 +1,29 @@
+#TIME STYLES (6 char fmts w/heatmap color scheme for variable radix).
+#Syntax: [tag]SecondsOld@highlightableStrftimeFormat (augmented with %<DIGIT>)
+#     OR [tag]SecondsOld@/divisor[/digits] [<]unitString attributes
+#        where tag=='+' => alt/caps Fmt (%A%M etc); tag=='-' => plain format
+
+ageFmt = "86400@%{fhot0}y%{fhot1}m%{fhot2}d"  #older files lower res in cool
+ageFmt = "0@%{fhot3}H%{fhot4}M%{fhot5}S"      #<1 day old files higher res fhot
+#ageFmt = "3600@%{fhot3}H%{fhot4}M%{fhot5}S" #<1 day old files higher res fhot
+#ageFmt = "0@%{fhot4}M%{fhot5}S.%{PURPLE}1"  #<1 hr old files v.high res fhot
+ageFmt = "FUTURE@%{red}Y%{white}m"          #make future times standout-ugly
+
+#ageFmt = "+ANYTIME@%{fhot0}y%{fhot1}m%{fhot2}d%{fhot3}H%{fhot4}M%{fhot5}S"
+
+#Put times to the millisecond in this one
+ageFmt = "-ANYTIME@%y/%m/%d:%H:%M:%S.%3"      #'-' => plain mode formats
+
+#ageFmt = "+31556952@/31556952 yrs fhot0"     #1 year&older:   years; 365.2425
+#ageFmt =  "+2678400@/604800   wks fhot1"     #31 days..1 yr:  weeks;Mos=unevnUnit
+#ageFmt =    "+86400@/86400    dys fhot2"     #1 day..31 days: days
+#ageFmt =     "+6000@/3600     hrs fhot3"     #99 min..1 day:  hours
+#ageFmt =      "+100@/60       min fhot4"     #99 sec..99 min: min
+#ageFmt =        "+0@/1        sec fhot5"     #0..99 sec: sec with no num-unit spc
+
+ageFmt = "+31556952@/31556952   <y fhot0"    #Similar to above but using '<'
+ageFmt =  "+2678400@/604800     <w fhot1"    #..throughout to make the 1char unit
+ageFmt =    "+86400@/86400      <d fhot2"    #..flush with likely 2 char number.
+ageFmt =     "+6000@/3600       <h fhot3"    #So, basically 3 columns no matter
+ageFmt =      "+100@/60         <m fhot4"    #..the age.  Same heatmap colors
+ageFmt =        "+0@/1          <s fhot5"    #..as above.

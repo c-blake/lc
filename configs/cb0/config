@@ -1,0 +1,15 @@
+#cligen/cfUt.cfToCL include syntax is [include__NotAllUpper] => include file
+#while [include__ALLUPPER] instead includes the file pointed to by "$ALLUPPER".
+
+[include__kind]     #Define our file typology
+
+[include__lightBG]  #Default to lightBG [fg][hot|HOT] defs but clobber if..
+[include__LC_THEME] #..LC_THEME set.  Defs used by color, ageFmt, maybe style.
+[include__color]    #Decide test order,colors,sort order,dimension of kind tests
+[include__ageFmt]   #Define various file age/timestamp formats & colors
+[include__style]    #Define a bunch of styles/aliases for use with `-s`
+
+#Just some global default overrides.  All easily overridden on cmd line/by ".lc"
+glyph  = "▶ "  #UTF8 "play button+SPC", not " -> "; FONT/TERMINAL SENSITIVE
+order  = 0134EN   #Default sort order: kind-order0,1; fmtKindNum0,1; longExt,Nm
+format = %f       #Default format; easily overridden on cmd-line or by style

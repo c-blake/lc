@@ -1,0 +1,31 @@
+CONSIDERED AND REJECTED IDEAS
+=============================
+`-l` long fmt for `ls` refugees.  The first thing I expect a new `lc` user to do
+is decide what columns (in what order) they want for their `lc -sl`.  I strongly
+suspect that will be many different answers.  Also, I use `-l` for something
+else right now although that could change.  It is a boolean flag and doesn't
+outright fail.
+
+
+So called --tree formats.  These don't interoperate very well with the simple
+"one directory at a time" recursive structure of `proc ls`.  Unlike process
+trees with usually few kids, there are often O(screenful) numbers of dents.
+So, it's easy to lose track of alignment visually.  In as small scale as tree
+likely works well in, many other things also probably work fine.  I.e., it's
+value add is marginal.  It makes more sense in GUIs where you pick and choose
+points of collapse or expansion.  There are likely other problems.
+
+
+Miller columns/cascading lists.  What people want here is (approximately):
+```
+paste =(lc -1 ../..) =(lc -1 ..) =(lc -1 .) | column
+```
+{ or `<()` with bash command subsitution syntax instead of Zsh's `=()` }.
+Showing the ../.. and .. for every directory is a massive use of terminal space.
+Doing it for one-off single directories can be achieved with the above shell
+snippet.  So, I doubt it makes sense as a built-in `lc` feature.  It's likely
+enough to do a script with the above pipeline (being aware of how deep '.' is,
+taking a number of levels, adding thatDir/../.. when needed, etc.) { `lc -LmN`
+is better than other listers for this application, though since you can bound
+the width (but not "height") of each listing being pasted before ever reading
+dirs.  So, you can know how many side-by-side major columns fit in $COLUMNS. }
