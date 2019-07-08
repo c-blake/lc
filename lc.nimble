@@ -2,7 +2,7 @@
 
 version       = "0.1"
 author        = "c-blake"
-description   = ""
+description   = "A post-modern, \"multi-dimensional\" configurable ls/file lister"
 license       = "MIT"
 srcDir        = "."
 bin           = @["lc"]
