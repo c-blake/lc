@@ -13,14 +13,14 @@ companies supporting it.
 
 `lc` is also not `stat` or `find`.  Those have their roles for spot-checking or
 generating program-consumed data streams.  `lc` is about human-friendly output,
-shining light on unexpected things as you go about everyday business listing
-your files and creating output to help people see and create organization they
-want in their file sets.  As such, absolute max performance is not a priority as
+creating output to help you see and create organization you want in your file
+sets, and shining light on unexpected things as you go about everyday business
+listing your files.  As such, absolute max performance is not a priority as
 human reaction time is not so fast & large directories are usually ill-advised.
 Even `find` cannot compete with some hypothetical `dcat` dumping dents to
 stdout.  You may have pity-worthy giant dirs, but the doctors can only do so
-much for you then. ;-)  And more seriously you cannot consume "as a human" the
-output anyway.  You probably want something like a `dcat` then, not `lc`.
+much for you then. ;-)  More seriously, you cannot consume that output "as a
+human" anyway.  You probably want something like a `dcat` then, not `lc`.
 
 Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
@@ -44,7 +44,7 @@ yet another file lister?  What's the point?  Well, `lc`
  - supports "local tweak files" - extra options in a local ".lc" or if perms
    require, a .lc in a shadow tree under a user's control.  Nice for eg, NFS!
 
- - supports "theming" (operationally environment-variable-keyed cfg includes)
+ - supports "theming" (operationally, environment-variable-keyed cfg includes)
 
  - supports latter-day Linux statx/b)irth times (but works on non-Linux, too)
 
@@ -91,18 +91,19 @@ Assuming you define a "dot" or "dotfile" type `lc -xdot` will probably exclude
 those from a listing.  (Unique prefixes being adequate may mean a longer string
 if you define other file kinds with names starting with "dot".)  I usually have
 a shell alias that does the `-xdot` and a related alias ending with an "a" that
-doesn't.  That mimicks `ls` usage without spaces and '-'s to enter.  If the
+does not.  That mimics `ls` usage, but without spaces and '-'s to enter.  If the
 listing is well organized, seeing dot files by default may be considered as much
-a feature as a bug, but including everything seems the sensible default to me.
+a feature as a bug.  Including everything by default lets "dot" be user-defined.
 You can also do `-idot` to see *only* the dot files (or any other user/system
-defined file kind).
+defined file kind) which is not something available in most file listers.  `lc
+-r0 -idir -iodd` can often be illuminating on very aged file trees.
 
 Multi-level sorting and format string are similar ideas to other tools like the
 Linux `ps` or `stat -c` or `find -printf`.  Sorting by file kind is possible and
 "kind orders" are user-configurable.  Between that and more multi-dimensionality
 you can filter and group almost any way that makes sense, and none of that needs
 any changing of `lc` proper - just your configuration.  Less can be more with
-well thought out factoring.  `lc` is almost an `ls`-Construction toolkit.
+well thought out factoring.  `lc` is almost an "`ls`-Construction toolkit".
 
 Because of all that flexibility, `lc` has a built in style/aliasing system.
 This lets you name canned queries & reports and refer to them, like `lc -sl`.
@@ -115,25 +116,25 @@ I usually like 5 levels of long-ness, not 2, in my personal setup.
 built-in tests, and is also extensible for totally user-defined tests.  It also
 has a couple external command extensible format fields.  So, if there's just a
 thing or two missing then you can probably add it without much work.  It may
-not run fast, but it might be "fast enough" for small dirs or fast devices.
-Given how long it takes to read/assimilate a directory listing, even doing a
-"du -s" inside a format program is not unthinkable, though unlikely to be a
-popular default style.  Hard-coding Git support seems popular these days.  I do
-not do that yet, and I'm not sure I want the direct dependency, but you may be
-able to hack something together.
+not run fast, but it might be "fast enough" for small dirs on fast devices.
+Given how long it takes a person to read/assimilate a directory listing, even
+doing a "du -s" inside a format program is not unthinkable, though unlikely to
+be a popular default style.  Hard-coding Git support seems popular these days.
+I do not do that yet, and I'm not sure I want the direct dependency, but you may
+be able to hack something together.
 
 A feature I don't know of any terminal file listers using is abbreviation (GUIs
 have this, though).  Most everyone has probably been annoyed at one time or
-another by some pesky few overlong filenames in a directory messing up the
-columns in a file listing.  `lc -m24` lets you limit displayed length to 24 (or
+another by some pesky few overlong filenames in a directory messing up column
+widths in a file listing.  `lc -m24` lets you limit displayed length to 24 (or
 whatever) characters.  `lc` replaces the (user-definable) "middle slice" with a
 user-definable string.  While you can use some UTF8 ellipsis, you probably want
 `*` since that choice will make most abbreviations valid shell patterns that you
 can copy-paste.  The shell may not expand it uniquely, but `lc` has you covered
 with `lc -mauto` or just `lc -ma`.  That automatically finds the smallest limit
-such that all displayed strings are unique, thus ensuring a unique shell
-expansion (up to other shell meta-characters, anyway).  There's a similar `-M`
-for symlink targets, but unfortunately the ones which tend to be long range
+such that all displayed strings are unique, ensuring a unique shell expansion
+(up to other shell meta-characters in file names, anyway).  There's a similar
+`-M` for symlink targets, but unfortunately the ones which tend to be long range
 over the whole FS namespace, not just one directory.  So, -Mauto seems hard.
 
 In many little ways, `lc` tries hard to let you get the most out of terminal
