@@ -48,9 +48,10 @@ color="+sym:0x18:3     italic"           #0x1B
 color="tmpD:0x20:3     YELLOW"           #0x1C #clobber FG only->yellow on_blue
 color="suid:0x50:3     on_CYAN"          #0x1E #pastel backgrounds for sXid
 color="sgid:0x60:3     on_green"         #0x1F
-color="worldW:0x40:4  on_RED"            #0x1D  #world writable higherD 2clobber
+color="worldW:0x40:4   on_RED"           #0x1D #world writable higherD 2clobber
 
-color="unR:0xF8:5      struck"           #0x20  #unreadable or isDir & no-exec
+#struck can sometimes be hard to read text; hence hard to read dirents get it:
+color="unR:0xF8:5      struck"           #0x20 #unreadable or isDir & no-exec
 
 color="exec:0x70:6     bold"             #0x20
 
@@ -72,10 +73,10 @@ color = "sizeG   fhot4"
 color = "sizeT   fhot5 inverse"    #TB-scl individual files are likely a problem
 color = "sizeS   italic"           #Additive text attr for sparse files (u<75%)
 #Color all 4 octal digs as how only one affects invoking process (dep on owners)
-color = "perm0   white on_purple" #000: ---  #Not so rare, but very restrictive
-color = "perm2   CYAN on_red"     #010: -w-  #unlikely to be correct
-color = "perm3   GREEN on_red"    #011: -wx  #unlikely to be correct
+color = "perm0   WHITE on_purple"  #000: ---  #Not so rare, but very restrictive
 color = "perm1   fhot1"            #001: --x  #rare, but happens w/eg. suid
+color = "perm2   CYAN on_red"      #010: -w-  #unlikely to be correct
+color = "perm3   GREEN on_red"     #011: -wx  #unlikely to be correct
 color = "perm4   fhot2"            #100: r--  #RO: pretty normal.
 color = "perm5   fhot3"            #101: r-x  #color like 'exec' is colored.
 color = "perm6   fhot4"            #110: rw-  #RW: even more normal
