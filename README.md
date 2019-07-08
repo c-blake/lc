@@ -108,9 +108,9 @@ well thought out factoring.  `lc` is almost an "`ls`-Construction toolkit".
 Because of all that flexibility, `lc` has a built in style/aliasing system.
 This lets you name canned queries & reports and refer to them, like `lc -sl`.
 My view is that there is no one-size-fits-all-or-even-most long-format listing.
-'ls -sl' or a shorter ll='lc -sl' alias is the way to go.  Then you can make
-columns included (and their order, --header or not, ..) all just how you want.
-I usually like 5 levels of long-ness, not 2, in my personal setup.
+`ls -sl` or a shorter `ll='lc -sl'` alias is the way to go.  Then you can make
+columns included (and their `order`, `--header` or not, ..) all just how you
+like.  I usually like 5 levels of long-ness, not 2, in my personal setup.
 
 A feature I don't know of any terminal file listers using is abbreviation (GUIs
 have this, though).  Most everyone has probably been annoyed at one time or
