@@ -57,7 +57,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     when defined(lcMagic): mc: magic_t
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
-clCfg.version = "version 0.1"
+clCfg.version = "version 1.0"
 let cfDfl* = LsCf(format:"%f", glyph:" -> ", recurse:1, nColumn:999, padMax:999)
 
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
@@ -362,15 +362,15 @@ proc parseKind(cf: var LsCf) =
     elif col[1] == "mag": cf.addMagic(col[1], col[0], col[2])
     else: raise newException(ValueError, "bad kind: \"" & kin & "\"")
 
-template get1(results, cb, nm, msg) {.dirty.} =
+template get1(results, cb, nm, msg, allow) {.dirty.} =
   let results = cb.getAll(nm)
   if results.len > 1:
-    if not (nm.len == 5 and (nm.startsWith("size") or nm.startsWith("perm"))):
+    if not (allow):
       stderr.write("Ambiguous " & msg & " prefix \"" & nm & "\".  Matches:\n  ",
                    results.keys.join("\n  "), "\n")
     raise newException(ValueError, "")
   elif results.len == 0:
-    if not (nm.len == 5 and (nm.startsWith("size") or nm.startsWith("perm"))):
+    if not (allow):
       stderr.write("Unknown " & msg & " \"" & nm & "\".")
       let sugg = suggestions(nm, cb.keys, cb.keys)
       if sugg.len >= 1:
@@ -394,7 +394,8 @@ proc parseColor(cf: var LsCf) =
     let dim   = if nmKoD.len>2: parseInt(nmKoD[2].strip()) else: 0
     let attrs = textAttrOn(cols[1..^1], cf.plain)
     try:
-      get1(ts, cf.tests, nm, "kind")
+      let allow = nm.len==5 and (nm.startsWith("size") or nm.startsWith("perm"))
+      get1(ts, cf.tests, nm, "kind", allow)
       let test = ts[0].val
       let kno = cf.kinds.len.uint8                #Found test; add to used kinds
       cf.kslot[ts[0].key] = (kno, test.ds, dim)   #Record kind number, DataSrc
@@ -405,8 +406,14 @@ proc parseColor(cf: var LsCf) =
       if nm == "unknown": unknown = kno
     except:
       if nm.len == 5:
-        if   nm.startsWith("size"): cf.attrSize[ord(nm[4]) - ord('A')] = attrs
-        elif nm.startsWith("perm"): cf.attrPerm[ord(nm[4]) - ord('0')] = attrs
+        if   nm.startsWith("size"):
+          if nm[4] notin { 'B', 'K', 'M', 'G', 'T', 'S' }:
+            raise newException(ValueError, "unknown color key: \""&nm&"\"")
+          cf.attrSize[ord(nm[4]) - ord('A')] = attrs
+        elif nm.startsWith("perm"):
+          if nm[4] notin { '0' .. '7' }:
+            raise newException(ValueError, "bad perm \""&nm&"\". Octal digit.")
+          cf.attrPerm[ord(nm[4]) - ord('0')] = attrs
       else: raise newException(ValueError, "unknown color key: \""&nm&"\"")
   if unknown == 255:  #Terminate .kinds if usr did not specify attrs for unknown
    add(cf.kinds, ("", 255.uint8, cf.tests["unknown"].test))
@@ -415,7 +422,7 @@ proc parseColor(cf: var LsCf) =
 proc compileFilter(cf: var LsCf, spec: seq[string], msg: string): set[uint8] =
   for nm in spec:
     try:
-      get1(ks, cf.kslot, nm, "colored kind")
+      get1(ks, cf.kslot, nm, "colored kind", false)
       let k = ks[0].val
       result.incl(k.slot)
       cf.need = cf.need + k.ds
