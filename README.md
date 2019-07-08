@@ -41,8 +41,8 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - supports filename abbreviation via `-mNum` or shell glob-friendly `-ma`
 
- - supports "local tweak files" - extra options in a local ".lc" or if perms
-   require, a .lc in a shadow tree under a user's control.  Nice for eg, NFS!
+ - supports "local tweak files" - extra config options in a local ".lc" (or a
+   .lc in a shadow tree under a user's control if needed).  Nice for eg, NFS!
 
  - supports "theming" (operationally, environment-variable-keyed cfg includes)
 
