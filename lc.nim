@@ -968,9 +968,9 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
       var c: LsCf; let cg0 = cg
       if cf.extra.len > 0:                      #Merge local extras
         var d = if cf.extra == "." or cf.extra == "./": maybePfx(cf.cwd, here)
-                else: cf.extra & "/" & maybePfx(cf.cwd, here)
-        while true:   #XXX When lc .. from a kid, the SHADOW kid must also exist
-          try:        #    for .lc to be found for parent.  Del "foo/.." pairs?
+                else: simplifyPath(cf.extra & "/" & maybePfx(cf.cwd, here),true)
+        while true:
+          try:
             let x = cfToCL(d & "/.lc", quiet=true)
             c = lsCfFromCL(cf.cl0 & x & cf.cl1)
             c.fin(cf.cl0, cf.cl1, cf.t0); cg = c.addr
