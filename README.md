@@ -136,6 +136,9 @@ such that all displayed strings are unique, ensuring a unique shell expansion
 (up to other shell meta-characters in file names, anyway).  There's a similar
 `-M` for symlink targets, but unfortunately the ones which tend to be long range
 over the whole FS namespace, not just one directory.  So, -Mauto seems hard.
+An explicit figure of `lc -ma` playing out may help here:
+
+  ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
 In many little ways, `lc` tries hard to let you get the most out of terminal
 real estate, targeting max information per row, while staying within an easy
