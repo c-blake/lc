@@ -129,6 +129,10 @@ An explicit figure of `lc -ma` playing out may help here:
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
+If you don't like my default "balanced" slice, you can adjust how much of the
+head and tail of a name are used to form `head*tail`.  You can even create a
+style that sets those so you only have to type `-sm` on the command-line.
+
 In many little ways, `lc` tries hard to let you get the most out of terminal
 real estate, targeting max information per row, while staying within an easy
 to visually parse table format.  Features along these lines are terse 4 column
