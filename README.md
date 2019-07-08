@@ -112,17 +112,6 @@ My view is that there is no one-size-fits-all-or-even-most long-format listing.
 columns included (and their order, --header or not, ..) all just how you want.
 I usually like 5 levels of long-ness, not 2, in my personal setup.
 
-`lc` also comes with boolean logic combiners for file kind tests, quite a few
-built-in tests, and is also extensible for totally user-defined tests.  It also
-has a couple external command extensible format fields.  So, if there's just a
-thing or two missing then you can probably add it without much work.  It may
-not run fast, but it might be "fast enough" for small dirs on fast devices.
-Given how long it takes a person to read/assimilate a directory listing, even
-doing a "du -s" inside a format program is not unthinkable, though unlikely to
-be a popular default style.  Hard-coding Git support seems popular these days.
-I do not do that yet, and I'm not sure I want the direct dependency, but you may
-be able to hack something together.
-
 A feature I don't know of any terminal file listers using is abbreviation (GUIs
 have this, though).  Most everyone has probably been annoyed at one time or
 another by some pesky few overlong filenames in a directory messing up column
@@ -158,3 +147,14 @@ file timestamps with %1..%9 extensions to the `strftime` format language for
 fractions of a second to that many places as per your discretion, rate of disk
 utilization (`512*st_blocks/st_size` or allocation/addressable file bytes),
 as well as newer Linux statx attributes and birth times.
+
+`lc` also comes with boolean logic combiners for file kind tests, quite a few
+built-in tests, and is also extensible for totally user-defined tests.  It also
+has a couple external command extensible format fields.  So, if there's just a
+thing or two missing then you can probably add it without much work.  It may
+not run fast, but it might be "fast enough" for small dirs on fast devices.
+Given how long it takes a person to read/assimilate a directory listing, even
+doing a "du -s" inside a format program is not unthinkable, though unlikely to
+be a popular default style.  Hard-coding Git support seems popular these days.
+I do not do that yet, and I'm not sure I want the direct dependency, but you may
+be able to hack something together.
