@@ -65,7 +65,7 @@ The most osbcure of these is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions may help.  One file can be
 both an executable regular file and some kind of script source.  Or both a
-directory and a directory with a sticky bit set.  On the output side, one can
+directory and a directory with a sticky bit set.  On the output side, you can
 also set the foreground & background colors of text independently (as well as
 blinking, and so on).  I happen to like `st` for its hackability which supports
 bold, italic, blink, underline, struck, inverse all as 6 independent text
