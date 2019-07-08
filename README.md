@@ -61,19 +61,19 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
 
-The most osbcure of these is likely "multi-dimensional".  I mean this in its
-mathematical sense not a Jurassic Park (1993)-esque graphical file tree sense.
-Examples of dimensions may help.  One file can be both an executable regular
-file and some kind of script source.  Or both a directory and a directory with
-a sticky bit set.  On the output side, one can set the foreground & background
-colors of text independently (as well as blinking, and so on).  I happen to
-like `st` for its hackability which supports bold, italic, blink, underline,
-struck, inverse all as 6 independent text attributes. (Color inversion involves
-a mapping probably too complex to be a useful visual aid.)  So, 7 usable output
-dimensions, with 5 being shallow 1-bit dimensions.  Though subjective, I find
-text with all these embellishments *at once* legible on my primary displays.
-`lc` tries to aid "aligning" rendering/output dimensions with classification or
-input dimensions.
+The most osbcure of these is likely "multi-dimensional".  I mean this in the
+mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
+graphical file tree sense.  Examples of dimensions may help.  One file can be
+both an executable regular file and some kind of script source.  Or both a
+directory and a directory with a sticky bit set.  On the output side, one can
+also set the foreground & background colors of text independently (as well as
+blinking, and so on).  I happen to like `st` for its hackability which supports
+bold, italic, blink, underline, struck, inverse all as 6 independent text
+attributes. (Color inversion involves a mapping probably too complex to be a
+useful visual aid.)  So, 7 usable output dimensions, with 5 being shallow 1-bit
+dimensions.  Though subjective, I find text with all these embellishments at
+once legible on my primary displays.  `lc` tries to aid "aligning" rendering or
+output dimensions with classification or input dimensions.
 
 On the input/data side there are a few natural "query" dimensions such as traits
 based on dtype data, stat data, ACLs, .., that performance-sensitive folk may
