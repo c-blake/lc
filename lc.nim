@@ -882,6 +882,7 @@ proc smallestMaxSTUnique(fils: seq[Fil]; sep: string; hd, tl: var int): int =
 
 proc sort_fmt_write(cf: var LsCf, fils: var seq[Fil]) {.inline.} = ###ONE-BATCH
   let autoMax = cf.nMx == -1
+  var hd0 = cf.nHd; var tl0 = cf.nTl
   if autoMax: cf.nMx = fils.smallestMaxSTUnique(cf.nSep, cf.nHd, cf.nTl)
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
   for i in 0 ..< fils.len: filps[i] = fils[i].addr
@@ -890,7 +891,7 @@ proc sort_fmt_write(cf: var LsCf, fils: var seq[Fil]) {.inline.} = ###ONE-BATCH
   var nrow, ncol, m: int
   var strs = format(cf, filps, wids, m)
   for i in 0 ..< fils.len: fils[i].tfree
-  if autoMax: cf.maxName.parseAbbrev(cf.nMx, cf.nSep, cf.nHd, cf.nTl)
+  if autoMax: cf.nMx = -1; cf.nHd = hd0; cf.nTl = tl0 #restore vals post autoset
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
   colPad(colWs, cf.width, cf.padMax, m)
   if cf.widest > 0: sortByWidth(strs, wids, m, nrow, ncol)
