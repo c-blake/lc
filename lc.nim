@@ -150,8 +150,6 @@ var cg: ptr LsCf            #Lazy way out of making many little procs take LsCf
 when NimVersion < "0.20.0":
   proc `[]`[T](s: seq[T]; i: uint8): T = s[i.int]
   proc `[]`(s: string; i: uint): char = s[i.int]
-  proc initHashSet[T](): HashSet[T] = initSet[T]()
-  proc toHashSet[T](keys: openArray[T]): HashSet[T] = toSet[T](keys)
 
 ###### BUILT-IN CLASSIFICATION TESTS
 proc qualPath(p: string): string =                        #maybe-pfx & name
@@ -529,8 +527,6 @@ proc parseAge(cf: var LsCf) =
 proc kattr(f: Fil): string =
   for e in f.kind: result.add cg.kinds[e].attr
 
-proc abbrev(path, sep: string; mx, hd, tl: int): string {.inline.} =
-  if mx > 0 and path.len > mx: path[0..<hd] & sep & path[^tl..^1] else: path
 proc abbrevN(cf: LsCf, path: string): string {.inline.} =
   abbrev(path, cg.nSep, cg.nMx, cg.nHd, cg.nTl)
 proc abbrevT(cf: LsCf, path: string): string {.inline.} =
@@ -759,16 +755,6 @@ proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
       wids[m*i+J] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+J])
     if j < (if fj != -1: fj else: m): J.inc
 
-proc parseAbbrev(s: string; mx: var int; sep: var string; hd, tl: var int) =
-  if s.len == 0: return
-  let cols = s.split(',')   #Leading/trailing whitespace in sep is allowed.
-  if cols.len > 4: raise newException(ValueError, "bad abbrev spec: \""&s&"\"")
-  mx = parseInt(cols[0], -1)
-  sep = if cols.len > 3: cols[3]           else: "*"
-  let sLen = sep.printedLen
-  hd  = if cols.len > 1: parseInt(cols[1], -1) else: (mx - sLen) div 2
-  tl  = if cols.len > 2: parseInt(cols[2], -1) else: (mx - hd - sLen)
-
 proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
           entry=Timespec(tv_sec: 0.Time, tv_nsec: 9.clong)) =
   ##Finalize cf ob post-user sets/updates, pre-``ls|ls1`` calls.  File ages are
@@ -877,29 +863,10 @@ proc tfree(f: var Fil) {.inline.} =   #maybe release tgt.name, tgt.kind, tgt.mag
       if f.tgt.mag != "": f.tgt.mag.GC_unref
     discard f.tgt.resize 0; f.tgt = nil
 
-proc uniqueAbs(fils: seq[Fil]; sep: string; mx, hd, tl: int): bool =
-  var es = initHashSet[string]()
-  for f in fils: es.incl abbrev(f.name, sep, mx, hd, tl)
-  es.len == fils.len
-
 proc smallestMaxSTUnique(fils: seq[Fil]; sep: string; hd, tl: var int): int =
-  let sLen = sep.len
-  var mLen = 0
-  for f in fils: mLen = max(mLen, f.name.len)
-  let hdFixed = hd >= 0
-  let tlFixed = tl >= 0
-  if mLen <= sLen + 1: return sLen + 1
-  var lo = sLen + 1                     #Binary search on [sLen+1, mLen] for
-  var hi = mLen                         #..least result s.t. fils.uniqueAbs.
-  while hi > lo:
-    let m = (lo + hi) div 2
-    hd = if hdFixed: hd else: (m - sLen) div 2
-    tl = if tlFixed: tl else: (m - hd - sLen)
-    if fils.uniqueAbs(sep, m, hd, tl): hi = m   #m => unique: bracket lower
-    else: lo = m + 1                            #not unique: bracket higher
-  result = lo                           #Now lo == hi
-  hd = if hdFixed: hd else: (lo - sLen) div 2   #fix up derived values
-  tl = if tlFixed: tl else: (lo - hd - sLen)
+  var nms: seq[string]
+  for f in fils: nms.add f.name
+  nms.smallestMaxSTUnique sep, hd, tl
 
 proc sort_fmt_write(cf: var LsCf, fils: var seq[Fil]) {.inline.} = ###ONE-BATCH
   let autoMax = cf.nMx == -1
