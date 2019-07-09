@@ -41,7 +41,10 @@ as a conceptual icon?  Includable in formats with %@ maybe?  Unfortunately,
 icons do not overlap/overlay.  So, unlike text attributes only one of however
 many kind dimensions can "win".  Maybe the first non-unknown dimension should
 win?  I don't like icons, personally, but it seems popular, not hard to do, and
-I do agree that redundant visual cues can be helpful.
+I do agree that redundant visual cues can be helpful.  Could also maybe let any
+dimension have an icon and give each row 3-6 icons.  If users are judicious in
+not allocating more than 1-3 icons then that might not be so bad.  This could
+maybe even be an "alternate spelling" of the %0-%8 format dimensions.
 
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
