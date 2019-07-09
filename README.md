@@ -80,7 +80,7 @@ based on dtype data, stat data, ACLs, .., that performance-sensitive folk may
 like, but there are also *many* independent fields & bits just in `struct stat`.
 Not much is mutually exclusive like the dtype.  So, `lc` users can configure
 however many classification dimensions to line up against their picked poisons
-of output dimensions.  Operationally, users just pick small integers labels for
+of output dimensions.  Operationally, users just pick small integer labels for
 dimensions/series of order-dependent tests.  The first test passing within a
 given dimension wins that dimension.  To aid debugging kind assignments you can
 do things like `lc -f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.
@@ -95,7 +95,8 @@ does not.  That mimics `ls` usage, but without spaces and '-'s to enter.  If the
 listing is well organized, seeing dot files by default may be considered as much
 a feature as a bug.  Including everything by default lets "dot" be user-defined.
 You can also do `-idot` to see *only* the dot files (or any other user/system
-defined file kind) which is not something available in most file listers.  `lc
+defined file kind) which is not something available in most file listers.  It's
+also not always easy to replicate via shell globbing the input list.  Eg., `lc
 -r0 -idir -iodd` can often be illuminating on very aged file trees.
 
 Multi-level sorting and format string are similar ideas to other tools like the
@@ -122,16 +123,17 @@ user-definable string.  While you can use some UTF8 ellipsis, you probably want
 can copy-paste.  The shell may not expand it uniquely, but `lc` has you covered
 with `lc -mauto` or just `lc -ma`.  That automatically finds the smallest limit
 such that all displayed strings are unique, ensuring a unique shell expansion
-(up to other shell meta-characters in file names, anyway).  There's a similar
-`-M` for symlink targets, but unfortunately the ones which tend to be long range
-over the whole FS namespace, not just one directory.  So, -Mauto seems hard.
-An explicit figure of `lc -ma` playing out may help here:
+(up to other shell meta-characters in file names, anyway).  An explicit figure
+of `lc -ma` playing out may help here:
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
 If you don't like my default "balanced" slice, you can adjust how much of the
 head and tail of a name are used to form `head*tail`.  You can even create a
 style that sets those so you only have to type `-sm` on the command-line.
+There's a similar `-M` for symlink targets, but unfortunately the ones which
+tend to be longest also range over the whole FS namespace, not just one dir.
+So, `-Mauto` seems hard.
 
 In many little ways, `lc` tries hard to let you get the most out of terminal
 real estate, targeting max information per row, while staying within an easy
