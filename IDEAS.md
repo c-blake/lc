@@ -46,9 +46,8 @@ I do agree that redundant visual cues can be helpful.
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
 
-hyperlink qualifier preceeding/within %f & %r (eg. %^f) to render the extra
-esc seqs to make clicking chase file:///full/path.  Already used 52 letters
-for field formats.  May be time for field format qualifiers more generally.
+hyperlink-style %[fF] & %[rR] (eg. %^f) to render the extra esc seqs to make
+clicking chase a file:///full/path.  Maybe %[hH] and %[jJ].
 
 Though current "just has it" kinding works to color/attribute by ACL, Linux
 capability, but it'd be nicer to actually format out the text.  Capabilities
