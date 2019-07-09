@@ -27,13 +27,14 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
   LsCf* = object    #User set config fields early; Computed/intern fields later
     kind*, colors*, color*, ageFmt*: seq[string]            ##usrDefd kind/colrs
     incl*, excl*: seq[string]                               ##usrDefd filters
-    order*, format*, glyph*, extra*, maxName*, maxTgt*, ext1*, ext2*: string
+    order*, format*, glyph*, extra*, ext1*, ext2*,
+     maxName*, maxTgt*, maxUnm*, maxGnm*: string
     recurse*, nColumn*, padMax*, widest*, width*: int       ##recursion,tweaks
     dirs*, binary*, dense*, deref*, tgtDref*, plain*,       ##various bool flags
      unzipF*, header*, access*, total*, quote*, N1*: bool
     paths*: seq[string]                                     ##paths to list
     t0: Timespec                                            #ref time for fAges
-    nError, nMx, nHd, nTl, tMx, tHd, tTl: int               #num(errs), abbrevs
+    nError, nMx,nHd,nTl, tMx,tHd,tTl, uMx,uHd,uTl, gMx,gHd,gTl: int
     kinds: seq[Kind]                                        #kinds user colors
     ukind: seq[seq[uint8]]                                  #USED kind dim seqs
     sin, sex: set[uint8]                                    #compiled filters
@@ -45,7 +46,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     usr: Table[Uid, string]                                 #user table
     grp: Table[Gid, string]                                 #group table
     tmFmtL, tmFmtU, tmFmtP: seq[tuple[age:int, fmt:string]] #(age,tFmt)lo/up/pln
-    a0, nSep, tSep: string                                  #if plain: "", seps
+    a0, nSep, tSep, uSep, gSep: string                      #if plain: "", seps
     attrSize: array[0..25, string]  #CAP letter-indexed with ord(x) - ord('A')
     attrPerm: array[0..7, string]   #indexed by 3-bit perm of this proc on files
     tests: CritBitTree[Test]
@@ -127,6 +128,8 @@ ATTR=attr specs as above""",
                       "width"  : "override auto-detected terminal width",
                       "maxName": "auto|M[,head(M/2)[,tail(M-hd-sep)[,sep(*)]]]",
                       "maxTgt" : "like maxName for symlink targets; No auto",
+                      "maxUnm" : "like maxName for user names",
+                      "maxGnm" : "like maxName for group names",
                       "unzipF" : "negate default all-after-%[fF] column zip",
                       "glyph"  : "how to render arrow in %[rR] formats",
                       "extra"  : "append cfg in ARG/.../.lc (.=SAME,trl/=PARS)",
@@ -140,8 +143,9 @@ ATTR=attr specs as above""",
                       "incl"   : "kinds to include" },
             short = { "deref":'L', "dense":'D', "access":'A', "binary":'B',
                       "width":'W',"padMax":'P', "incl":'i',"excl":'x', "N1":'1',
-                      "header":'H', "maxTgt":'M', "tgtDref":'l', "version":'v',
-                      "extra":'X', "ext1":'e', "ext2":'E' },
+                      "header":'H', "maxTgt":'M', "maxUnm":'U', "maxGnm":'G',
+                      "tgtDref":'l', "version":'v', "extra":'X',
+                      "ext1":'e', "ext2":'E' },
             alias = @[ ("Style",'S',"DEFINE an output style arg bundle"),
                        ("style",'s',"APPLY an output style") ],
             dispatchName = "lsCfFromCL")
@@ -649,9 +653,9 @@ fAdd('o', {dsS},0, "%o"   ):
                              if u > 99.0: "99" else: $u.int
 fAdd('n', {dsS},0, "N"    ): $f.st.st_nlink.uint
 fAdd('u', {dsS},0, "uid"  ): $f.st.st_uid.uint
-fAdd('U', {dsS},1, " Usr" ): f.usr
+fAdd('U', {dsS},1, " Usr" ): abbrev(f.usr, cg.uSep, cg.uMx, cg.uHd, cg.uTl)
 fAdd('g', {dsS},0, "gid"  ): $f.st.st_gid.uint
-fAdd('G', {dsS},1, " Grp" ): f.grp
+fAdd('G', {dsS},1, " Grp" ): abbrev(f.grp, cg.gSep, cg.gMx, cg.gHd, cg.gTl)
 fAdd('P', {dsS},0, "perm" ): f.fmt_operm                   #octal,color
 fAdd('p', {dsS},1, " permUGO"): fmt_perm(f.st.st_mode.uint and 4095)
 fAdd('q', {dsS},1, " permUGO"): fmt_perm(f.st.st_mode.uint and 4095, " ")
@@ -777,6 +781,14 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.parseFormat()                            #.format => .fields
   cf.maxName.parseAbbrev(cf.nMx, cf.nSep, cf.nHd, cf.nTl)
   cf.maxTgt.parseAbbrev( cf.tMx, cf.tSep, cf.tHd, cf.tTl)
+  cf.maxUnm.parseAbbrev( cf.uMx, cf.uSep, cf.uHd, cf.uTl)
+  cf.maxGnm.parseAbbrev( cf.gMx, cf.gSep, cf.gHd, cf.gTl)
+  if cf.usr.len > 0 and cf.uMx == -1:
+    cf.uMx = cf.usr.smallestMaxSTUnique(cf.uSep, cf.uHd, cf.uTl)
+    cf.maxUnm.parseAbbrev(cf.uMx, cf.uSep, cf.uHd, cf.uTl)
+  if cf.grp.len > 0 and cf.gMx == -1:
+    cf.gMx = cf.grp.smallestMaxSTUnique(cf.gSep, cf.gHd, cf.gTl)
+    cf.maxGnm.parseAbbrev(cf.gMx, cf.gSep, cf.gHd, cf.gTl)
   if dsA in cf.need or dsC in cf.need: cf.need.incl(dsS)  #To cache EOPNOTSUPP
   cf.a0    = if cf.plain: "" else: "\x1b[0m"
   cf.wrote = false
