@@ -930,7 +930,9 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
     if r == 0 or not cf.failsFilters(fils[j]):  #A kept entry
       if dt == DT_DIR or (cf.deref and dt == DT_LNK and fils[j].isDir):
         if recurse:                             #will recurse: add dirs,labels
+          let m2 = cf.nMx; cf.nMx = 0           #labels get line to themselves
           dirs.add(i); labels.add fils[j].fmt_name(pf & p)
+          cf.nMx = m2                           #restore actual nMx setting
           if r == 0: fils[j].zeroCont           #skip dir paths @1st recurse lvl
       j.inc
     else: fils[j].zeroCont                      #Re-use [j] safely
