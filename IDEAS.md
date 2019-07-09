@@ -21,12 +21,6 @@ Should replace fork/exec driven program calls with C calls to `dlopen()`d .so
 Maybe a mode where users can type -X././ or something to NOT use a local .lc
 config when recursing (at r > 1, say).
 
-This idea is really for cligen/humanUt, but optimize the *location* of the *
-separator to get an even smaller max.  This can make a big difference, but it
-is very sensitive to distribution/order.  I don't see any way to do it faster
-than trying each hd between 0 & maxLen.  Probably use an arg of "" (e.g. -m,)
-to signify to *not* to it and `a*` to signify *to* do it.
-
 KINDING
 -------
 VC status.  Using an external shell command is possible, but not so efficient.
