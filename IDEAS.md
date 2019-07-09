@@ -24,6 +24,12 @@ config when recursing (at r > 1, say).
 Maybe add a -U/-G options to abbreviate user names and group names similarly
 to file names (`*` is a less compelling omission indicator here, though).
 
+For just %f formats, mx = (W+1)/nColumn - 1 achieves nColumn output.  We could
+maybe automate things so users can say, eg. -n-5 to auto-set -m such that they
+will get 5 columns (unless all names are so short they are unabbreviated and
+more columns are possible).  Formats with non-ahead-of-time-known widths are
+harder to support this way, though.
+
 KINDING
 -------
 VC status.  Using an external shell command is possible, but not so efficient.
