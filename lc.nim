@@ -1,5 +1,5 @@
 import os, posix, sets, tables, terminal, strutils, algorithm, nre, critbits,
-       cligen, cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,cfUt,tab]
+ cligen, cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab]
 
 when defined(lcMagic):        ##Optional support for heavyweight classification
   import cligen/magic         ##..via the 'libmagic' distributed with 'file'.
