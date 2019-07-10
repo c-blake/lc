@@ -759,8 +759,7 @@ proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
       wids[m*i+J] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+J])
     if j < (if fj != -1: fj else: m): J.inc
 
-proc opLv(s: string): int =
-  if s.startsWith("A"): 2 elif s.startsWith("a"): 1 else: 0
+proc optm(s: string): bool = s.startsWith("a")
 
 proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
           entry=Timespec(tv_sec: 0.Time, tv_nsec: 9.clong)) =
@@ -787,10 +786,10 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.maxUnm.parseAbbrev( cf.uMx, cf.uSep, cf.uHd, cf.uTl)
   cf.maxGnm.parseAbbrev( cf.gMx, cf.gSep, cf.gHd, cf.gTl)
   if cf.usr.len > 0 and cf.uMx == -1:
-    cf.uMx = cf.usr.smallestMaxSTUnique(cf.uSep, cf.uHd, cf.uTl, cf.maxUnm.opLv)
+    cf.uMx = cf.usr.smallestMaxSTUnique(cf.uSep, cf.uHd, cf.uTl, cf.maxUnm.optm)
     cf.maxUnm.parseAbbrev(cf.uMx, cf.uSep, cf.uHd, cf.uTl)
   if cf.grp.len > 0 and cf.gMx == -1:
-    cf.gMx = cf.grp.smallestMaxSTUnique(cf.gSep, cf.gHd, cf.gTl, cf.maxGnm.opLv)
+    cf.gMx = cf.grp.smallestMaxSTUnique(cf.gSep, cf.gHd, cf.gTl, cf.maxGnm.optm)
     cf.maxGnm.parseAbbrev(cf.gMx, cf.gSep, cf.gHd, cf.gTl)
   if dsA in cf.need or dsC in cf.need: cf.need.incl(dsS)  #To cache EOPNOTSUPP
   cf.a0    = if cf.plain: "" else: "\x1b[0m"
@@ -881,7 +880,7 @@ proc tfree(f: var Fil) {.inline.} =   #maybe release tgt.name, tgt.kind, tgt.mag
 proc smallestMaxSTUnique(fils: seq[Fil]; sep: string; hd, tl: var int): int =
   var nms: seq[string]
   for f in fils: nms.add f.name
-  nms.smallestMaxSTUnique sep, hd, tl, cg.maxName.opLv
+  nms.smallestMaxSTUnique sep, hd, tl, cg.maxName.optm
 
 proc sort_fmt_write(cf: var LsCf, fils: var seq[Fil]) {.inline.} = ###ONE-BATCH
   let autoMax = cf.nMx == -1
