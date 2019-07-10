@@ -31,6 +31,12 @@ This also applies to any new VC-related format.
 
 FORMATTING
 ----------
+Presently, auto-abbreviation is framed as a max clipping concept, but really
+the abbreviations should all be as short as possible (up to uniqueness) before
+being sent to the layout engine.  Post layout, `*`s can be expanded up to the
+limit of the column for maximum context/best readability, though.  This can
+maybe be a different, optional behavior.
+
 More format fields could probably use specific value-conditional color scales.
 
 Another field for `color` definitions that lets users define some string/UTF8
