@@ -31,7 +31,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
      maxName*, maxTgt*, maxUnm*, maxGnm*: string
     recurse*, nColumn*, padMax*, widest*, width*: int       ##recursion,tweaks
     dirs*, binary*, dense*, deref*, tgtDref*, plain*,       ##various bool flags
-     unzipF*, header*, access*, total*, quote*, N1*: bool
+     unzipF*, header*, access*, total*, quote*, n1*: bool
     paths*: seq[string]                                     ##paths to list
     t0: Timespec                                            #ref time for fAges
     nError, nMx,nHd,nTl, tMx,tHd,tTl, uMx,uHd,uTl, gMx,gHd,gTl: int
@@ -137,12 +137,12 @@ ATTR=attr specs as above""",
                       "ext1"   : "external shell cmd to get output for %e",
                       "ext2"   : "external shell cmd to get output for %E",
                       "quote"  : "quote filenames with unprintable chars",
-                      "N1"     : "same as -n1",
+                      "n1"     : "same as -n1",
                       "total"  : "print total of blocks before entries",
                       "excl"   : "kinds to exclude",
                       "incl"   : "kinds to include" },
             short = { "deref":'L', "dense":'D', "access":'A', "binary":'B',
-                      "width":'W',"padMax":'P', "incl":'i',"excl":'x', "N1":'1',
+                      "width":'W',"padMax":'P', "incl":'i',"excl":'x', "n1":'1',
                       "header":'H', "maxTgt":'M', "maxUnm":'U', "maxGnm":'G',
                       "tgtDref":'l', "version":'v', "extra":'X', "colors":'C',
                       "ext1":'e', "ext2":'E' },
@@ -538,10 +538,10 @@ proc abbrevT(cf: LsCf, path: string): string {.inline.} =
 proc maybeQuote(cf: LsCf, path: string): string {.inline.} =  #WTF safeUnixChars
   if cf.quote: path.quoteShellPosix else: path                #..should incl ','
 
-proc fmt_name(f: Fil, p: string): string =
+proc fmtName(f: Fil, p: string): string =
   f.kattr & cg[].abbrevN(cg[].maybeQuote(p)) & cg.a0
 
-proc fmt_tgtD(f: Fil): string = #Colorize link targets (in deref|tgtDref mode)
+proc fmtTgtD(f: Fil): string = #Colorize link targets (in deref|tgtDref mode)
   if cg.deref: return           #..according to stat|string type of *target*.
   if f.dtype != DT_LNK: return
   if cg.tgtDref:
@@ -549,14 +549,14 @@ proc fmt_tgtD(f: Fil): string = #Colorize link targets (in deref|tgtDref mode)
   else:
     cg.glyph & f.kattr & cg[].abbrevT(cg[].maybeQuote(f.tgt.name)) & cg.a0
 
-proc fmt_tgtU(f: Fil): string =   #Should unclassified tgt grow a color|shr attr
+proc fmtTgtU(f: Fil): string =   #Should unclassified tgt grow a color|shr attr
   if cg.deref or f.dtype != DT_LNK: return #..of referrer? Mode 4 nm-only kind?
   cg.glyph & cg[].abbrevT(cg[].maybeQuote(f.tgt.name))
 
 proc sp(cf: LsCf, st: Statx): string =          #sparse attribute
   if st.util < 75: cg.attrSize[ord('S') - ord('A')] else: ""
 
-proc fmt_szDevNo(st: Statx): string =
+proc fmtSzDevNo(st: Statx): string =
   proc sizeFmt(sz: string): string =            #colorized file size
     if sz[^1] in { '0' .. '9'}:
       cg.attrSize[ord('B') - ord('A')] & cg[].sp(st) & sz & cg.a0
@@ -566,18 +566,17 @@ proc fmt_szDevNo(st: Statx): string =
     toHex((((st.st_rmaj and 0xFF) shl 8) or (st.st_rmin and 0xFF)).BiggestInt,4)
   else: sizeFmt(align(humanReadable4(st.st_size.uint, cg.binary), 4))
 
-proc fmt_szDevNoL(st: Statx): string =
+proc fmtSzDevNoL(st: Statx): string =
   proc sc(st: Statx): char =
-    let K = if cg.binary: float(1.uint shl 10) else: 1e3
-    let M = if cg.binary: float(1.uint shl 20) else: 1e6
-    let G = if cg.binary: float(1.uint shl 30) else: 1e9
-    let m = if cg.binary: 1024.0               else: 1000.0
+    let k = if cg.binary: float(1.uint shl 10) else: 1e3
+    let m = if cg.binary: float(1.uint shl 20) else: 1e6
+    let g = if cg.binary: float(1.uint shl 30) else: 1e9
     let b = st.st_size.float
-    if b<=9999:'B' elif b < m*K:'K' elif b < m*M:'M' elif b < m*G:'G' else: 'T'
+    if b<=9999:'B' elif b < k*k:'K' elif b < k*m:'M' elif b < k*g:'G' else: 'T'
   if st.st_mode.S_ISCHR or st.st_mode.S_ISBLK: $st.st_rmaj & "," & $st.st_rmin
   else: cg.attrSize[ord(st.sc)-ord('A')] & cg[].sp(st) & $st.st_size.uint&cg.a0
 
-proc fmt_time(ts: Timespec, alt=false): string =
+proc fmtTime(ts: Timespec, alt=false): string =
   let tfs = if cg.plain: cg.tmFmtP elif alt: cg.tmFmtU else: cg.tmFmtL
   for tup in tfs:
     let (age, fmt) = tup                      #Can be in for loop @>=Nim-0.20.0
@@ -587,7 +586,7 @@ proc fmt_time(ts: Timespec, alt=false): string =
              else: fage.humanDuration(fmt[1..^1], cg.plain)
   strftime(if tfs.len > 0: tfs[^1][1] else: "%F:%T.%3", ts)
 
-proc fmt_perm(m: uint, s=""): string =
+proc fmtPerm(m: uint, s=""): string =
   const rwx = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx" ]
   result = rwx[(m shr 6) and 7] & s & rwx[(m shr 3) and 7] & s & rwx[m and 7]
   let o = s.len
@@ -598,14 +597,14 @@ proc fmt_perm(m: uint, s=""): string =
   if (m and 0o1000) != 0 and (m and 0o001) != 0: result[8+o] = 't' #sticky,+x
   if (m and 0o1000) != 0 and (m and 0o001) == 0: result[8+o] = 'T' #sticky,noX
 
-proc fmt_operm(f: var Fil): string =
+proc fmtOperm(f: var Fil): string =
   let p = (f.rOk.uint shl 2) or (f.wOk.uint shl 1) or (f.xOk.uint)
   cg.attrPerm[p] & toOct(f.st.st_mode and 4095, 4) & cg.a0
 
-proc fmt_KindCode(st_mode: Mode): char =    #12=sticky,su,sg+9bits of UGO perms
+proc fmtKindCode(st_mode: Mode): char =    #12=sticky,su,sg+9bits of UGO perms
   "-pc-d-b---l-s---"[st_mode.uint shr 12 and 0xF]  #Pretty standard across OSes
 
-proc fmt_AttrCode(stx_attr: uint64): string =
+proc fmtAttrCode(stx_attr: uint64): string =
   when not defined(haveNoStatx):
     if   (stx_attr and STATX_ATTR_IMMUTABLE.uint64 ) != 0: "Im"
     elif (stx_attr and STATX_ATTR_APPEND.uint64    ) != 0: "Ap"
@@ -618,7 +617,7 @@ proc fmt_AttrCode(stx_attr: uint64): string =
 
 proc toHex(i: uint8): string = toHex(i.BiggestInt, 2)
 
-proc fmt_ClassCode(f: var Fil): string =
+proc fmtClassCode(f: var Fil): string =
   if   f.stModeOrDtype(S_ISDIR , DT_DIR) : result.add '/'
   elif f.stModeOrDtype(S_ISLNK , DT_LNK) : result.add '@'
   elif f.stModeOrDtype(S_ISFIFO, DT_FIFO): result.add '|'
@@ -640,12 +639,12 @@ when NimVersion < "0.20.0": fmtOf = initTable[char, tuple[ds: DataSrcs; left: bo
 template fAdd(code, ds, left, hdr, toStr: untyped) {.dirty.} =
   fmtCodes.incl(code)                           #AVAILABLE: hjtyz HIJNOTWXYZ
   fmtOf[code] = (ds, left.bool, hdr, proc(f:var Fil):string {.closure.} = toStr)
-fAdd('f', {}   ,1, " Nm"  ): f.fmt_name(f.name)
-fAdd('F', {}   ,1, " Bs"  ): f.fmt_name(f.name[f.base..^1])
-fAdd('r', {dsT},1, "ln"   ): f.fmt_tgtU
-fAdd('R', {dsT},1, "Ln"   ): f.fmt_tgtD
-fAdd('S', {dsS},0, "ByDv" ): fmt_szDevNoL(f.st)
-fAdd('s', {dsS},0, "SzDv" ): fmt_szDevNo(f.st)
+fAdd('f', {}   ,1, " Nm"  ): f.fmtName(f.name)
+fAdd('F', {}   ,1, " Bs"  ): f.fmtName(f.name[f.base..^1])
+fAdd('r', {dsT},1, "ln"   ): f.fmtTgtU
+fAdd('R', {dsT},1, "Ln"   ): f.fmtTgtD
+fAdd('S', {dsS},0, "ByDv" ): fmtSzDevNoL(f.st)
+fAdd('s', {dsS},0, "SzDv" ): fmtSzDevNo(f.st)
 fAdd('K', {dsS},0, "Bk"   ): $f.st.st_blocks.uint
 fAdd('k', {dsS},0, "BkZ"  ): $f.st.st_blksize.uint
 fAdd('o', {dsS},0, "%o"   ):
@@ -656,25 +655,25 @@ fAdd('u', {dsS},0, "uid"  ): $f.st.st_uid.uint
 fAdd('U', {dsS},1, " Usr" ): abbrev(f.usr, cg.uSep, cg.uMx, cg.uHd, cg.uTl)
 fAdd('g', {dsS},0, "gid"  ): $f.st.st_gid.uint
 fAdd('G', {dsS},1, " Grp" ): abbrev(f.grp, cg.gSep, cg.gMx, cg.gHd, cg.gTl)
-fAdd('P', {dsS},0, "perm" ): f.fmt_operm                   #octal,color
-fAdd('p', {dsS},1, " permUGO"): fmt_perm(f.st.st_mode.uint and 4095)
-fAdd('q', {dsS},1, " permUGO"): fmt_perm(f.st.st_mode.uint and 4095, " ")
-fAdd('a', {dsS},0, " atm" ): fmt_time(f.st.st_atim)
-fAdd('m', {dsS},0, " mtm" ): fmt_time(f.st.st_mtim)
-fAdd('c', {dsS},0, " ctm" ): fmt_time(f.st.st_ctim)
-fAdd('v', {dsS},0, " vtm" ): fmt_time(f.st.st_vtim)
-fAdd('b', {dsS},0, " btm" ): fmt_time(f.st.st_btim)
-fAdd('A', {dsS},0, " Atm" ): fmt_time(f.st.st_atim, true)
-fAdd('M', {dsS},0, " Mtm" ): fmt_time(f.st.st_mtim, true)
-fAdd('C', {dsS},0, " Ctm" ): fmt_time(f.st.st_ctim, true)
-fAdd('V', {dsS},0, " Vtm" ): fmt_time(f.st.st_vtim, true)
-fAdd('B', {dsS},0, " Btm" ): fmt_time(f.st.st_btim, true)
+fAdd('P', {dsS},0, "perm" ): f.fmtOperm                   #octal,color
+fAdd('p', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode.uint and 4095)
+fAdd('q', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode.uint and 4095, " ")
+fAdd('a', {dsS},0, " atm" ): fmtTime(f.st.st_atim)
+fAdd('m', {dsS},0, " mtm" ): fmtTime(f.st.st_mtim)
+fAdd('c', {dsS},0, " ctm" ): fmtTime(f.st.st_ctim)
+fAdd('v', {dsS},0, " vtm" ): fmtTime(f.st.st_vtim)
+fAdd('b', {dsS},0, " btm" ): fmtTime(f.st.st_btim)
+fAdd('A', {dsS},0, " Atm" ): fmtTime(f.st.st_atim, true)
+fAdd('M', {dsS},0, " Mtm" ): fmtTime(f.st.st_mtim, true)
+fAdd('C', {dsS},0, " Ctm" ): fmtTime(f.st.st_ctim, true)
+fAdd('V', {dsS},0, " Vtm" ): fmtTime(f.st.st_vtim, true)
+fAdd('B', {dsS},0, " Btm" ): fmtTime(f.st.st_btim, true)
 fAdd('D', {dsS},0, "Mj"   ): $f.st.st_rmaj
 fAdd('d', {dsS},0, "Mn"   ): $f.st.st_rmin
 fAdd('i', {dsS},0, "inode"): $f.st.st_ino.uint
-fAdd('l', {dsS},0, "l"    ): $f.st.st_mode.fmt_KindCode
-fAdd('L', {dsS},1, "L"    ): f.fmt_ClassCode
-fAdd('x', {dsS},0, "XA"   ): fmt_AttrCode(f.st.stx_attributes)
+fAdd('l', {dsS},0, "l"    ): $f.st.st_mode.fmtKindCode
+fAdd('L', {dsS},1, "L"    ): f.fmtClassCode
+fAdd('x', {dsS},0, "XA"   ): fmtAttrCode(f.st.stx_attributes)
 fAdd('Q', {dsA},0, "A"    ): ["", "+"][f.acl.int]
 fAdd('e', {}   ,0, "e1"   ): slurp(cg.ext1, f.name)
 fAdd('E', {}   ,0, "e2"   ): slurp(cg.ext2, f.name)
@@ -745,19 +744,19 @@ proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
   result.setLen(n * m)
   wids.setLen(n * m)
   for i in 0 ..< n:
-   var J = 0
+   var k = 0                                        #k is the output j
    for j in 0 ..< cf.fields.len:
     if hdr and i == 0:
-      result[m*i+J].add cf.fields[j].hdr
+      result[m*i+k].add cf.fields[j].hdr
     else:
       if cf.fields[j].prefix.len > 0:
-        result[m*i+J].add cf.fields[j].prefix
-      result[m*i+J].add cf.fields[j].fmt(filps[i-i0][])
-    if cf.plain:  #Should maybe auto-detect utf8 chars & use another flag here
-      wids[m*i+J] = (if cf.fields[j].left: -1 else: 1) * result[m*i+J].len
+        result[m*i+k].add cf.fields[j].prefix
+      result[m*i+k].add cf.fields[j].fmt(filps[i-i0][])
+    if cf.plain:  #Maybe auto-detect utf8 chars & use another flag here?
+      wids[m*i+k] = (if cf.fields[j].left: -1 else: 1) * result[m*i+k].len
     else:
-      wids[m*i+J] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+J])
-    if j < (if fj != -1: fj else: m): J.inc
+      wids[m*i+k] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+k])
+    if j < (if fj != -1: fj else: m): k.inc
 
 proc optm(s: string): bool = s.startsWith("a")
 
@@ -769,7 +768,7 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
     cf.usr = initTable[Uid, string](); cf.grp = initTable[Gid, string]()
     cf.did = initSet[PathId]()
   cf.t0 = if entry.tv_sec.clong==0 and entry.tv_nsec==9: getTime() else: entry
-  if cf.N1: cf.nColumn = 1
+  if cf.n1: cf.nColumn = 1
   if cf.width == 0: cf.width = terminalWidth()
   if cf.recurse == 0: cf.recurse = 2147483647 #effectively infinite
   if cf.recurse != 0: cf.need.incl(dsD)       #Must type @least dirs to recurse
@@ -882,7 +881,7 @@ proc smallestMaxSTUnique(fils: seq[Fil]; sep: string; hd, tl: var int): int =
   for f in fils: nms.add f.name
   nms.smallestMaxSTUnique sep, hd, tl, cg.maxName.optm
 
-proc sort_fmt_write(cf: var LsCf, fils: var seq[Fil]) {.inline.} = ###ONE-BATCH
+proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   let autoMax = cf.nMx == -1
   var hd0 = cf.nHd; var tl0 = cf.nTl
   if autoMax: cf.nMx = fils.smallestMaxSTUnique(cf.nSep, cf.nHd, cf.nTl)
@@ -933,13 +932,13 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
       if dt == DT_DIR or (cf.deref and dt == DT_LNK and fils[j].isDir):
         if recurse:                             #will recurse: add dirs,labels
           let m2 = cf.nMx; cf.nMx = 0           #labels get line to themselves
-          dirs.add(i); labels.add fils[j].fmt_name(pf & p)
+          dirs.add(i); labels.add fils[j].fmtName(pf & p)
           cf.nMx = m2                           #restore actual nMx setting
           if r == 0: fils[j].zeroCont           #skip dir paths @1st recurse lvl
       j.inc
     else: fils[j].zeroCont                      #Re-use [j] safely
   if cf.total and r > 0: stdout.write "total ", tot, "\n"
-  if j > 0: fils.setLen j; cf.sort_fmt_write fils; cf.wrote = true
+  if j > 0: fils.setLen j; cf.sortFmtWrite fils; cf.wrote = true
   if recurse:
     for k, i in dirs:
       let here = pf & paths[i]
