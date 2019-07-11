@@ -21,7 +21,7 @@ kind = "archive  SFX .zip .rar .deb .rpm"
 kind = "pointer  SFX .torrent .uri .url .urls"
 kind = "backup   SFX .swp .vim .bak .orig ~"
 kind = "header   sfx .h .hh .pxi .pxd .diff .patch"
-kind = "source   sfx .s .c .cc .cpp .d .i .java .f .f95 .m .nb .py .pyx .nim .vim .el .tex .fig .jl"
+kind = "source   sfx .s .c .cc .cpp .i .java .f .f95 .m .nb .py .pyx .nim .vim .el .tex .fig .jl"
 #Both man pages and many versioned entities end in .[0-9]
 kind = "document sfx .txt .doc .html .htm .ps .eps .pdf .prn .mif .fm .md .rst"
 kind = "image    sfx .img .bmp .jpg .gif .jpeg .png .ppm"
