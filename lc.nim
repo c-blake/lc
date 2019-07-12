@@ -871,8 +871,8 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
     var nms: seq[string]
     for f in fils: nms.add cf.maybeQuote(f.name)
     cf.nAbb.realize nms
-  if cf.nAbb.mx == 0:
-    for i, f in fils: fils[i].abb.shallowCopy fils[i].name
+  if cf.nAbb.mx == 0:           #Populate .abb w/name ref when not abbreviating
+    for i, f in fils: fils[i].abb.shallowCopy fils[i].name #..s.t. just use .abb
   else:
     for i, f in fils: fils[i].abb = cf.nAbb.abbrev(f.name)
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
@@ -884,6 +884,7 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   for i in 0 ..< fils.len: fils[i].tfree
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
   colPad(colWs, cf.width, cf.padMax, m)
+  #XXX If -F/--reFit then re-format here w/partially unabbreviated names,tgts
   if cf.widest > 0: sortByWidth(strs, wids, m, nrow, ncol)
   stdout.write(strs, wids, colWs, m, nrow, ncol, cf.widest, "")
 
