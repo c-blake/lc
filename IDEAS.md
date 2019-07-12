@@ -37,6 +37,10 @@ being sent to the layout engine.  Post layout, `*`s can be expanded up to the
 limit of the column for maximum context/best readability, though.  This can
 maybe be a different, optional behavior.
 
+Symbolic link targets could be abbreviated on a component-by-component basis.
+{ This may be expensive for many symlinks, but abbreviation is already on the
+expensive side. }
+
 More format fields could probably use specific value-conditional color scales.
 
 Another field for `color` definitions that lets users define some string/UTF8
