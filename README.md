@@ -142,18 +142,18 @@ user/group names, you can change the separator to the empty string to save
 terminal columns as in `-U4,,,` and have a little `grep <PASTE> /etc/passwd`
 type helper (or maybe `-U,,,.*`).
 
-In many little ways, `lc` tries hard to let you get the most out of terminal
-real estate, targeting max information per row, while staying within an easy
-to visually parse table format.  Features along these lines are terse 4 column
-octal permission codes, and with some rounding 3-column file ages, and 4 column
-file sizes.  If it succeeds too well you can have fewer, more spaced columns out
-more with `lc -n4` or something.  If it succeeds too poorly, you can use `-m`
-or drop format fields *or* if you can/want to rename or move files then `lc -w5
--W$((COLUMNS+10))` shows the widest 5 files in each output column (that'd eg.
-give you more output cols with 10 more terminal cols, say).  A hard-to-advocate-
-but-possible way to save space is `lc -oL`.  Try it.  { I suspect this minimizes
-rows within a table constraint, but the proof is too small to fit in the margin.
-Maybe some 2D bin packing expert can weigh in with a counter example. }
+In many little ways, `lc` tries hard to let you manage terminal real estate,
+targeting max information per row, while staying within an easy to visually
+parse table format.  Features along these lines are terse 4 column octal
+permission codes, rounding to 3-column file ages, 4 column file sizes.  If it
+succeeds too well you can have fewer, more spaced columns out more with `lc -n4`
+or something.  If it succeeds too poorly, you can use `-m` or drop format fields
+*or* if you can/want to rename or move files then `lc -w5 -W$((COLUMNS+10))`
+shows the widest 5 files in each output column (that'd eg. give you more output
+cols with 10 more terminal cols, say).  A hard-to-advocate-but-possible way to
+save space is `lc -oL`.  Try it.  { I suspect this minimizes rows within a table
+constraint, but the proof is too small to fit in the margin. ;-)  Maybe some 2D
+bin packing expert can weigh in with a counter example. }
 
 In the other direction, `lc` supports informational bonuses like ns-resolution
 file timestamps with `%1..%9` extensions to the `strftime` format language for
