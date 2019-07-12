@@ -72,13 +72,13 @@ graphical file tree sense.  Examples of dimensions may help.  One file can be
 both an executable regular file and some kind of script source.  Or both a
 directory and a directory with a sticky bit set.  On the output side, you can
 also set the foreground & background colors of text independently (as well as
-blinking, and so on).  I happen to like `st` for its hackability which supports
-bold, italic, blink, underline, struck, inverse all as 6 independent text
-attributes. (Color inversion involves a mapping probably too complex to be a
-useful visual aid.)  So, 7 usable output dimensions, with 5 being shallow 1-bit
-dimensions.  Though subjective, I find text with all these embellishments at
-once legible on my primary displays.  `lc` tries to aid "aligning" rendering or
-output dimensions with classification or input dimensions.
+blinking, and so on).  I happen to like [st](https://git.suckless.org/st/) for
+its hackability which supports bold, italic, blink, underline, struck, inverse
+all as 6 independent text attributes. (Color inversion involves a mapping likely
+too complex to be a useful visual aid.)  So, 7 usable output dimensions, with 5
+being shallow 1-bit dimensions.  Though subjective, I find text with all these
+embellishments at once legible on my primary displays.  `lc` aids "aligning"
+rendering or output dimensions with classification or input dimensions.
 
 On the input/data side there are a few natural "query" dimensions such as traits
 based on dtype data, stat data, ACLs, .., that performance-sensitive folk may
@@ -119,27 +119,26 @@ columns included (and their `order`, `--header` or not, ..) all just how you
 like.  I usually like 5 levels of long-ness, not 2, in my personal setup.
 
 A feature I don't know of any terminal file listers using is abbreviation (GUIs
-have this, though).  Most everyone has probably been annoyed at one time or
-another by some pesky few overlong filenames in a directory messing up column
-widths in a file listing.  `lc -m24` lets you limit displayed length to 24 (or
-whatever) characters.  `lc` replaces the (user-definable) "middle slice" with a
-user-definable string.  While you can use some UTF8 ellipsis, you probably want
-`*` since that choice will make most abbreviations valid shell patterns that you
-can copy-paste.  The shell may not expand it uniquely, but `lc` has you covered
-with `lc -mauto` or just `lc -ma`.  That automatically finds the smallest limit
-such that all displayed strings are unique, ensuring a unique shell expansion
-(up to other shell meta-characters in file names, anyway).  An explicit figure
-of `lc -ma` playing out may help here:
+have this, though and PowerShell9k/10k in single-path prompt contexts).  Most
+everyone has probably been annoyed at one time or another by some pesky few
+overlong filenames in a directory messing up column widths in a file listing.
+`lc -m24` lets you limit displayed length to 24 (or whatever) characters.  `lc`
+replaces the (user-definable) "middle slice" with a user-definable string.
+While you can use some UTF8 ellipsis, you probably want `*` since that choice
+will make most abbreviations valid shell patterns that you can copy-paste.
+Manual slice selection may not result in patterns that expand uniquely, but
+`lc` has you covered with a variety of automatic abbreviation options that do,
+unique mid-point, unique specified head|tail, unique best-point, unique prefix
+or suffix or the shorter of either.  E.g.,
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
-As shown in the figure, there are a variety of manual and automatic options for
-auto-abbreviation.  If you have a favorite you can create a style that sets
-those so you only have to type `-sm` on the command-line.  There are similar
-`-M`, `-U, `-G` for symlink targets, user names, and group names.  While shells
-will not auto-expand user/group names, you can change the separator to the empty
-string to save terminal columns as in -U4,,, and have a little 'grep <PASTE>
-/etc/passwd' type helper (or maybe `-U,,,.*`).
+If you have a favorite you can create a style that sets those so you only have
+to type `-sm` on the command-line.  There are similar `-M`, `-U, `-G` for user
+user names, group names, and symlink targets.  While shells will not auto-expand
+user/group names, you can change the separator to the empty string to save
+terminal columns as in -U4,,, and have a little 'grep <PASTE> /etc/passwd' type
+helper (or maybe `-U,,,.*`).
 
 In many little ways, `lc` tries hard to let you get the most out of terminal
 real estate, targeting max information per row, while staying within an easy
