@@ -2,7 +2,7 @@ For the impatient, here is a screenshot:
 
 ![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/ss.png)
 
-Geting an `lc` config going *should* be as easy as (on Debian):
+Getting an `lc` config going *should* be as easy as (on Debian):
 ```
 apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
@@ -66,7 +66,7 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
 
-The most osbcure of these is likely "multi-dimensional".  I mean this in the
+The most obscure of these is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions may help.  One file can be
 both an executable regular file and some kind of script source.  Or both a
