@@ -137,8 +137,8 @@ If you have a favorite you can create a style that sets those so you only have
 to type `-sm` on the command-line.  There are similar `-M`, `-U`, `-G` for user
 user names, group names, and symlink targets.  While shells will not auto-expand
 user/group names, you can change the separator to the empty string to save
-terminal columns as in -U4,,, and have a little 'grep <PASTE> /etc/passwd' type
-helper (or maybe `-U,,,.*`).
+terminal columns as in `-U4,,,` and have a little `grep <PASTE> /etc/passwd`
+type helper (or maybe `-U,,,.*`).
 
 In many little ways, `lc` tries hard to let you get the most out of terminal
 real estate, targeting max information per row, while staying within an easy
