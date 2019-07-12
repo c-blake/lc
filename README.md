@@ -8,7 +8,7 @@ apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
 git clone https://github.com/c-blake/lc
 cp -r lc/configs/cb0 $HOME/.config/lc
-$HOME/.nimble/bin/lc
+$HOME/.nimble/bin/lc    #-h gives a large help message
 ```
 The Nim experience can sometimes have fairly rough-hewn edges, though.
 
