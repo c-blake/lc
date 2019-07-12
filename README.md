@@ -134,7 +134,7 @@ or suffix or the shorter of either.  E.g.,
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
 If you have a favorite you can create a style that sets those so you only have
-to type `-sm` on the command-line.  There are similar `-M`, `-U, `-G` for user
+to type `-sm` on the command-line.  There are similar `-M`, `-U`, `-G` for user
 user names, group names, and symlink targets.  While shells will not auto-expand
 user/group names, you can change the separator to the empty string to save
 terminal columns as in -U4,,, and have a little 'grep <PASTE> /etc/passwd' type
