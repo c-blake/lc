@@ -22,10 +22,10 @@ giant companies supporting it and isn't going anywhere.
 
 `lc` is also not `stat` or `find`.  Those have their roles for spot-checking or
 generating program-consumed data streams.  `lc` is about human-friendly output,
-creating output to help you see and create organization you want in your file
-sets, and shining light on unexpected things as you go about everyday business
-listing your files.  As such, absolute max performance is not a priority as
-human reaction time is not so fast & large directories are usually ill-advised.
+helping you see and/or create organization you want in your file sets and shine
+light on unexpected things as you go about everyday business listing your files.
+As such, absolute max performance is not a priority as human reaction time is
+not so fast & very large directories are usually ill-advised.
 
 Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
