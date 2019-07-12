@@ -15,7 +15,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     dtype, r, w, x, brok: int8   ##dtype & file perms (0 unknown, 1: no, 2: yes)
     acl, cap: bool               ##flags: has an ACL, has a Linux capability
     base, sext, lext: int16      ##offset of basenms,shortest|longest extens
-    usr, grp, name, mag: string  ##ids; here to sort, name, magic
+    usr, grp, name, abb, mag: string ##ids; here to sort, name, abbrev, magic
     tgt: ptr Fil                 ##symlnk target
 
   Test  = tuple[ds: DataSrcs, test: proc(f:var Fil):bool]          #unattributed
@@ -34,7 +34,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
      unzipF*, header*, access*, total*, quote*, n1*: bool
     paths*: seq[string]                                     ##paths to list
     t0: Timespec                                            #ref time for fAges
-    nError, nMx,nHd,nTl, tMx,tHd,tTl, uMx,uHd,uTl, gMx,gHd,gTl: int
+    nError: int
     kinds: seq[Kind]                                        #kinds user colors
     ukind: seq[seq[uint8]]                                  #USED kind dim seqs
     sin, sex: set[uint8]                                    #compiled filters
@@ -46,7 +46,8 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     usr: Table[Uid, string]                                 #user table
     grp: Table[Gid, string]                                 #group table
     tmFmtL, tmFmtU, tmFmtP: seq[tuple[age:int, fmt:string]] #(age,tFmt)lo/up/pln
-    a0, nSep, tSep, uSep, gSep: string                      #if plain: "", seps
+    nAbb, tAbb, uAbb, gAbb: Abbrev
+    a0: string                                              #if plain: ""
     attrSize: array[0..25, string]  #CAP letter-indexed with ord(x) - ord('A')
     attrPerm: array[0..7, string]   #indexed by 3-bit perm of this proc on files
     tests: CritBitTree[Test]
@@ -79,7 +80,7 @@ For format specs only capitals mean an alternate time format & there are also:
   Z selinux label    q spaced perm  e|E ExternProgOutput
   3-8 fmtDim3-8    9./ tgtFmtDim0-2
 For MULTI-LEVEL order specs only +- mean incr(dfl)/decreasing & there are also:
-  e shortestExtension(last.->end)   N numericFileName   just '-' => UNSORTED
+  e shortestExtension(last.->end)   N numericFileName A abbreviatedFileName
   E longestExtension(first.->end)   L fileNameLength  3-5,6-8,9./ ~ fK,tO,tK 0-2
 ATTR specs: plain, bold, italic, underline, blink, inverse, struck, NONE, black,
 red, green, yellow, blue, purple, cyan, white; UPPERCASE =>HIGH intensity while
@@ -453,11 +454,12 @@ template cAdd(code, ds, cmpr, T, data: untyped) {.dirty.} =
                    proc get(f: Fil): T = data   #AVAILABLE: hjlqrtwxyz
                    cmpr(get(a[]), get(b[])))    #           ABCHIJMOPQRSTVWXYZ
 cAdd('f', {}   , cmp , string  ): f.name
+cAdd('A', {}   , cmp , string  ): f.abb
 cAdd('F', {}   , cmp , string  ): f.name[f.base..^1]
 cAdd('e', {}   , cmpN, string  ): f.name[f.sext..^1]
 cAdd('E', {}   , cmpN, string  ): f.name[f.lext..^1]
 cAdd('N', {}   , cmpN, string  ): f.name
-cAdd('L', {}   , cmp , uint    ): f.name.len.uint
+cAdd('L', {}   , cmp , uint    ): f.abb.len.uint
 cAdd('s', {dsS}, cmp , uint    ): f.st.st_size.uint
 cAdd('K', {dsS}, cmp , uint    ): f.st.st_blocks.uint
 cAdd('k', {dsS}, cmp , uint    ): f.st.st_blksize.uint
@@ -531,27 +533,23 @@ proc parseAge(cf: var LsCf) =
 proc kattr(f: Fil): string =
   for e in f.kind: result.add cg.kinds[e].attr
 
-proc abbrevN(cf: LsCf, path: string): string {.inline.} =
-  abbrev(path, cg.nSep, cg.nMx, cg.nHd, cg.nTl)
-proc abbrevT(cf: LsCf, path: string): string {.inline.} =
-  abbrev(path, cg.tSep, cg.tMx, cg.tHd, cg.tTl)
 proc maybeQuote(cf: LsCf, path: string): string {.inline.} =  #WTF safeUnixChars
   if cf.quote: path.quoteShellPosix else: path                #..should incl ','
 
-proc fmtName(f: Fil, p: string): string =
-  f.kattr & cg[].abbrevN(cg[].maybeQuote(p)) & cg.a0
+proc fmtName(f: Fil, p: string, abbrev=true): string =
+  f.kattr & (if abbrev: f.abb else: cg[].maybeQuote(p)) & cg.a0
 
 proc fmtTgtD(f: Fil): string = #Colorize link targets (in deref|tgtDref mode)
   if cg.deref: return           #..according to stat|string type of *target*.
   if f.dtype != DT_LNK: return
   if cg.tgtDref:
-    cg.glyph & f.tgt[].kattr & cg[].abbrevT(cg[].maybeQuote(f.tgt.name)) & cg.a0
+    cg.glyph&f.tgt[].kattr & cg.tAbb.abbrev(cg[].maybeQuote(f.tgt.name)) & cg.a0
   else:
-    cg.glyph & f.kattr & cg[].abbrevT(cg[].maybeQuote(f.tgt.name)) & cg.a0
+    cg.glyph&f.kattr & cg.tAbb.abbrev(cg[].maybeQuote(f.tgt.name)) & cg.a0
 
 proc fmtTgtU(f: Fil): string =   #Should unclassified tgt grow a color|shr attr
   if cg.deref or f.dtype != DT_LNK: return #..of referrer? Mode 4 nm-only kind?
-  cg.glyph & cg[].abbrevT(cg[].maybeQuote(f.tgt.name))
+  cg.glyph & cg.tAbb.abbrev(cg[].maybeQuote(f.tgt.name))
 
 proc sp(cf: LsCf, st: Statx): string =          #sparse attribute
   if st.util < 75: cg.attrSize[ord('S') - ord('A')] else: ""
@@ -652,9 +650,9 @@ fAdd('o', {dsS},0, "%o"   ):
                              if u > 99.0: "99" else: $u.int
 fAdd('n', {dsS},0, "N"    ): $f.st.st_nlink.uint
 fAdd('u', {dsS},0, "uid"  ): $f.st.st_uid.uint
-fAdd('U', {dsS},1, " Usr" ): abbrev(f.usr, cg.uSep, cg.uMx, cg.uHd, cg.uTl)
+fAdd('U', {dsS},1, " Usr" ): cg.uAbb.abbrev f.usr
 fAdd('g', {dsS},0, "gid"  ): $f.st.st_gid.uint
-fAdd('G', {dsS},1, " Grp" ): abbrev(f.grp, cg.gSep, cg.gMx, cg.gHd, cg.gTl)
+fAdd('G', {dsS},1, " Grp" ): cg.gAbb.abbrev f.grp
 fAdd('P', {dsS},0, "perm" ): f.fmtOperm                   #octal,color
 fAdd('p', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode.uint and 4095)
 fAdd('q', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode.uint and 4095, " ")
@@ -758,8 +756,6 @@ proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
       wids[m*i+k] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+k])
     if j < (if fj != -1: fj else: m): k.inc
 
-proc optm(s: string): bool = s.startsWith("a")
-
 proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
           entry=Timespec(tv_sec: 0.Time, tv_nsec: 9.clong)) =
   ##Finalize cf ob post-user sets/updates, pre-``ls|ls1`` calls.  File ages are
@@ -780,16 +776,10 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.parseOrder()                             #.order => .cmps
   cf.parseAge()                               #.ageFmt => .tmFmt
   cf.parseFormat()                            #.format => .fields
-  cf.maxName.parseAbbrev(cf.nMx, cf.nSep, cf.nHd, cf.nTl)
-  cf.maxTgt.parseAbbrev( cf.tMx, cf.tSep, cf.tHd, cf.tTl)
-  cf.maxUnm.parseAbbrev( cf.uMx, cf.uSep, cf.uHd, cf.uTl)
-  cf.maxGnm.parseAbbrev( cf.gMx, cf.gSep, cf.gHd, cf.gTl)
-  if cf.usr.len > 0 and cf.uMx == -1:
-    cf.uMx = cf.usr.smallestMaxSTUnique(cf.uSep, cf.uHd, cf.uTl, cf.maxUnm.optm)
-    cf.maxUnm.parseAbbrev(cf.uMx, cf.uSep, cf.uHd, cf.uTl)
-  if cf.grp.len > 0 and cf.gMx == -1:
-    cf.gMx = cf.grp.smallestMaxSTUnique(cf.gSep, cf.gHd, cf.gTl, cf.maxGnm.optm)
-    cf.maxGnm.parseAbbrev(cf.gMx, cf.gSep, cf.gHd, cf.gTl)
+  cf.nAbb = parseAbbrev(cf.maxName)           #Finalize within each directory
+  cf.tAbb = parseAbbrev(cf.maxTgt)
+  cf.uAbb = parseAbbrev(cf.maxUnm); cf.uAbb.realize(cf.usr)
+  cf.gAbb = parseAbbrev(cf.maxGnm); cf.gAbb.realize(cf.grp)
   if dsA in cf.need or dsC in cf.need: cf.need.incl(dsS)  #To cache EOPNOTSUPP
   cf.a0    = if cf.plain: "" else: "\x1b[0m"
   cf.wrote = false
@@ -876,15 +866,15 @@ proc tfree(f: var Fil) {.inline.} =   #maybe release tgt.name, tgt.kind, tgt.mag
       if f.tgt.mag != "": f.tgt.mag.GC_unref
     discard f.tgt.resize 0; f.tgt = nil
 
-proc smallestMaxSTUnique(fils: seq[Fil]; sep: string; hd, tl: var int): int =
-  var nms: seq[string]
-  for f in fils: nms.add f.name
-  nms.smallestMaxSTUnique sep, hd, tl, cg.maxName.optm
-
 proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
-  let autoMax = cf.nMx == -1
-  var hd0 = cf.nHd; var tl0 = cf.nTl
-  if autoMax: cf.nMx = fils.smallestMaxSTUnique(cf.nSep, cf.nHd, cf.nTl)
+  if cf.nAbb.isAbstract:
+    var nms: seq[string]
+    for f in fils: nms.add cf.maybeQuote(f.name)
+    cf.nAbb.realize nms
+  if cf.nAbb.mx == 0:
+    for i, f in fils: fils[i].abb.shallowCopy fils[i].name
+  else:
+    for i, f in fils: fils[i].abb = cf.nAbb.abbrev(f.name)
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
   for i in 0 ..< fils.len: filps[i] = fils[i].addr
   if cf.cmps.len > 0: filps.sort(multiLevelCmp)
@@ -892,7 +882,6 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   var nrow, ncol, m: int
   var strs = format(cf, filps, wids, m)
   for i in 0 ..< fils.len: fils[i].tfree
-  if autoMax: cf.nMx = -1; cf.nHd = hd0; cf.nTl = tl0 #restore vals post autoset
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
   colPad(colWs, cf.width, cf.padMax, m)
   if cf.widest > 0: sortByWidth(strs, wids, m, nrow, ncol)
@@ -931,9 +920,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
     if r == 0 or not cf.failsFilters(fils[j]):  #A kept entry
       if dt == DT_DIR or (cf.deref and dt == DT_LNK and fils[j].isDir):
         if recurse:                             #will recurse: add dirs,labels
-          let m2 = cf.nMx; cf.nMx = 0           #labels get line to themselves
-          dirs.add(i); labels.add fils[j].fmtName(pf & p)
-          cf.nMx = m2                           #restore actual nMx setting
+          dirs.add(i); labels.add fils[j].fmtName(pf & p, abbrev=false)
           if r == 0: fils[j].zeroCont           #skip dir paths @1st recurse lvl
       j.inc
     else: fils[j].zeroCont                      #Re-use [j] safely
