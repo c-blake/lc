@@ -128,14 +128,13 @@ of `lc -ma` playing out may help here:
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
-If you don't like my default "balanced" slice, you can adjust how much of the
-head and tail of a name are used to form `head*tail`.  You can even create a
-style that sets those so you only have to type `-sm` on the command-line.
-There's a similar `-M` for symlink targets, but unfortunately the ones which
-tend to be longest also range over the whole FS namespace, not just one dir.
-So, `-Mauto` seems hard.  `lc` does support auto-abbrevs for user and group
-names, though which can occasionally be annoyingly long and not particularly
-informative.
+As shown in the figure, there are a variety of manual and automatic options for
+auto-abbreviation.  If you have a favorite you can create a style that sets
+those so you only have to type `-sm` on the command-line.  There are similar
+`-M`, `-U, `-G` for symlink targets, user names, and group names.  While shells
+will not auto-expand user/group names, you can change the separator to the empty
+string to save terminal columns as in -U4,,, and have a little 'grep <PASTE>
+/etc/passwd' type helper (or maybe `-U,,,.*`).
 
 In many little ways, `lc` tries hard to let you get the most out of terminal
 real estate, targeting max information per row, while staying within an easy
