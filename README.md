@@ -128,7 +128,7 @@ While you can use some UTF8 ellipsis, you probably want `*` since that choice
 will make most abbreviations valid shell patterns that you can copy-paste.
 Manual slice selection may not result in patterns that expand uniquely, but
 `lc` has you covered with a variety of automatic abbreviation options that do,
-unique mid-point, unique specified head|tail, unique best-point, unique prefix
+unique specified head|tail, unique mid-point, unique best-point, unique prefix
 or suffix or the shorter of either.  E.g.,
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
