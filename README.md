@@ -105,12 +105,13 @@ defined file kind) which is not something available in most file listers.  It's
 also not always easy to replicate via shell globbing the input list.  Eg., `lc
 -r0 -idir -iodd` can often be illuminating on very aged file trees.
 
-Multi-level sorting and format string are similar ideas to other tools like the
-Linux `ps` or `stat -c` or `find -printf`.  Sorting by file kind is possible and
-"kind orders" are user-configurable.  Between that and more multi-dimensionality
-you can filter and group almost any way that makes sense, and none of that needs
-any changing of `lc` proper - just your configuration.  Less can be more with
-well thought out factoring.  `lc` is almost an "`ls`-Construction toolkit".
+Multi-level sorting and user format strings are similar ideas to other tools
+like the Linux `ps`, `stat -c`, and `find -printf`.  Sorting by file kind is
+possible and "kind orders" are user-configurable.  Between kind order assignment
+and multi-dimensionality you can filter & group almost any way that makes sense,
+and none of that needs any changing of `lc` proper - just your configuration.
+Less can be more with good factoring.  `lc` is almost an "`ls`-Construction
+toolkit".
 
 Because of all that flexibility, `lc` has a built in style/aliasing system.
 This lets you name canned queries & reports and refer to them, like `lc -sl`.
