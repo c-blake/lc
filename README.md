@@ -2,14 +2,23 @@ For the impatient, here is a screenshot:
 
 ![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/ss.png)
 
+Geting an `lc` config going *should* be as easy as (on Debian):
+```
+apt install nim  #(https://nim-lang.org/ has other options)
+nimble install lc
+git clone https://github.com/c-blake/lc
+cp -r lc/configs/cb0 $HOME/.config/lc
+$HOME/.config/nimble/bin/lc
+```
+The Nim experience can sometimes have fairly rough-hewn edges, though.
+
 This program is not and never will be a drop-in replacement for `ls` at the CLI
 option compatibility level.  `ls` is a poorly factored mishmash of selection,
-sorting, and formatting options.  With about half as many CLI option flags (but
-beefier configuration) `lc` is many-fold more flexible and only a bit slower.
-It can create similar output, but my main impetus to write `lc` was always a
-better functionality factoring not mere recapitulation.  So, `lc` is *not* just
-"ls in Nim".  If you disagree, `ls` probably isn't going anywhere and has giant
-companies supporting it.
+sorting, and formatting options.  With fewer CLI options (but beefier configs)
+`lc` is many-fold more flexible.  It can create similar output, but my main
+impetus to write `lc` was always a better functionality factoring not mere
+recapitulation.  So, `lc` is *not* just "ls in Nim".  If you want `ls`, it has
+giant companies supporting it and isn't going anywhere.
 
 `lc` is also not `stat` or `find`.  Those have their roles for spot-checking or
 generating program-consumed data streams.  `lc` is about human-friendly output,
@@ -17,10 +26,6 @@ creating output to help you see and create organization you want in your file
 sets, and shining light on unexpected things as you go about everyday business
 listing your files.  As such, absolute max performance is not a priority as
 human reaction time is not so fast & large directories are usually ill-advised.
-Even `find` cannot compete with some hypothetical `dcat` dumping dents to
-stdout.  You may have pity-worthy giant dirs, but the doctors can only do so
-much for you then. ;-)  More seriously, you cannot consume that output "as a
-human" anyway.  You probably want something like a `dcat` then, not `lc`.
 
 Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
