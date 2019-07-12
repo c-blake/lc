@@ -157,7 +157,7 @@ In the other direction, `lc` supports informational bonuses like ns-resolution
 file timestamps with `%1..%9` extensions to the `strftime` format language for
 fractions of a second to that many places as per your discretion, rate of disk
 utilization (`512*st_blocks/st_size` or allocation/addressable file bytes),
-as well as newer Linux statx attributes and birth times.
+as well as newer Linux `statx` attributes and birth times.
 
 `lc` also comes with boolean logic combiners for file kind tests, quite a few
 built-in tests, and is also extensible for totally user-defined tests.  It also
