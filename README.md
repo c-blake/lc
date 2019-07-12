@@ -47,7 +47,8 @@ yet another file lister?  What's the point?  Well, `lc`
  - supports file/user/group/link target abbreviation via `-mNum`, `-ma`, etc.
 
  - supports "local tweak files" - extra config options in a local `.lc` (or a
-   `.lc` in a shadow tree under a user's control if needed).  Nice for eg, NFS!
+   `.lc` in a shadow tree under a user's control if needed).  Nice for eg, NFS
+   to avoid automounting, directories with special sorting needs, etc.
 
  - supports "theming" (operationally, environment-variable-keyed cfg includes)
 
