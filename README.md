@@ -44,24 +44,24 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - has value-dependent coloring for file times, sizes, permissions, etc.
 
- - supports filename abbreviation via `-mNum` or shell glob-friendly `-ma`
+ - supports file/user/group/link target abbreviation via `-mNum`, `-ma`, etc.
 
- - supports "local tweak files" - extra config options in a local ".lc" (or a
-   .lc in a shadow tree under a user's control if needed).  Nice for eg, NFS!
+ - supports "local tweak files" - extra config options in a local `.lc` (or a
+   `.lc` in a shadow tree under a user's control if needed).  Nice for eg, NFS!
 
  - supports "theming" (operationally, environment-variable-keyed cfg includes)
 
  - supports latter-day Linux statx/b)irth times (but works on non-Linux, too)
 
- - supports file(1)/libmagic deep file inspection-based classification (though
-   this facility can be very slow on large directories)
+ - supports `file(1)`/`libmagic` deep file inspection-based classification
+   (though this facility can beome woefully slow on large directories)
 
  - is extensible with fully user-defined file type tests & field formats
 
- - is compact (~1000 lines; ~300 is tables&help, ~300 of cligen/[tab, humanUt]
+ - is compact (~1000 lines; ~300 is tables&help, ~300 of `cligen/[tab, humanUt]`
                might be part of `lc` if I didn't write both pkgs.)
 
- - has few dependencies (just cligen and the Nim stdlib)
+ - has few dependencies (just `cligen` and the Nim stdlib)
 
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
