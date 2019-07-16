@@ -135,12 +135,18 @@ or suffix or the shorter of either.  E.g.,
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
-If you have a favorite you can create a style that sets those so you only have
-to type `-sm` on the command-line.  There are similar `-M`, `-U`, `-G` for user
-user names, group names, and symlink targets.  While shells will not auto-expand
-user/group names, you can change the separator to the empty string to save
-terminal columns as in `-U4,,,` and have a little `grep <PASTE> /etc/passwd`
-type helper (or maybe `-U,,,.*`).
+Those are, in order, (max width=5,pfx=2,sfx=auto), (auto,auto,sfx=3), (narrowest
+,mid-point,remainder), best fixed-`*`-column, shortest prefix, shortest suffix,
+and whichever is shorter - shortest prefix or shortest suffix. (I hope to add
+best single-`*`, 2-`*`, etc.)  If you have a favorite you can create a style
+that sets those so you only have to type `-sm` on the command-line.
+
+There are similar `-M`, `-U`, `-G` for user user names, group names, and symlink
+targets.  While shells will not auto-expand user/group names, you can change the
+separator to the empty string to save terminal columns as in `-U4,,,` and have a
+little `grep <PASTE> /etc/passwd` type helper (or maybe `-U,,,.*`).  Auto modes
+are not yet available for symlink targets since when they matter most they are
+a bit expensive (requiring scanning whole directories for each path component).
 
 In many little ways, `lc` tries hard to let you manage terminal real estate,
 targeting max information per row, while staying within an easy to visually
