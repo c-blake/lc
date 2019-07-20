@@ -31,11 +31,9 @@ This also applies to any new VC-related format.
 
 FORMATTING
 ----------
-Presently, auto-abbreviation is framed as a max clipping concept, but really
-the abbreviations should all be as short as possible (up to uniqueness) before
-being sent to the layout engine.  Post layout, `*`s can be expanded up to the
-limit of the column for maximum context/best readability, though.  This can
-maybe be a different, optional behavior.
+Post layout, expand `*`s up to the limit of the column for maximum context/best
+readability.  This can maybe be optional behavior.  Probably just round robin
+through each * taking a left char, then a right char, until extra space gone.
 
 Symbolic link targets could be abbreviated on a component-by-component basis.
 { This may be expensive for many symlinks, but abbreviation is already on the
