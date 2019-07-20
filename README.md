@@ -1,6 +1,6 @@
 For the impatient, here is a screenshot:
 
-![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/main.png)
+![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/main.png)
 
 Getting an `lc` config going *should* be as easy as (on Debian):
 ```
