@@ -1,6 +1,6 @@
 For the impatient, here is a screenshot:
 
-![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/ss.png)
+![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/main.png)
 
 Getting an `lc` config going *should* be as easy as (on Debian):
 ```
@@ -136,7 +136,7 @@ blank), unique best-common-point (start width with "a"), unique prefix (-2) or
 suffix (-3), the shorter \*fix (-4), the shortest 1-star-anywhere (-5) and
 shortest 2-star (-6).  E.g.,
 
-  ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
+![ma.png](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/ma.png)
 
 There are similar `-U`, `-G`, `-M` for user user names, group names, and symlink
 targets.  While shells will not auto-expand user/group names, you can change the
