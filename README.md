@@ -124,29 +124,26 @@ A feature I don't know of any terminal file listers using is abbreviation (GUIs
 have this, though and PowerShell9k/10k in single-path prompt contexts).  Most
 everyone has probably been annoyed at one time or another by some pesky few
 overlong filenames in a directory messing up column widths in a file listing.
-`lc -m24` lets you limit displayed length to 24 (or whatever) characters.  `lc`
+`lc -m16` lets you limit displayed length to 16 (or whatever) characters.  `lc`
 replaces the (user-definable) "middle slice" with a user-definable string.
 While you can use some UTF8 ellipsis, you probably want `*` since that choice
 will make most abbreviations valid shell patterns that you can copy-paste.
-Manual slice selection may not result in patterns that expand uniquely, but
-`lc` has you covered with a variety of automatic abbreviation options that do,
-unique specified head|tail, unique mid-point, unique best-point, unique prefix
-or suffix or the shorter of either.  E.g.,
+
+Manual width & slice selection may not result in patterns that expand uniquely,
+but `lc` has you covered with a variety of automatic abbreviation options that
+are unique: specified head|tail, mid-point (for those 2 just leave "," fields
+blank), unique best-common-point (start width with "a"), unique prefix (-2) or
+suffix (-3), the shorter \*fix (-4), the shortest 1-star-anywhere (-5) and
+shortest 2-star (-6).  E.g.,
 
   ![ss-ma.png](https://raw.githubusercontent.com/c-blake/lc/master/ss-ma.png)
 
-Those are, in order, (max width=5,pfx=2,sfx=auto), (auto,auto,sfx=3), (narrowest
-,mid-point,remainder), best fixed-`*`-column, shortest prefix, shortest suffix,
-and whichever is shorter - shortest prefix or shortest suffix. (I hope to add
-best single-`*`, 2-`*`, etc.)  If you have a favorite you can create a style
-that sets those so you only have to type `-sm` on the command-line.
-
-There are similar `-M`, `-U`, `-G` for user user names, group names, and symlink
+There are similar `-U`, `-G`, `-M` for user user names, group names, and symlink
 targets.  While shells will not auto-expand user/group names, you can change the
 separator to the empty string to save terminal columns as in `-U4,,,` and have a
 little `grep <PASTE> /etc/passwd` helper.  Auto modes are not yet available for
 symlink targets since when they matter most they are a bit expensive (requiring
-scanning whole directories for each path component).
+minimizing patterns over whole directories for each path component).
 
 In many little ways, `lc` tries hard to let you manage terminal real estate,
 targeting max information per row, while staying within an easy to visually
