@@ -29,7 +29,8 @@ kind = "audio    sfx .au .mp3 .wav .ogg .m4a"
 kind = "video    sfx .mpg .mpeg .mp4 .avi .flv .ogm .mkv .m4v .mts .m2ts .wmv .mov .swf .asf .rm webm"
 kind = "dot      PFX ."                 #classic Unix dot file/dir/ln/etc.
 kind = "onOutErr PFX o. e."             #outputs from cb's "on hosts cmd" system
-#NOTE: below ELF works, but can be very slow on large directories.
+#NOTE: below ELF works, but can be very slow on large directories.  Also, you
+#      may need to recompile lc with "nim c -d:danger -d:lcMagic lc.nim".
 #kind = "ELF      mag ELF.*64.*exec"     #proper 64-bit elf executables.
 #NOTE: below pcr tests work fine, but can be slow on large directories.
 #kind = "test1    pcr [@%+_-]"           #Test perl-compatible-regexes.
