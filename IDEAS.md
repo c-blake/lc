@@ -35,6 +35,13 @@ Post layout, expand `*`s up to the limit of the column for maximum context/best
 readability.  This can maybe be optional behavior.  Probably just round robin
 through each * taking a left char, then a right char, until extra space gone.
 
+Current shortest-any-location and shortest-2-star optimizations are very slow.
+A less accurate but probably dramatically faster approach might be a greedy
+algo that builds a suffix tree (a prefix trie of suffixes => every substr is
+easy to find).  Then do some O(nFiles^2) pair-wise longest common substrings.
+Then try to replace those LCSes with '\*'.  Unsure how accurate that would be
+without trying.
+
 Symbolic link targets could be abbreviated on a component-by-component basis.
 { This may be expensive for many symlinks, but abbreviation is already on the
 expensive side. }
