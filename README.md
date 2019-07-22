@@ -138,6 +138,8 @@ shortest 2-star (-6).  E.g.,
 
 ![ma.png](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/ma.png)
 
+(or see [a bigger example](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-scripts/PROGRESSION.md ) )
+
 There are similar `-U`, `-G`, `-M` for user user names, group names, and symlink
 targets.  While shells will not auto-expand user/group names, you can change the
 separator to the empty string to save terminal columns as in `-U4,,,` and have a
