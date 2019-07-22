@@ -34,7 +34,9 @@ Shortest unique single-`*` patterns (12 rows of 12 cols):
 
 ![7-m-5.png](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/7-m-5.png)
 
-Shortest unique two-`*` patterns (10 rows of 14 cols):
+Shortest unique two-`*` patterns (10 rows of 14 cols) { Eventually, I want to
+"re-expand `*`" so that, for example, the `Makefile.kcov` abbreviation goes from
+`*v` to `*kcov` since `*asan` already forces a 5 text-column 4th `lc` column }:
 
 ![8-m-6.png](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/8-m-6.png)
 
