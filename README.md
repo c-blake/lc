@@ -138,7 +138,7 @@ shortest 2-star (-6).  E.g.,
 
 ![ma.png](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/ma.png)
 
-(or see [a bigger example](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/PROGRESSION.md ) )
+(or see [a bigger example](https://htmlpreview.github.io/?https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/progression.html) )
 
 There are similar `-U`, `-G`, `-M` for user user names, group names, and symlink
 targets.  While shells will not auto-expand user/group names, you can change the
