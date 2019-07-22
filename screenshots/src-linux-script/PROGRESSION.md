@@ -1,6 +1,9 @@
-How to condense copy-pastable representations of linux-5.2.2/scripts/ from 70
-lines down to 8. (8.75X reduction) with gradual loss of readability (obviously
-subjective vs. the objective space measurement):
+Condensing copy-pastable representations of linux-5.2.2/scripts/
+================================================================
+
+We start at 70 rows and end at 8. (8.75X reduction) with gradual loss of
+readability (obviously subjective vs. the objective space measurement or
+unique pattern expansion):
 
 Base full name directory (70 rows of 2 cols):
 
