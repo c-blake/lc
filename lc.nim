@@ -59,8 +59,8 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     when defined(lcMagic): mc: magic_t
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
-const vsn = staticExec "git describe --tags HEAD"
-clCfg.version = vsn
+const nimbleFile = staticRead "cligen.nimble"
+clCfg.version = nimbleFile.fromNimble "version"
 let cfDfl* = LsCf(format:"%f", glyph:" -> ", recurse:1, nColumn:999, padMax:999)
 
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
