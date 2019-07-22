@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <title>
+      Condensing copy-pastable representations of linux-5.2.2/scripts/
+    </title>
+  </head>
+  <body>
+    <h1>
+      Condensing copy-pastable representations of linux-5.2.2/scripts/
+    </h1>
+  <p> We start at 70 rows and end at 8. (8.75X reduction) with gradual loss of
+  readability (obviously subjective vs. the objective space measurement or
+  unique pattern expansion). </p>
+
+  <p> Base full name directory (70 rows of 2 cols): </p>
+  <img src="0-base.png"  alt="0-base.png" />
+
+  <p> Sort by name length (35 rows of 4 cols): </p>
+  <img src="1-oL.png"    alt="1-oL.png" />
+
+  <p> Shortest such that mid-point <code>*</code> produes a unique pattern (35 rows
+  of 4 cols): </p>
+  <img src="2-m,.png"    alt="2-m,.png" />
+
+  <p> Best same-column-for-<code>*</code> (28 rows of 5 cols): </p>
+  <img src="3-ma.png"    alt="3-ma.png" />
+
+  <p> Shortest prefix patterns (28 rows of 5 cols): </p>
+  <img src="4-m-2.png"   alt="4-m-2.png" />
+
+  <p> Shortest suffix patterns (24 rows of 6 cols): </p>
+  <img src="5-m-3.png"   alt="5-m-3.png" />
+
+  <p> Shorter of shortest prefix|suffix (18 rows of 8 cols): </p>
+  <img src="6-m-4.png"   alt="6-m-4.png" />
+
+  <p> Shortest unique single-<code>*</code> patterns (12 rows of 12 cols): </p>
+  <img src="7-m-5.png"   alt="7-m-5.png" />
+
+  <p>Shortest unique two-<code>*</code> patterns (10 rows of 14 cols)
+  (Eventually, I want to "re-expand <code>*</code>" so that, e.g., the
+  <code>Makefile.kcov</code> abbreviation goes from <code>*v</code> to
+  <code>*kcov</code> since <code>*asan</code> already forces the 4th column
+  to be 5 chars wide): </p> <img src="8-m-6.png"   alt="8-m-6.png" />
+
+  <p>Shortest unique two-<code>*</code> patterns, sorted by length (8 rows of
+  18 cols): </p>
+  <img src="9-m-6oL.png" alt="9-m-6oL.png" />
+
+  </body>
+</html>
