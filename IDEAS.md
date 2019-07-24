@@ -25,6 +25,10 @@ Post layout, expand `*`s up to the limit of the column for maximum context/best
 readability.  This can maybe be optional behavior.  Probably just round robin
 through each * taking a left char, then a right char, until extra space gone.
 
+Either before, after or both for the above, also add option to replace other
+shell metacharacters (besides `*` which is pretty required) with '?' to improve
+copy-pastability ergonomics.  (Already did '?' in `trie.match` for this).
+
 Symbolic link targets could be abbreviated on a component-by-component basis.
 { This may be expensive for many symlinks, but abbreviation is already on the
 expensive side. }
