@@ -2,12 +2,12 @@
 #%r if you worry about automounters/NFS hanging on link tgts.  Also, -f below
 #should really end in "*4 if you ask me,but stdlib parsecfg sez "invalid token".
 
-Style = r"""s   = -X./       "-f%s %f"""
+Style = r"""s   = -X./.      "-f%s %f"""
 Style = r"""S   = -DLss"""
-Style = r"""psa = -l -X./    "-f%P %S %f%R"""
+Style = r"""psa = -l -X./.   "-f%P %S %f%R"""
 Style = r"""ps  = -s psa -xdot"""
 # Same as above+ showing times
-Style = r"""la  = -l -X./    "-f%P %s %m %f%R"""
+Style = r"""la  = -l -X./.   "-f%P %s %m %f%R"""
 Style = r"""l   = -s la -xdot"""
 Style = r"""ls  = -s l  -os"""
 Style = r"""lu  = -s l  -oa  "-f%P %s %a %f%R"""
@@ -17,7 +17,7 @@ Style = r"""lv  = -s l  -ov  "-f%P %s %v %f%R"""
 Style = r"""lc  = -s l  -oc  "-f%P %s %c %f%R"""
 Style = r"""lb  = -s l  -ob  "-f%P %s %b %f%R"""
 # Same as above+ showing owner
-Style = r"""lla = -Hl -X./    "-f%P %{bold}U %s %m %f%R"""
+Style = r"""lla = -Hl -X./.   "-f%P %{bold}U %s %m %f%R"""
 Style = r"""ll  = -Hslla -xdot"""
 Style = r"""lls = -Hsll  -os"""
 Style = r"""llu = -Hsll  -oa "-f%{bold}U %P %s %a %f%R"""
@@ -27,7 +27,7 @@ Style = r"""llv = -Hsll  -ov "-f%{bold}U %P %s %v %f%R"""
 Style = r"""llc = -Hsll  -oc "-f%{bold}U %P %s %c %f%R"""
 Style = r"""llb = -Hsll  -ob "-f%{bold}U %P %s %b %f%R"""
 # Show most things:
-Style = r"""La =  -Hl -X./    "-f%o %P %n %{bold}U %{italic}G %S %M %f%R"""
+Style = r"""La =  -Hl -X./.   "-f%o %P %n %{bold}U %{italic}G %S %M %f%R"""
 Style = r"""L  =  -HsLa -xdot"""
 Style = r"""Ls =  -HsL  -os"""
 Style = r"""Lu =  -HsL  -oa  "-f%n %o %{bold}U %{italic}G %P %S %A %f%R"""
