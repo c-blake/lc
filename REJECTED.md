@@ -28,4 +28,6 @@ enough to do a script with the above pipeline (being aware of how deep '.' is,
 taking a number of levels, adding thatDir/../.. when needed, etc.) { `lc -LmN`
 is better than other listers for this application, though since you can bound
 the width (but not "height") of each listing being pasted before ever reading
-dirs.  So, you can know how many side-by-side major columns fit in $COLUMNS. }
+dirs.  So, you can know how many side-by-side major columns fit in $COLUMNS.
+There are no scrollbars, exactly, but the terminal as a whole may have them or
+a user can pipe the output of column to a pager. }
