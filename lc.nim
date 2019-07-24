@@ -134,7 +134,7 @@ ATTR=attr specs as above""",
                       "maxGnm" : "like maxName for group names",
                       "unzipF" : "negate default all-after-%[fF] column zip",
                       "glyph"  : "how to render arrow in %[rR] formats",
-                      "extra"  : "append cfg in ARG/.../.lc (.=SAME,trl/=PARS)",
+                      "extra"  : "add cf ARG~/.lc (.=SAME,trl/=PARS,//PR,/.r)",
                       "tgtDref": "fully classify %R formats on their own",
                       "ext1"   : "external shell cmd to get output for %e",
                       "ext2"   : "external shell cmd to get output for %E",
@@ -937,9 +937,10 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
         if not cf.dense and cf.wrote: stdout.write "\n"
         stdout.write labels[k], ":\n"; cf.wrote = true
       cf.dirLabel = true
-      var c: LsCf; let cg0 = cg
-      if cf.extra.len > 0:                      #Merge local extras
-        var d = if cf.extra == "." or cf.extra == "./": maybePfx(cf.cwd, here)
+      var c: LsCf; let cg0 = cg                 #Maybe merge local extras
+      if cf.extra.len > 0 and (cf.recurse == 1 or (cf.recurse > 1 and
+           (cf.extra.endsWith("//") or cf.extra.endsWith("/.")))):
+        var d = if not cf.extra.startsWith('/'): maybePfx(cf.cwd, here)
                 else: simplifyPath(cf.extra & "/" & maybePfx(cf.cwd, here),true)
         while true:
           try:
@@ -948,8 +949,8 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
             c.fin(cf.cl0, cf.cl1, cf.t0); cg = c.addr
             break                               #done at first success
           except: discard                       #tweak files are very optional
-          if not cf.extra.endsWith('/') or (cf.extra == "./" and d.len < 1) or
-             d.len < cf.extra.len:
+          if not cf.extra.endsWith('/') or
+               (cf.extra == "./" and d.len < 1) or d.len < cf.extra.len:
             break           #Either not looking in par dirs or topped out @root
           d = d.parentDir   #No .lc file here, look in parent
       cg[].ls(ents, here, r + 1, dts.addr)
