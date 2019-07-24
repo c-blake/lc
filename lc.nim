@@ -540,7 +540,7 @@ proc maybeQuote(cf: LsCf, path: string): string {.inline.} =  #WTF safeUnixChars
 proc fmtName(f: Fil, p: string, abbrev=true): string =
   f.kattr & (if abbrev: f.abb else: cg[].maybeQuote(p)) & cg.a0
 
-proc fmtTgtD(f: Fil): string = #Colorize link targets (in deref|tgtDref mode)
+proc fmtTgtD(f: Fil): string =  #Colorize link targets (in deref|tgtDref mode)
   if cg.deref: return           #..according to stat|string type of *target*.
   if f.dtype != DT_LNK: return
   if cg.tgtDref:
@@ -646,9 +646,7 @@ fAdd('S', {dsS},0, "ByDv" ): fmtSzDevNoL(f.st)
 fAdd('s', {dsS},0, "SzDv" ): fmtSzDevNo(f.st)
 fAdd('K', {dsS},0, "Bk"   ): $f.st.st_blocks.uint
 fAdd('k', {dsS},0, "BkZ"  ): $f.st.st_blksize.uint
-fAdd('o', {dsS},0, "%o"   ):
-                             let u = f.st.util
-                             if u > 99.0: "99" else: $u.int
+fAdd('o', {dsS},0, "%o"   ): (if f.st.util > 99.0: "99" else: $f.st.util.int)
 fAdd('n', {dsS},0, "N"    ): $f.st.st_nlink.uint
 fAdd('u', {dsS},0, "uid"  ): $f.st.st_uid.uint
 fAdd('U', {dsS},1, " Usr" ): cg.uAbb.abbrev f.usr
