@@ -29,15 +29,11 @@ Symbolic link targets could be abbreviated on a component-by-component basis.
 { This may be expensive for many symlinks, but abbreviation is already on the
 expensive side. }
 
-Another field for `color` definitions that lets users define some string/UTF8
-as a conceptual icon?  Includable in formats with %@ maybe?  Unfortunately,
-icons do not overlap/overlay.  So, unlike text attributes only one of however
-many kind dimensions can "win".  Maybe the first non-unknown dimension should
-win?  I don't like icons, personally, but it seems popular, not hard to do, and
-I do agree that redundant visual cues can be helpful.  Could also maybe let any
-dimension have an icon and give each row 3-6 icons.  If users are judicious in
-not allocating more than 1-3 icons then that might not be so bad.  This could
-maybe even be an "alternate spelling" of the %0-%8 format dimensions.
+Another field for `color` definitions that lets users define some string/UTF8 as
+a conceptual icon?  Includable in formats with %@ maybe?  Icons do not overlap/
+overlay like text attributes, but we can stack them horizontally.  So, let any
+dimension have one and %@ just concatenates them.  Users should probably be
+judicious in not allocating more than 1-3 icons.
 
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
