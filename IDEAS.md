@@ -29,12 +29,6 @@ Symbolic link targets could be abbreviated on a component-by-component basis.
 { This may be expensive for many symlinks, but abbreviation is already on the
 expensive side. }
 
-Another field for `color` definitions that lets users define some string/UTF8 as
-a conceptual icon?  Includable in formats with %@ maybe?  Icons do not overlap/
-overlay like text attributes, but we can stack them horizontally.  So, let any
-dimension have one and %@ just concatenates them.  Users should probably be
-judicious in not allocating more than 1-3 icons.
-
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
 
