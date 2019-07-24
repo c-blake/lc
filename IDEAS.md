@@ -18,9 +18,6 @@ Expensive metadata blocking (`-b`).
 
 Should replace fork/exec driven program calls with C calls to `dlopen()`d .so
 
-Maybe a mode where users can type -X././ or something to NOT use a local .lc
-config when recursing (at r > 1, say).
-
 KINDING
 -------
 VC status.  Using an external shell command is possible, but not so efficient.
