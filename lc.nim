@@ -19,7 +19,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     tgt: ptr Fil                 ##symlnk target
 
   Test  = tuple[ds: DataSrcs, test: proc(f:var Fil):bool]          #unattributed
-  Kind  = tuple[attr: string, kord: uint8, test: proc(f:var Fil):bool] #atr+ord
+  Kind  = tuple[attr:string, kord:uint8, icon:string, test:proc(f:var Fil):bool]
   Cmp   = tuple[sgn: int, cmp: proc(x, y: ptr Fil): int]           #1-level cmp
   Field = tuple[prefix: string; left: bool; c: char; hdr: string,  #1-field fmt
                 fmt: proc(f: var Fil): string]
@@ -396,6 +396,7 @@ proc parseColor(cf: var LsCf) =
     let nm    = nmKoD[0].strip()
     let ko    = (if nmKoD.len>1: parseHexInt(nmKoD[1].strip()) else: 255).uint8
     let dim   = if nmKoD.len>2: parseInt(nmKoD[2].strip()) else: 0
+    let icon  = if nmKoD.len>3: nmKoD[3] else: ""
     let attrs = textAttrOn(cols[1..^1], cf.plain)
     try:
       let allow = nm.len==5 and (nm.startsWith("size") or nm.startsWith("perm"))
@@ -403,7 +404,7 @@ proc parseColor(cf: var LsCf) =
       let test = ts[0].val
       let kno = cf.kinds.len.uint8                #Found test; add to used kinds
       cf.kslot[ts[0].key] = (kno, test.ds, dim)   #Record kind number, DataSrc
-      add(cf.kinds, (attr: attrs, kord: ko, test: test.test))
+      add(cf.kinds, (attr: attrs, kord: ko, icon: icon, test: test.test))
       if dim + 1 > cf.ukind.len: cf.ukind.setLen(dim + 1)
       cf.ukind[dim].add kno
       cf.need = cf.need + test.ds
@@ -420,7 +421,7 @@ proc parseColor(cf: var LsCf) =
           cf.attrPerm[ord(nm[4]) - ord('0')] = attrs
       else: raise newException(ValueError, "unknown color key: \""&nm&"\"")
   if unknown == 255:  #Terminate .kinds if usr did not specify attrs for unknown
-   add(cf.kinds, ("", 255.uint8, cf.tests["unknown"].test))
+   add(cf.kinds, ("", 255.uint8, "", cf.tests["unknown"].test))
 
 ###### FILTERING
 proc compileFilter(cf: var LsCf, spec: seq[string], msg: string): set[uint8] =
@@ -552,6 +553,9 @@ proc fmtTgtU(f: Fil): string =   #Should unclassified tgt grow a color|shr attr
   if cg.deref or f.dtype != DT_LNK: return #..of referrer? Mode 4 nm-only kind?
   cg.glyph & cg.tAbb.abbrev(cg[].maybeQuote(f.tgt.name))
 
+proc fmtIcon(f: Fil): string =
+  for e in f.kind: result.add cg.kinds[e].icon
+
 proc sp(cf: LsCf, st: Statx): string =          #sparse attribute
   if st.util < 75: cg.attrSize[ord('S') - ord('A')] else: ""
 
@@ -674,6 +678,7 @@ fAdd('x', {dsS},0, "XA"   ): fmtAttrCode(f.st.stx_attributes)
 fAdd('Q', {dsA},0, "A"    ): ["", "+"][f.acl.int]
 fAdd('e', {}   ,0, "e1"   ): slurp(cg.ext1, f.name)
 fAdd('E', {}   ,0, "e2"   ): slurp(cg.ext2, f.name)
+fAdd('@', {}   ,0, "I"    ): f.fmtIcon
 
 template dBody(i): untyped {.dirty.} =
   if f.kind.len>i: cg.kinds[f.kind[i]].attr & f.kind[i].toHex & cg.a0 else: "xx"
