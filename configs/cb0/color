@@ -21,7 +21,7 @@ color="video:0x72:0    fhot1"             #0x07
 #color="special:0x72:2  blink"             #0x07
 #color="combo:0x00:0    blink"             #0x07
 color="script:0x40:0   fhot4"             #0x08
-color="pointer:0x50:0  FHOT0"             #0x09   #pointers odd ducks=>alt bank
+color="pointer:0x50:0:ɷ FHOT0"             #0x09   #pointers odd ducks=>alt bank
 color="header:0x58:0   fhot2"             #0x0A   #Intefaces are cooler prelude
 color="source:0x60:0   fhot3"             #0x0B   #..to neutral warmth impls.
 color="object:0x68:0   fhot5"             #0x0C   #Could arguably swap obj&exec
@@ -53,7 +53,7 @@ color="worldW:0x40:4   on_RED"           #0x1D #world writable higherD 2clobber
 #struck can sometimes be hard to read text; hence hard to read dirents get it:
 color="unR:0xF8:5      struck"           #0x20 #unreadable or isDir & no-exec
 
-color="exec:0x70:6     bold"             #0x20
+color="exec:0x70:6:¶   bold"             #0x20
 
 #color="ELF:0x71:6      RED"              #0x21 #Another dimension for magics
 
