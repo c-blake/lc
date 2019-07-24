@@ -32,10 +32,8 @@ expensive side. }
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
 
-hyperlink-style %[fF] & %[rR] (eg. %^f) to render the extra esc seqs to make
-clicking chase a file:///full/path.  Maybe %[hH] and %[jJ].  If icons get added
-people will ask to click on those, too, though.  So, a global command option to
-change rendering may be best.
+Add -j option to have %[fF] & %[rR] render extra esc seqs to make clicking chase
+a file:///full/path.
 
 Though current "just has it" kinding works to color/attribute by ACL, Linux
 capability, but it'd be nicer to actually format out the text.  Capabilities
