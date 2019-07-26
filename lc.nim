@@ -228,7 +228,7 @@ tAdd("odd"    ,{dsS}):    #Check very odd st_mode's. Rare but legit wr-only in:
    not (m.S_IUSR >= m.S_IGRP and m.S_IGRP >= m.S_IOTH) or       #!(u >= g >= o)
    (m.S_IUSR and 0o6)==2 or (m.S_IGRP and 0o6)==2 or (m.S_IOTH and 0o6)==2 #w&!r
 
-when not defined(haveNoStatx):          #Linux only via statx
+when haveStatx:          #Linux only via statx
  tAdd("IMMUT" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_IMMUTABLE.uint64)!=0
  tAdd("APPEND",{dsS}):(f.st.stx_attributes and STATX_ATTR_APPEND.uint64)!=0
  tAdd("COMPR" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_COMPRESSED.uint64)!=0
