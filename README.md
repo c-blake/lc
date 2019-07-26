@@ -4,16 +4,14 @@ For the impatient, here is a screenshot:
 
 Getting an `lc` config going *should* be as easy as (on Debian):
 ```
-apt install file file-dev
+apt install file file-dev   ## Optional
 apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
 git clone https://github.com/c-blake/lc
 cp -r lc/configs/cb0 $HOME/.config/lc
 $HOME/.nimble/bin/lc    #-h gives a large help message
 ```
-The Nim experience can sometimes have fairly rough-hewn edges, though.  The
-`file` dependency currently is that **if** you have a `libmagic.so` then you
-should also have a `magic.h`.  Having neither should also work.
+The Nim experience can sometimes have fairly rough-hewn edges, though.
 
 This program is not and never will be a drop-in replacement for `ls` at the CLI
 option compatibility level.  `ls` is a poorly factored mishmash of selection,
