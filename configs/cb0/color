@@ -55,7 +55,7 @@ color="unR:0xF8:5      struck"           #0x20 #unreadable or isDir & no-exec
 
 color="exec:0x70:6:¶   bold"             #0x20
 
-#color="ELF:0x71:6      RED"              #0x21 #Another dimension for magics
+#color="ELF:0x71:7      RED"              #0x21 #Another dimension for magics
 
 #color="sysOwn:0x80:7     blink"          #0x21 #really just for testing
 #color="sysGrp:0x80:8     struck"         #0x21
