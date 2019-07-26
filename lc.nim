@@ -1,9 +1,5 @@
-import os, posix, sets, tables, terminal, strutils, algorithm, nre, critbits,
- cligen, cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab]
-
-when defined(lcMagic):        ##Optional support for heavyweight classification
-  import cligen/magic         ##..via the 'libmagic' distributed with 'file'.
-  {. passl: "-lmagic" .}      ##Compile with nim c -d:lcMagic to activate.
+import os,posix, sets,tables, terminal,strutils,algorithm, nre, critbits,cligen,
+ cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC      ## sources of meta data
@@ -56,7 +52,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     did: HashSet[PathId]                                    #inf.recurse block
     cl0, cl1: seq[string]
     cwd: string
-    when defined(lcMagic): mc: magic_t
+    when haveMagic: mc: magic_t
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
 const nimbleFile = staticRead "lc.nimble"
@@ -323,7 +319,7 @@ proc addCombo(cf: var LsCf; tester: auto; nm, s: string) =
 proc addStatus(cf: var LsCf; nm, s: string) =
   cf.tests[nm] = ({}, proc(f: var Fil): bool = s.testStatus(f))
 
-when defined(lcMagic):
+when haveMagic:
   proc testMagic(rxes: seq[Regex], f: var Fil): bool =
     result = false
     for r in rxes:
@@ -849,14 +845,14 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
       f.tgt.lext = max(0, f.tgt.name.find('.', start=f.tgt.base)).int16
       f.tgt.dtype = stat2dtype(f.tgt.st.st_mode)
       if cf.needKin:                    #tgtDref populates f.st via stat.  So,
-        when defined(lcMagic):          #..only dsN really changes for classify
+        when haveMagic:          #..only dsN really changes for classify
           if dsM in cf.need:
             f.tgt.mag = $magic_file(cf.mc, f.tgt.name.qualPath);f.tgt.mag.GC_ref
         f.tgt.kind = newSeq[uint8](cf.ukind.len)  #alloc did not init
         f.tgt.kind.GC_ref
         for d in 0 ..< cf.ukind.len: f.tgt.kind[d] = cf.classify(f.tgt[], d)
   if cf.needKin:                        #filter/sort may need even if cf.plain
-    when defined(lcMagic):
+    when haveMagic:
       if dsM in cf.need:
         f.mag = if cf.tgtDref and f.tgt != nil: f.tgt.mag else:
             $magic_file(cf.mc, if f.tgt != nil: f.tgt.name.qualPath else: iqP)
@@ -866,7 +862,7 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
 proc tfree(f: var Fil) {.inline.} =   #maybe release tgt.name, tgt.kind, tgt.mag
   if f.tgt != nil:
     f.tgt.name.GC_unref; f.tgt.kind.GC_unref
-    when defined(lcMagic):
+    when haveMagic:
       if f.tgt.mag != "": f.tgt.mag.GC_unref
     discard f.tgt.resize 0; f.tgt = nil
 
