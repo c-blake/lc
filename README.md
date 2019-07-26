@@ -4,7 +4,6 @@ For the impatient, here is a screenshot:
 
 Getting an `lc` config going *should* be as easy as (on Debian):
 ```
-apt install file file-dev   ## Optional
 apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
 git clone https://github.com/c-blake/lc
