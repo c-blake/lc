@@ -608,7 +608,7 @@ proc fmtKindCode(st_mode: Mode): char =    #12=sticky,su,sg+9bits of UGO perms
   "-pc-d-b---l-s---"[st_mode.uint shr 12 and 0xF]  #Pretty standard across OSes
 
 proc fmtAttrCode(stx_attr: uint64): string =
-  when not defined(haveNoStatx):
+  when haveStatx:
     if   (stx_attr and STATX_ATTR_IMMUTABLE.uint64 ) != 0: "Im"
     elif (stx_attr and STATX_ATTR_APPEND.uint64    ) != 0: "Ap"
     elif (stx_attr and STATX_ATTR_COMPRESSED.uint64) != 0: "Cp"
