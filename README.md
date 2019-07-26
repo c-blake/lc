@@ -10,7 +10,9 @@ git clone https://github.com/c-blake/lc
 cp -r lc/configs/cb0 $HOME/.config/lc
 $HOME/.nimble/bin/lc    #-h gives a large help message
 ```
-The Nim experience can sometimes have fairly rough-hewn edges, though.
+The Nim experience can sometimes have fairly rough-hewn edges, though.  So far,
+though, something like the above has worked for me on Gentoo Linux, Debian,
+Android Termux, and FreeBSD.
 
 This program is not and never will be a drop-in replacement for `ls` at the CLI
 option compatibility level.  `ls` is a poorly factored mishmash of selection,
