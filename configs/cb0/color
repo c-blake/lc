@@ -8,63 +8,64 @@
 
 #      nm:ord:dim      attrs             #overall test number for reference
 color="dot:0x04:0      NONE"             #0x00
-#color="test1:0x24:0    GREEN on_black"   #0x00 
+#color="test1:0x24:0    GREEN on_black"   #0x00
 #color="test2:0x24:0    CYAN on_black"    #0x00
-color="onOutErr:0xF0:0 FHOT-"             #0x01
-color="compress:0x3D:0 fhot0"             #0x02   #cold storage
-color="tarchive:0x3E:0 fhot0"             #0x03
-color="archive:0x3F:0  fhot0"             #0x04
-color="audio:0x70:0    fhot1"             #0x05   #warmer, but still compressed
-color="image:0x71:0    fhot1"             #0x06
-color="video:0x72:0    fhot1"             #0x07
-#color="media:0x72:0    fhot1"             #0x07
-#color="special:0x72:2  blink"             #0x07
-#color="combo:0x00:0    blink"             #0x07
-color="script:0x40:0   fhot4"             #0x08
-color="pointer:0x50:0:ɷ FHOT0"             #0x09   #pointers odd ducks=>alt bank
-color="header:0x58:0   fhot2"             #0x0A   #Intefaces are cooler prelude
-color="source:0x60:0   fhot3"             #0x0B   #..to neutral warmth impls.
-color="object:0x68:0   fhot5"             #0x0C   #Could arguably swap obj&exec
-color="backup:0x80:0   FHOT4"             #0x0D   #backups odd ducks=>alt bank
-color="capsdoc:0x23:0  fhot+"             #0x0E   #Docs are just a different
-color="numeric:0x21:0  fhot+"             #0x0F   #process entirely => gray scl
-color="document:0x24:0 fhot+"             #0x10
+color="onOutErr:0xF0:0 FHOT-"            #0x01
+color="compress:0x3D:0 fhot0"            #0x02   #cold storage
+color="tarchive:0x3E:0 fhot0"            #0x03
+color="archive:0x3F:0  fhot0"            #0x04
+color="audio:0x70:0    fhot1"            #0x05   #warmer, but still compressed
+color="image:0x71:0    fhot1"            #0x06
+color="video:0x72:0    fhot1"            #0x07
+#color="media:0x72:0    fhot1"            #0x07
+#color="special:0x72:2  blink"            #0x07
+#color="combo:0x00:0    blink"            #0x07
+color="script:0x40:0   fhot4"            #0x08
+color="pointer:0x50:0:ɷ FHOT0"           #0x09   #pointers odd ducks=>alt bank
+color="header:0x58:0   fhot2"            #0x0A   #Intefaces are cooler prelude
+color="source:0x60:0   fhot3"            #0x0B   #..to neutral warmth impls.
+color="object:0x68:0   fhot5"            #0x0C   #Could arguably swap obj&exec
+color="core:0x68:0     fhot5"            #0x0D
+color="backup:0x80:0   FHOT4"            #0x0E   #backups odd ducks=>alt bank
+color="capsdoc:0x23:0  fhot+"            #0x0F   #Docs are just a different
+color="numeric:0x21:0  fhot+"            #0x00   #process entirely => gray scl
+color="document:0x24:0 fhot+"            #0x11
 
-color="symlink:0x10:1  italic"           #0x11
-color="dir:0x20:1      WHITE  on_blue"   #0x12
-color="reg:0x65:1      NONE"             #0x13
-color="cdev:0x30:0     YELLOW on_purple" #0x14
-color="bdev:0x40:1     CYAN   on_purple" #0x15
-color="fifo:0x50:1     BLUE   on_purple" #0x16
-color="socket:0x60:1   WHITE  on_purple" #0x17
+color="symlink:0x10:1  italic"           #0x12
+color="dir:0x20:1      WHITE  on_blue"   #0x13
+color="reg:0x65:1      NONE"             #0x14
+color="cdev:0x30:0     YELLOW on_purple" #0x15
+color="bdev:0x40:1     CYAN   on_purple" #0x16
+color="fifo:0x50:1     BLUE   on_purple" #0x17
+color="socket:0x60:1   WHITE  on_purple" #0x18
 
-color="-sym:0x10:2     blink"            #0x18 #early since no stat data to use
+color="-sym:0x10:2     blink"            #0x19 #early since no stat data to use
 #color="CAP:0x10:2     blink"
 #color="ACL:0x10:2     blink"
-color="hard:0x80:2     underline"        #0x19 #maybe inverse or struck?
+color="hard:0x80:2     underline"        #0x1A #maybe inverse or struck?
 
-color="odd:0x30:3      on_RED"           #0x1A #early since combines many things
-color="+sym:0x18:3     italic"           #0x1B
-color="tmpD:0x20:3     YELLOW"           #0x1C #clobber FG only->yellow on_blue
+color="odd:0x30:3      on_RED"           #0x1B  #early since combines many things
+color="+sym:0x18:3     italic"           #0x1C
+color="tmpD:0x20:3     YELLOW"           #0x1D #clobber FG only->yellow on_blue
 color="suid:0x50:3     on_CYAN"          #0x1E #pastel backgrounds for sXid
 color="sgid:0x60:3     on_green"         #0x1F
-color="worldW:0x40:4   on_RED"           #0x1D #world writable higherD 2clobber
+color="worldW:0x40:4   on_RED"           #0x20 #world writable higherD 2clobber
 
 #struck can sometimes be hard to read text; hence hard to read dirents get it:
-color="unR:0xF8:5      struck"           #0x20 #unreadable or isDir & no-exec
+color="unR:0xF8:5      struck"           #0x21 #unreadable or isDir & no-exec
 
-color="exec:0x70:6:¶   bold"             #0x20
+color="exec:0x70:6:¶   bold"             #0x22
 
-#color="ELF:0x71:7      RED"              #0x21 #Another dimension for magics
+#color="ELF:0x71:7      RED"              #0x23 #Another dimension for magics
 
-#color="sysOwn:0x80:7     blink"          #0x21 #really just for testing
-#color="sysGrp:0x80:8     struck"         #0x21
-#color="rootOrCb:0x80:7   blink"          #0x21
-#color="wheelOrCb:0x80:8  struck"         #0x21
-#color="mye1:0x80:7   blink"              #0x21
-#color="mye2:0x95:8   struck"             #0x21
+#color="sysOwn:0x80:7     blink"          #0x23 #really just for testing
+#color="sysGrp:0x80:8     struck"         #0x23
+#color="rootOrCb:0x80:7   blink"          #0x23
+#color="wheelOrCb:0x80:8  struck"         #0x23
+#color="mye1:0x80:7   blink"              #0x23
+#color="mye2:0x95:8   struck"             #0x23
 
-color="unknown:0x22:0  NONE"             #0x21 #Added if missing;Here to set ord
+color="unknown:0x22:0  NONE"             #0x23 #Added if missing;Here to set ord
 
 color = "sizeB   fhot1"                 #Value-conditional fields besides paths
 color = "sizeK   fhot2"
