@@ -439,7 +439,7 @@ proc contains(s: set[uint8], es: seq[uint8]): bool =
     if e in s: return true
 
 proc failsFilters(cf: LsCf; f: Fil): bool =
- (cf.nex > 0 and f.kind in cf.sex) or (cf.nin > 0 and f.kind notin cf.sin)
+  (cf.nex > 0 and f.kind in cf.sex) or (cf.nin > 0 and f.kind notin cf.sin)
 
 ###### SORTING
 proc tKind(f: Fil): seq[uint8] =
