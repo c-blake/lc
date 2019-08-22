@@ -13,7 +13,7 @@
 
 kind = "numeric  cset 0123456789-_.:,%"
 kind = "capsdoc  cset ABCDEFGHIJKLMNOPQRSTUVWXYZ_-."
-kind = "object   SFX .o .a .la .so core .pyc .pyo .dvi .elc .obj"
+kind = "object   SFX .o .a .la .so .pyc .pyo .dvi .elc .obj"
 kind = "script   SFX .pl .awk .sed .sh .zsh .csh .gpi akefile .log .nims .R .js .scm .lsp .cfg .cf .conf"
 kind = "compress SFX .z .gz .bz .bz2 .lz .Lz .xz 4z .zs .zs"
 kind = "tarchive SFX .tar .tgz .tbz .tbz2 .tlz .txz .tLz .tzs"
@@ -29,6 +29,7 @@ kind = "audio    sfx .au .mp3 .wav .ogg .m4a"
 kind = "video    sfx .mpg .mpeg .mp4 .avi .flv .ogm .mkv .m4v .mts .m2ts .wmv .mov .swf .asf .rm webm"
 kind = "dot      PFX ."                 #classic Unix dot file/dir/ln/etc.
 kind = "onOutErr PFX o. e."             #outputs from cb's "on hosts cmd" system
+kind = "core     PFX core"
 #NOTE: below ELF works, but can be very slow on large directories.  Also, you
 #      may need to recompile lc with "nim c -d:danger -d:lcMagic lc.nim".
 #kind = "ELF      mag ELF.*64.*exec"     #proper 64-bit elf executables.
