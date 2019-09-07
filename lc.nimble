@@ -1,5 +1,5 @@
 # Package
-version     = "0.6"
+version     = "0.7"
 author      = "Charles Blake"
 description = "A post-modern, \"multi-dimensional\" configurable ls/file lister"
 license     = "MIT/ISC"
