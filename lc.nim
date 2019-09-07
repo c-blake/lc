@@ -59,6 +59,7 @@ const nimbleFile = staticRead "lc.nimble"
 clCfg.version = nimbleFile.fromNimble "version"
 let cfDfl* = LsCf(format:"%f", glyph:" -> ", recurse:1, nColumn:999, padMax:999)
 
+const ess: seq[string] = @[]
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
 dispatchGen(inLsCf,"lc",usage="Usage:\n  $command $args\n${doc}$options",doc="""
 (L)ist (Classified/Colored/Customized/CBlake) files in `paths` (CWD if empty)
@@ -144,8 +145,8 @@ ATTR=attr specs as above""",
                       "header":'H', "maxTgt":'M', "maxUnm":'U', "maxGnm":'G',
                       "tgtDref":'l', "version":'v', "extra":'X', "colors":'C',
                       "ext1":'e', "ext2":'E' },
-            alias = @[ ("Style",'S',"DEFINE an output style arg bundle"),
-                       ("style",'s',"APPLY an output style") ],
+            alias = @[ ("Style",'S',"DEFINE an output style arg bundle",@[ess]),
+                       ("style",'s',"APPLY an output style",@[ess]) ],
             dispatchName = "lsCfFromCL")
 var cg: ptr LsCf            #Lazy way out of making many little procs take LsCf
 
