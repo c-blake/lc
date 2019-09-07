@@ -175,9 +175,9 @@ template defPermOk(z, zOk, Z_OK, S_IZUSR, S_IZGRP, S_IZOTH): untyped {.dirty.} =
 defPermOk(r, rOk, R_OK, S_IRUSR, S_IRGRP, S_IROTH)
 defPermOk(w, wOk, W_OK, S_IWUSR, S_IWGRP, S_IWOTH)
 defPermOk(x, xOk, X_OK, S_IXUSR, S_IXGRP, S_IXOTH)
-proc S_IUSR(m: Mode): int = (m and 0o700) shr 6 #Usr perms
-proc S_IGRP(m: Mode): int = (m and 0o070) shr 3 #Grp perms
-proc S_IOTH(m: Mode): int = (m and 0o007)       #Oth perms
+proc S_IUSR(m: Mode): int = (m.int and 0o700) shr 6 #Usr perms
+proc S_IGRP(m: Mode): int = (m.int and 0o070) shr 3 #Grp perms
+proc S_IOTH(m: Mode): int = (m.int and 0o007)       #Oth perms
 
 proc maybeSt(f: var Fil): bool =
   if f.brok > 0: return f.brok == 1
@@ -599,7 +599,7 @@ proc fmtPerm(m: uint, s=""): string =
 
 proc fmtOperm(f: var Fil): string =
   let p = (f.rOk.uint shl 2) or (f.wOk.uint shl 1) or (f.xOk.uint)
-  cg.attrPerm[p] & toOct(f.st.st_mode and 4095, 4) & cg.a0
+  cg.attrPerm[p] & toOct(f.st.st_mode.int and 4095, 4) & cg.a0
 
 proc fmtKindCode(st_mode: Mode): char =    #12=sticky,su,sg+9bits of UGO perms
   "-pc-d-b---l-s---"[st_mode.uint shr 12 and 0xF]  #Pretty standard across OSes
