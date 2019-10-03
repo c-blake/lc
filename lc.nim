@@ -586,7 +586,10 @@ proc fmtTime(ts: Timespec, alt=false): string =
              else: fage.humanDuration(fmt[1..^1], cg.plain)
   strftime(if tfs.len > 0: tfs[^1][1] else: "%F:%T.%3", ts)
 
-proc fmtPerm(m: uint, s=""): string =
+proc fmtPerm*(m: Mode, s=""): string =
+  ## Call with ``.st_mode`` of some ``Stat`` to get rwxr-x..; ``s`` is optional
+  ## separator string such as a space or a comma to enhance readabilty.
+  let m = m.uint and 4095
   const rwx = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx" ]
   result = rwx[(m shr 6) and 7] & s & rwx[(m shr 3) and 7] & s & rwx[m and 7]
   let o = s.len
@@ -654,8 +657,8 @@ fAdd('U', {dsS},1, " Usr" ): cg.uAbb.abbrev f.usr
 fAdd('g', {dsS},0, "gid"  ): $f.st.st_gid.uint
 fAdd('G', {dsS},1, " Grp" ): cg.gAbb.abbrev f.grp
 fAdd('P', {dsS},0, "perm" ): f.fmtOperm                   #octal,color
-fAdd('p', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode.uint and 4095)
-fAdd('q', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode.uint and 4095, " ")
+fAdd('p', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode)
+fAdd('q', {dsS},1, " permUGO"): fmtPerm(f.st.st_mode, " ")
 fAdd('a', {dsS},0, " atm" ): fmtTime(f.st.st_atim)
 fAdd('m', {dsS},0, " mtm" ): fmtTime(f.st.st_mtim)
 fAdd('c', {dsS},0, " ctm" ): fmtTime(f.st.st_ctim)
