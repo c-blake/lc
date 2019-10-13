@@ -144,30 +144,31 @@ shortest 2-star (-6).  E.g.,
 (or see [a bigger example](https://htmlpreview.github.io/?https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/progression.html) )
 
 There are similar `-U`, `-G`, `-M` for user user names, group names, and symlink
-targets.  While shells will not auto-expand user/group names, you can change the
-separator to the empty string to save terminal columns as in `-U4,,,` and have a
-little `grep <PASTE> /etc/passwd` helper.  Auto modes are not yet available for
-symlink targets since when they matter most they are a bit expensive (requiring
-minimizing patterns over whole directories for each path component).
+targets.  While shells will not expand `*` in user/group names, you can change
+the separator to something else or even the empty string to save terminal
+columns as in `-U4,,,` and have a little `grep <PASTE> /etc/passwd` helper.
+Auto modes are not yet available for symlink targets since when they matter most
+they are a bit expensive (requiring minimizing patterns over whole directories
+for every path component).
 
 In many little ways, `lc` tries hard to let you manage terminal real estate,
 targeting max information per row, while staying within an easy to visually
 parse table format.  Features along these lines are terse 4 column octal
 permission codes, rounding to 3-column file ages, 4 column file sizes.  If it
 succeeds too well you can have fewer, more spaced columns out more with `lc -n4`
-or something.  If it succeeds too poorly, you can use `-m` or drop format fields
-*or* if you can/want to rename or move files then `lc -w5 -W$((COLUMNS+10))`
-shows the widest 5 files in each output column (that'd eg. give you more output
-cols with 10 more terminal cols, say).  A hard-to-advocate-but-possible way to
-save space is `lc -oL`.  Try it.  { I suspect this minimizes rows within a table
-constraint, but the proof is too small to fit in the margin. ;-)  Maybe some 2D
-bin packing expert can weigh in with a counter example. }
+or something.  If it succeeds too poorly, you can use `-m`, drop format fields
+*or* identify the most effective rename targets with `lc -w5 -W$((COLUMNS+10))`
+which shows the widest 5 files in each output column (formatted as if you had
+10 more terminal cols).  A hard-to-advocate-but-possible way to save space is
+`lc -oL`.  Try it.  { I suspect this minimizes rows within a table constraint,
+but the proof is too small to fit in the margin. ;-)  Maybe some 2D bin packing
+expert can weigh in with a counter example. }
 
 In the other direction, `lc` supports informational bonuses like ns-resolution
 file timestamps with `%1..%9` extensions to the `strftime` format language for
 fractions of a second to that many places as per your discretion, rate of disk
-utilization (`512*st_blocks/st_size` or allocation/addressable file bytes),
-as well as newer Linux `statx` attributes and birth times.
+utilization (`512*st_blocks/st_size` = allocated/addressable file bytes), as
+well as newer Linux `statx` attributes and birth times.
 
 `lc` also comes with boolean logic combiners for file kind tests, quite a few
 built-in tests, and is also extensible for totally user-defined tests.  It also
