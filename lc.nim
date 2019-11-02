@@ -871,14 +871,15 @@ proc tfree(f: var Fil) {.inline.} =   #maybe release tgt.name, tgt.kind, tgt.mag
     discard f.tgt.resize 0; f.tgt = nil
 
 proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
-  if cf.nAbb.isAbstract:
+  var nmAbb = cf.nAbb           #realize can mutate cf.nAbb; So use a copy.
+  if nmAbb.isAbstract:
     var nms: seq[string]
     for f in fils: nms.add cf.maybeQuote(f.name)
-    cf.nAbb.realize nms
-  if cf.nAbb.mx == 0:           #Populate .abb w/name ref when not abbreviating
+    nmAbb.realize nms
+  if nmAbb.mx == 0:             #Populate .abb w/name ref when not abbreviating
     for i, f in fils: fils[i].abb.shallowCopy fils[i].name #..s.t. just use .abb
   else:
-    for i, f in fils: fils[i].abb = cf.nAbb.abbrev(f.name)
+    for i, f in fils: fils[i].abb = nmAbb.abbrev(f.name)
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
   for i in 0 ..< fils.len: filps[i] = fils[i].addr
   if cf.cmps.len > 0: filps.sort(multiLevelCmp)
