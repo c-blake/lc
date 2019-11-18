@@ -57,7 +57,9 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
 const nimbleFile = staticRead "lc.nimble"
 clCfg.version = nimbleFile.fromNimble "version"
-let cfDfl* = LsCf(format:"%f", glyph:" -> ", recurse:1, nColumn:999, padMax:999)
+proc c_getenv(env: cstring): cstring {.importc: "getenv", header: "<stdlib.h>".}
+let cfDfl* = LsCf(format: "%f", glyph: " -> ", recurse: 1, nColumn: 999,
+                  padMax: 999, plain: (c_getenv("NO_COLOR") != nil))
 
 const ess: seq[string] = @[]
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
