@@ -14,6 +14,8 @@ The Nim experience can sometimes have fairly rough-hewn edges, though.  So far,
 though, something like the above has worked for me on Gentoo Linux, Debian,
 Android Termux, and FreeBSD.
 
+What `lc` is Not
+================
 This program is not and never will be a drop-in replacement for `ls` at the CLI
 option compatibility level.  `ls` is a poorly factored mishmash of selection,
 sorting, and formatting options.  With fewer CLI options (but beefier configs)
@@ -29,6 +31,8 @@ light on unexpected things as you go about everyday business listing your files.
 As such, absolute max performance is not a priority as human reaction time is
 not so fast & very large directories are usually ill-advised.
 
+What `lc` is
+============
 Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
 
@@ -70,6 +74,8 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
 
+Multi-dimensionality
+====================
 The most obscure of these is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions may help.  One file can be
@@ -94,6 +100,8 @@ dimensions/series of order-dependent tests.  The first test passing within a
 given dimension wins that dimension.  To aid debugging kind assignments you can
 do things like `lc -f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.
 
+Configurability
+===============
 As for the bread and butter of file listing, many things that are hard-coded in
 other file listers are fully user-defined in `lc`, like a concept of dot files.
 Assuming you define a "dot" or "dotfile" type `lc -xdot` will probably exclude
@@ -123,6 +131,8 @@ My view is that there is no one-size-fits-all-or-even-most long-format listing.
 columns included (and their `order`, `--header` or not, ..) all just how you
 like.  I usually like 5 levels of long-ness, not 2, in my personal setup.
 
+Automatic Abbreviations
+=======================
 A feature I don't know of any terminal file listers using is abbreviation (GUIs
 have this, though and PowerShell9k/10k in single-path prompt contexts).  Most
 everyone has probably been annoyed at one time or another by some pesky few
@@ -151,6 +161,8 @@ Auto modes are not yet available for symlink targets since when they matter most
 they are a bit expensive (requiring minimizing patterns over whole directories
 for every path component).
 
+Some Details On Other Features
+==============================
 In many little ways, `lc` tries hard to let you manage terminal real estate,
 targeting max information per row, while staying within an easy to visually
 parse table format.  Features along these lines are terse 4 column octal
