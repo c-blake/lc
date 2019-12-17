@@ -183,12 +183,10 @@ utilization (`512*st_blocks/st_size` = allocated/addressable file bytes), as
 well as newer Linux `statx` attributes and birth times.
 
 `lc` also comes with boolean logic combiners for file kind tests, quite a few
-built-in tests, and is also extensible for totally user-defined tests.  It also
-has a couple external command extensible format fields.  So, if there's just a
-thing or two missing then you can probably add it without much work.  It may
-not run fast, but it might be "fast enough" for small dirs on fast devices.
-Given how long it takes a person to read/assimilate a directory listing, even
-doing a "du -s" inside a format program is not unthinkable, though unlikely to
-be a popular default style.  Hard-coding Git support seems popular these days.
-I do not do that yet, and I'm not sure I want the direct dependency, but you may
-be able to hack something together.
+built-in tests, and is extensible for totally user-defined tests and formats.
+So, if there's just a thing or two missing then you can probably add it without
+much work.  Given human reading time and fast NVMe devices, even doing "du -s"
+inside a format call is not unthinkable, though unlikely to be a popular default
+style.  Hard-coding Git support seems popular these days.  I do not do that yet,
+and I'm not sure I want the direct dependency, but you may be able to hack
+something together.
