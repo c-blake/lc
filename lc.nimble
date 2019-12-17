@@ -1,7 +1,7 @@
 # Package
 version     = "0.7"
 author      = "Charles Blake"
-description = "A post-modern, \"multi-dimensional\" configurable ls/file lister"
+description = "A post-modern, \"multi-dimensional\", configurable, abbreviating, extensible ls/file lister"
 license     = "MIT/ISC"
 bin         = @["lc"]
 
