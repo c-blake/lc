@@ -1,5 +1,5 @@
-import os,posix, sets,tables, terminal,strutils,algorithm, nre, critbits,cligen,
- cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
+import os,posix,sets,tables, terminal,strutils,algorithm, nre, critbits, dynlib,
+ cligen, cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC      ## sources of meta data
@@ -277,10 +277,9 @@ proc testNone(tsts: seq[Test], f: var Fil): bool =
   for t in tsts:
     if t.test f: return false
 
-proc testStatus(cmd: string; f: var Fil): bool= #Ultimate user-defined kind test
-  putEnv("FILE_NAME", f.name); putEnv("FILENAME", f.name) #XXX Replace w/dlopen
-  try: result = execShellCmd(cmd) == 0          #Onus is on user to exit 0 for
-  except: discard                               #.."passes",otherwise for "not".
+type ExtTest = proc(path: cstring): int {.noconv.}
+proc testExt(tst: ExtTest; f: var Fil): bool =    #External shlib kind test
+  result = tst(f.name.qualPath.cstring) == 1.cint #User code returns 1 for pass
 
 proc addPCRegex(cf: var LsCf; mode, nm, s: string) =    #Q: add flags/modes?
   var rxes: seq[Regex]
@@ -319,8 +318,17 @@ proc addCombo(cf: var LsCf; tester: auto; nm, s: string) =
     except: raise newException(ValueError, "bad kind: \"" & t & "\"")
   cf.tests[nm] = (ds, proc(f: var Fil): bool = tester(tsts, f))
 
-proc addStatus(cf: var LsCf; nm, s: string) =
-  cf.tests[nm] = ({}, proc(f: var Fil): bool = s.testStatus(f))
+proc addExt(cf: var LsCf; nm, s: string) =
+  let cols = s.split(':')
+  if cols.len != 2:
+    stderr.write(cols[0] & " not of form <lib.so>:<func>\n"); return
+  let lib = loadLib(cols[0])
+  if lib == nil:
+    stderr.write("could not loadLib \"" & cols[0] & "\"\n"); return
+  let sym = symAddr(lib, cols[1])
+  if sym == nil:
+    stderr.write("could not find \"" & cols[1] & "\"\n"); return
+  cf.tests[nm] = ({}, proc(f: var Fil): bool = cast[ExtTest](sym).testExt(f))
 
 when haveMagic:
   proc testMagic(rxes: seq[Regex], f: var Fil): bool =
@@ -361,7 +369,7 @@ proc parseKind(cf: var LsCf) =
     elif col[1] == "any": cf.addCombo(testAny, col[0], col[2])
     elif col[1] == "all": cf.addCombo(testAll, col[0], col[2])
     elif col[1] == "none": cf.addCombo(testNone, col[0], col[2])
-    elif col[1] == "ext": cf.addStatus(col[0], col[2])
+    elif col[1] == "ext": cf.addExt(col[0], col[2])
     elif col[1] == "mag": cf.addMagic(col[1], col[0], col[2])
     else: raise newException(ValueError, "bad kind: \"" & kin & "\"")
 
