@@ -16,7 +16,6 @@ Expensive metadata blocking (`-b`).
   The impl can maybe just be to unwind the cf.need system and ensure that a
   usable but "empty" default always exists.
 
-Replace fork/exec driven program extending with C calls to `dlopen()`d .so
 Can maybe distribute some lib for VC-status kinding/indirect deps on VC libs.
 
 FORMATTING
