@@ -892,8 +892,8 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   var strs = format(cf, filps, wids, m)
   for i in 0 ..< fils.len: fils[i].tfree
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
-  colPad(colWs, cf.width, cf.padMax, m)
   if cf.reFit: discard #XXX re-format here w/partially unabbreviated names,tgts
+  colPad(colWs, cf.width, cf.padMax, m)
   if cf.widest > 0: sortByWidth(strs, wids, m, nrow, ncol)
   stdout.write(strs, wids, colWs, m, nrow, ncol, cf.widest, "")
 
