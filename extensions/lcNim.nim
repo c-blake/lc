@@ -18,7 +18,7 @@ proc te2(qualPath: cstring): cint {.noconv, exportc, dynlib.} =
   cmdExitsOk("te2", qualPath)
 
 var res: string               # Use a global to avoid after-call GC
-proc cmdOnOutput(cmd: string, qualPath: cstring): cstring =
+proc cmdOutput(cmd: string, qualPath: cstring): cstring =
   qpString(qualPath)
   try:
     let f = popen((cmd & " " & qp).cstring, "r".cstring)
@@ -29,7 +29,7 @@ proc cmdOnOutput(cmd: string, qualPath: cstring): cstring =
     res.setLen(0)
 
 proc fe1(qualPath: cstring): cstring {.noconv, exportc, dynlib.} =
-  cmdOnOutput("fe1", qualPath)   # fe == F)ormat E)xtension
+  cmdOutput("fe1", qualPath)   # fe == F)ormat E)xtension
 
 proc fe2(qualPath: cstring): cstring {.noconv, exportc, dynlib.} =
-  cmdOnOutput("fe2", qualPath)
+  cmdOutput("fe2", qualPath)
