@@ -1,5 +1,5 @@
-import os,posix,sets,tables, terminal,strutils,algorithm, nre, critbits, dynlib,
- cligen, cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
+import os,posix,sets,tables, terminal,strutils,algorithm, nre, critbits, cligen,
+  cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC      ## sources of meta data
@@ -19,6 +19,8 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
   Cmp   = tuple[sgn: int, cmp: proc(x, y: ptr Fil): int]           #1-level cmp
   Field = tuple[prefix: string; left: bool; c: char; hdr: string,  #1-field fmt
                 fmt: proc(f: var Fil): string]
+  ExtFmt = proc(qpath: cstring): cstring {.noconv.} ##Library must manage any..
+  ExtTest = proc(path: cstring): int {.noconv.}     ##call-to-call prog state.
 
   LsCf* = object    #User set config fields early; Computed/intern fields later
     kind*, colors*, color*, ageFmt*: seq[string]            ##usrDefd kind/colrs
@@ -52,6 +54,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     did: HashSet[PathId]                                    #inf.recurse block
     cl0, cl1: seq[string]
     cwd: string
+    ext1c, ext2c: ExtFmt
     when haveMagic: mc: magic_t
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
@@ -98,7 +101,7 @@ where <RELATION> says base names match:
   pcr  White-sep Perl-Compatible Regexes
   mag  pcRegexs against file(1) type descrip
   any|all|none  earlier defd kind test names
-  ext      lib.so:func(qpath: cstring)->cint
+  ext      x.so:func(qpath: cstring)->cint
 BUILTIN: reg dir bdev cdev fifo sock symlink
  +-sym hard exec s[ug]id tmpD worldW unR odd
  stx IMMUT APPEND COMPR ENCRYP NODUMP AUTOMT
@@ -135,8 +138,8 @@ ATTR=attr specs as above""",
                       "glyph"  : "how to render arrow in %[rR] formats",
                       "extra"  : "add cf ARG~/.lc (.=SAME,trl/=PARS,//PR,/.r)",
                       "tgtDref": "fully classify %R formats on their own",
-                      "ext1"   : "external shell cmd to get output for %e",
-                      "ext2"   : "external shell cmd to get output for %E",
+                      "ext1"   : "%e output from x.so:func(qpath: cstr)->cstr",
+                      "ext2"   : "%E output from x.so:func(qpath: cstr)->cstr",
                       "quote"  : "quote filenames with unprintable chars",
                       "n1"     : "same as -n1",
                       "total"  : "print total of blocks before entries",
@@ -277,7 +280,6 @@ proc testNone(tsts: seq[Test], f: var Fil): bool =
   for t in tsts:
     if t.test f: return false
 
-type ExtTest = proc(path: cstring): int {.noconv.}
 proc testExt(tst: ExtTest; f: var Fil): bool =    #External shlib kind test
   result = tst(f.name.qualPath.cstring) == 1.cint #User code returns 1 for pass
 
@@ -319,16 +321,7 @@ proc addCombo(cf: var LsCf; tester: auto; nm, s: string) =
   cf.tests[nm] = (ds, proc(f: var Fil): bool = tester(tsts, f))
 
 proc addExt(cf: var LsCf; nm, s: string) =
-  let cols = s.split(':')
-  if cols.len != 2:
-    stderr.write(cols[0] & " not of form <lib.so>:<func>\n"); return
-  let lib = loadLib(cols[0])
-  if lib == nil:
-    stderr.write("could not loadLib \"" & cols[0] & "\"\n"); return
-  let sym = symAddr(lib, cols[1])
-  if sym == nil:
-    stderr.write("could not find \"" & cols[1] & "\"\n"); return
-  cf.tests[nm] = ({}, proc(f: var Fil): bool = cast[ExtTest](sym).testExt(f))
+  cf.tests[nm]=({},proc(f: var Fil): bool = cast[ExtTest](s.loadSym).testExt(f))
 
 when haveMagic:
   proc testMagic(rxes: seq[Regex], f: var Fil): bool =
@@ -637,14 +630,6 @@ proc fmtClassCode(f: var Fil): string =
   elif f.stModeOrDtype(S_ISSOCK, DT_SOCK): result.add '='
   elif f.xOk                             : result.add '*'
 
-proc slurp(cmd, name: string): string =         #Ultimate user-defined fmt field
-  putEnv("FILE_NAME", name); putEnv("FILENAME", name)
-  try:                                          #Onus is on user to keep output
-    let f = popen(cmd.cstring, "r".cstring)     #..easy on tabulation INCLUDING
-    result = f.readAll                          #..stripping newlines with e.g.
-    f.close                                     #.." | tr -d \\n".
-  except: discard #XXX Should replace this with a dlopen()d shared lib call.
-
 var fmtCodes: set[char]   #left below is just dflt alignment. User can override.
 var fmtOf: Table[char, tuple[ds: DataSrcs; left: bool; hdr: string;
                  fmt: proc(x: var Fil): string]]
@@ -686,8 +671,8 @@ fAdd('l', {dsS},0, "l"    ): $f.st.st_mode.fmtKindCode
 fAdd('L', {dsS},1, "L"    ): f.fmtClassCode
 fAdd('x', {dsS},0, "XA"   ): fmtAttrCode(f.st.stx_attributes)
 fAdd('Q', {dsA},0, "A"    ): ["", "+"][f.acl.int]
-fAdd('e', {}   ,0, "e1"   ): slurp(cg.ext1, f.name)
-fAdd('E', {}   ,0, "e2"   ): slurp(cg.ext2, f.name)
+fAdd('e', {}   ,0, "e1"   ): $cg.ext1c(f.name.qualPath)
+fAdd('E', {}   ,0, "e2"   ): $cg.ext2c(f.name.qualPath)
 fAdd('@', {}   ,0, "I"    ): f.fmtIcon
 
 template dBody(i): untyped {.dirty.} =
@@ -770,6 +755,12 @@ proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
       wids[m*i+k] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+k])
     if j < (if fj != -1: fj else: m): k.inc
 
+var efRefDid = false
+proc efRef(qp: cstring): cstring =
+  if efRefDid: return
+  stderr.write("%e/%E referenced but no --ext[12] setting given\n")
+  efRefDid = true
+
 proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
           entry=Timespec(tv_sec: 0.Time, tv_nsec: 9.clong)) =
   ##Finalize cf ob post-user sets/updates, pre-``ls|ls1`` calls.  File ages are
@@ -800,6 +791,8 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.cl0   = cl0
   cf.cl1   = cl1
   cf.cwd   = getCurrentDir()
+  cf.ext1c = cast[ExtFmt](if cf.ext1.len > 0: loadSym(cf.ext1) else: efRef)
+  cf.ext2c = cast[ExtFmt](if cf.ext2.len > 0: loadSym(cf.ext2) else: efRef)
   cg       = cf.addr                          #Init global ptr
 
 ###### DRIVE ABOVE: BUILD AN FS-INTERROGATED AND CLASSIFIED Fil OBJECT
