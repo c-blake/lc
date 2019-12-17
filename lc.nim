@@ -29,7 +29,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
      maxName*, maxTgt*, maxUnm*, maxGnm*: string
     recurse*, nColumn*, padMax*, widest*, width*: int       ##recursion,tweaks
     dirs*, binary*, dense*, deref*, tgtDref*, plain*,       ##various bool flags
-     unzipF*, header*, access*, total*, quote*, n1*: bool
+     unzipF*, header*, access*, total*, quote*, n1*, reFit*: bool
     paths*: seq[string]                                     ##paths to list
     t0: Timespec                                            #ref time for fAges
     nError: int
@@ -140,8 +140,9 @@ ATTR=attr specs as above""",
                       "tgtDref": "fully classify %R formats on their own",
                       "ext1"   : "%e output from x.so:func(qpath: cstr)->cstr",
                       "ext2"   : "%E output from x.so:func(qpath: cstr)->cstr",
+                      "reFit"  : "expand abbrevs up to padded column widths",
                       "quote"  : "quote filenames with unprintable chars",
-                      "n1"     : "same as -n1",
+                      "n1"     : "same as -n1; mostly to bind short form -1",
                       "total"  : "print total of blocks before entries",
                       "excl"   : "kinds to exclude",
                       "incl"   : "kinds to include" },
@@ -149,7 +150,7 @@ ATTR=attr specs as above""",
                       "width":'W',"padMax":'P', "incl":'i',"excl":'x', "n1":'1',
                       "header":'H', "maxTgt":'M', "maxUnm":'U', "maxGnm":'G',
                       "tgtDref":'l', "version":'v', "extra":'X', "colors":'C',
-                      "ext1":'e', "ext2":'E' },
+                      "ext1":'e', "ext2":'E', "reFit":'F' },
             alias = @[ ("Style",'S',"DEFINE an output style arg bundle",@[ess]),
                        ("style",'s',"APPLY an output style",@[ess]) ],
             dispatchName = "lsCfFromCL")
@@ -892,7 +893,7 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   for i in 0 ..< fils.len: fils[i].tfree
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
   colPad(colWs, cf.width, cf.padMax, m)
-  #XXX If -F/--reFit then re-format here w/partially unabbreviated names,tgts
+  if cf.reFit: discard #XXX re-format here w/partially unabbreviated names,tgts
   if cf.widest > 0: sortByWidth(strs, wids, m, nrow, ncol)
   stdout.write(strs, wids, colWs, m, nrow, ncol, cf.widest, "")
 
