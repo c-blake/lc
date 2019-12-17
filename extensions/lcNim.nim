@@ -7,15 +7,15 @@ template qpString(qualPath) {.dirty.} =
   qp.setLen(qualPath.len)
   copyMem(qp[0].unsafeAddr, qualPath, qualPath.len)
 
-proc cmdOnNonZero(cmd: string, qualPath: cstring): cint =
+proc cmdExitsOk(cmd: string, qualPath: cstring): cint =
   qpString(qualPath)
   (execShellCmd(cmd & " " & qp) == 0).cint
 
 proc te1(qualPath: cstring): cint {.noconv, exportc, dynlib.} =
-  cmdOnNonZero("te1", qualPath)  # te == T)est E)xtension
+  cmdExitsOk("te1", qualPath)  # te == T)est E)xtension
 
 proc te2(qualPath: cstring): cint {.noconv, exportc, dynlib.} =
-  cmdOnNonZero("te2", qualPath)
+  cmdExitsOk("te2", qualPath)
 
 var res: string               # Use a global to avoid after-call GC
 proc cmdOnOutput(cmd: string, qualPath: cstring): cstring =
