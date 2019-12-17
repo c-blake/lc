@@ -17,6 +17,7 @@ proc te1(qualPath: cstring): cint {.noconv, exportc, dynlib.} =
 proc te2(qualPath: cstring): cint {.noconv, exportc, dynlib.} =
   cmdExitsOk("te2", qualPath)
 
+# With this part, lc -e liblcC.so:fe1 -f'%e %f' does something interesting.
 var res: string               # Use a global to avoid after-call GC
 proc cmdOutput(cmd: string, qualPath: cstring): cstring =
   qpString(qualPath)

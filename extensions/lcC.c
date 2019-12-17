@@ -13,8 +13,8 @@ static int cmdExitsOk(char *cmd, char *qualPath) {
 int te1(char *qualPath) { return cmdExitsOk("te1", qualPath); }
 int te2(char *qualPath) { return cmdExitsOk("te2", qualPath); }
 
+/* With this part, lc -e liblcC.so:fe1 -f'%e %f' does something interesting. */
 #include "cutil.c"          /* sequestered as not specifically interesting. */
-
 static char  *res;          /* 'lc' uses format data `res` only BETWEEN calls */
 static size_t nRes;
 
