@@ -98,7 +98,7 @@ where <RELATION> says base names match:
   pcr  White-sep Perl-Compatible Regexes
   mag  pcRegexs against file(1) type descrip
   any|all|none  earlier defd kind test names
-  ext      shell command (exit stat of cmd)
+  ext      lib.so:func(qpath: cstring)->cint
 BUILTIN: reg dir bdev cdev fifo sock symlink
  +-sym hard exec s[ug]id tmpD worldW unR odd
  stx IMMUT APPEND COMPR ENCRYP NODUMP AUTOMT
