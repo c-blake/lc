@@ -732,15 +732,19 @@ proc fieldF(cf: LsCf): int =  #Helper for zip (%f%R | %f%R%L etc.) to keep RHS
   for j, fld in cf.fields:
     if fld.c in {'f', 'F'} and j+1 < cf.fields.len: return j
 
-proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
-            m: var int): seq[string] =
+proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
+            m, jRet: var int; reFit: bool): seq[string] =
   let fj = if cf.unzipF: -1 else: cf.fieldF         #specific %[fF].. col zip
   m = if fj != -1: fj + 1 else: cf.fields.len
   let hdr = cf.header and filps.len > 0
-  let n = if hdr: filps.len+1 else: filps.len
   let i0 = if hdr: 1 else: 0                        #AKA hdr.int
+  let n = filps.len + i0
   result.setLen(n * m)
   wids.setLen(n * m)
+  if reFit:
+    ab0.setLen(n); ab1.setLen(n)
+    for j in 0 ..< cf.fields.len:
+      if cf.fields[j].c == 'f': jRet = j
   for i in 0 ..< n:
    var k = 0                                        #k is the output j
    for j in 0 ..< cf.fields.len:
@@ -749,7 +753,11 @@ proc format(cf: LsCf, filps: seq[ptr Fil], wids: var seq[int],
     else:
       if cf.fields[j].prefix.len > 0:
         result[m*i+k].add cf.fields[j].prefix
+      if reFit and cf.fields[j].c == 'f':
+        ab0[i] = result[m*i+k].len + filps[i-i0][].kattr.len
       result[m*i+k].add cf.fields[j].fmt(filps[i-i0][])
+      if reFit and cf.fields[j].c == 'f':
+        ab1[i] = result[m*i+k].len - cf.a0.len
     if cf.plain:  #Maybe auto-detect utf8 chars & use another flag here?
       wids[m*i+k] = (if cf.fields[j].left: -1 else: 1) * result[m*i+k].len
     else:
@@ -887,12 +895,14 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
   for i in 0 ..< fils.len: filps[i] = fils[i].addr
   if cf.cmps.len > 0: filps.sort(multiLevelCmp)
-  var wids: seq[int]
-  var nrow, ncol, m: int
-  var strs = format(cf, filps, wids, m)
+  var ab0, ab1, wids: seq[int]
+  var nrow, ncol, m, j: int
+  let reFit = cf.reFit and nmAbb.isAbstract
+  var strs = format(cf, filps, ab0, ab1, wids, m, j, reFit)
   for i in 0 ..< fils.len: fils[i].tfree
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
-  if cf.reFit: discard #XXX re-format here w/partially unabbreviated names,tgts
+  if reFit:
+    nmAbb.expandFit(strs, ab0, ab1, wids, colWs, cf.width, j, m, nrow, ncol)
   colPad(colWs, cf.width, cf.padMax, m)
   if cf.widest > 0: sortByWidth(strs, wids, m, nrow, ncol)
   stdout.write(strs, wids, colWs, m, nrow, ncol, cf.widest, "")
