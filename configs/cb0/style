@@ -44,3 +44,7 @@ Style = r"""LLi = -HsLLai -xdot"""
 Style = r"""debug = -H "-f%0%1%2%3%4%5%6%7%8%9%.%/ %f%R"""
 #Almost exactly GNU ls -lA --no-color
 Style = r"""gls = "-tp1g -> " --ageFmt,= --ageFmt,= "-a-15778476@%b %e  %Y" "-a-0@%b %e %H:%M" -of "-f%l%p%Q %n %U %G %S %m %f%r"""
+#These are just kind of "add-on" styles.
+Style = r"""c4 = "-Fm-4,,,*,?[](){} ';!$#^`~"""
+Style = r"""c5 = "-Fm-5,,,*,?[](){} ';!$#^`~"""
+Style = r"""c6 = "-Fm-6,,,*,?[](){} ';!$#^`~"""
