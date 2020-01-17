@@ -20,14 +20,9 @@ Can maybe distribute some lib for VC-status kinding/indirect deps on VC libs.
 
 FORMATTING
 ----------
-To improve copy-paste ergonomics, add option to replace (after --reFit) non-\*
-shell metacharacters, eg [';[]], with '?' when this does not alter uniqueness.
-Already did '?' in `trie.match` for this. { This is sort of like an alternate
-"quote mode" in GNU ls parlance. }
-
 Symbolic link targets could be abbreviated on a component-by-component basis.
 { This may be expensive for many symlinks, but abbreviation is already on the
-expensive side. }
+expensive side. }  Abbreviating multi-component a/b/c names is also buggy.
 
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
