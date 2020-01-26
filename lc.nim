@@ -545,6 +545,7 @@ proc fmtName(f: Fil, p: string, abbrev=true): string =
 proc fmtTgtD(f: Fil): string =  #Colorize link targets (in deref|tgtDref mode)
   if cg.deref: return           #..according to stat|string type of *target*.
   if f.dtype != DT_LNK: return
+  if f.tgt == nil: return cg.glyph & f.kattr & "HIDDEN" & cg.a0
   if cg.tgtDref:
     cg.glyph&f.tgt[].kattr & cg.tAbb.abbrev(cg[].maybeQuote(f.tgt.name)) & cg.a0
   else:
