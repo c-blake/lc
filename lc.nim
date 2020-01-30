@@ -367,22 +367,6 @@ proc parseKind(cf: var LsCf) =
     elif col[1] == "mag": cf.addMagic(col[1], col[0], col[2])
     else: raise newException(ValueError, "bad kind: \"" & kin & "\"")
 
-template get1(results, cb, nm, msg, allow) {.dirty.} =
-  let results = cb.getAll(nm)
-  if results.len > 1:
-    if not (allow):
-      stderr.write("Ambiguous " & msg & " prefix \"" & nm & "\".  Matches:\n  ",
-                   results.keys.join("\n  "), "\n")
-    raise newException(ValueError, "")
-  elif results.len == 0:
-    if not (allow):
-      stderr.write("Unknown " & msg & " \"" & nm & "\".")
-      let sugg = suggestions(nm, cb.keys, cb.keys)
-      if sugg.len >= 1:
-        stderr.write "  Maybe you meant one of:\n  ", sugg.join("\n  "), "\n"
-      else: stderr.write "\n"
-    raise newException(ValueError, "")
-
 proc parseColors(cf: var LsCf) =
   for spec in cf.colors:
     let cols = spec.split('=')
@@ -400,17 +384,16 @@ proc parseColor(cf: var LsCf) =
     let icon  = if nmKoD.len>3: nmKoD[3] else: ""
     let attrs = textAttrOn(cols[1..^1], cf.plain)
     try:
-      let allow = nm.len==5 and (nm.startsWith("size") or nm.startsWith("perm"))
-      get1(ts, cf.tests, nm, "kind", allow)
-      let test = ts[0].val
+      let ok = nm.len == 5 and (nm.startsWith("size") or nm.startsWith("perm"))
+      let (key, test) = cf.tests.match(nm, "kind", if ok: nil else: stderr)
       let kno = cf.kinds.len.uint8                #Found test; add to used kinds
-      cf.kslot[ts[0].key] = (kno, test.ds, dim)   #Record kind number, DataSrc
+      cf.kslot[key] = (kno, test.ds, dim)         #Record kind number, DataSrc
       add(cf.kinds, (attr: attrs, kord: ko, icon: icon, test: test.test))
       if dim + 1 > cf.ukind.len: cf.ukind.setLen(dim + 1)
       cf.ukind[dim].add kno
       cf.need = cf.need + test.ds
       if nm == "unknown": unknown = kno
-    except:
+    except KeyError:
       if nm.len == 5:
         if   nm.startsWith("size"):
           if nm[4] notin { 'B', 'K', 'M', 'G', 'T', 'S' }:
@@ -428,8 +411,7 @@ proc parseColor(cf: var LsCf) =
 proc compileFilter(cf: var LsCf, spec: seq[string], msg: string): set[uint8] =
   for nm in spec:
     try:
-      get1(ks, cf.kslot, nm, "colored kind", false)
-      let k = ks[0].val
+      let k = cf.kslot.match(nm, "colored kind").val
       result.incl(k.slot)
       cf.need = cf.need + k.ds
       cf.needKin = true   #must fully classify if any kind is used as a filter
