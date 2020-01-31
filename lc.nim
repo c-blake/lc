@@ -367,11 +367,6 @@ proc parseKind(cf: var LsCf) =
     elif col[1] == "mag": cf.addMagic(col[1], col[0], col[2])
     else: raise newException(ValueError, "bad kind: \"" & kin & "\"")
 
-proc parseColors(cf: var LsCf) =
-  for spec in cf.colors:
-    let cols = spec.split('=')
-    textAttrAlias(cols[0].strip, cols[1].strip)
-
 proc parseColor(cf: var LsCf) =
   var unknown = 255.uint8
   for spec in cf.color:
@@ -766,13 +761,13 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   if cf.recurse == 0: cf.recurse = 2147483647 #effectively infinite
   if cf.recurse != 0: cf.need.incl(dsD)       #Must type @least dirs to recurse
   cf.tests = builtin                          #Initially populate w/builtin
-  cf.parseKind()                              #.kind to tests additions
-  cf.parseColors()                            #.colors => registered aliases
-  cf.parseColor()                             #.color => .attr
-  cf.parseFilters()                           #(in|ex)cl => sets s(in|ex)
-  cf.parseOrder()                             #.order => .cmps
-  cf.parseAge()                               #.ageFmt => .tmFmt
-  cf.parseFormat()                            #.format => .fields
+  cf.parseKind                                #.kind to tests additions
+  cf.colors.textAttrRegisterAliases           #.colors => registered aliases
+  cf.parseColor                               #.color => .attr
+  cf.parseFilters                             #(in|ex)cl => sets s(in|ex)
+  cf.parseOrder                               #.order => .cmps
+  cf.parseAge                                 #.ageFmt => .tmFmt
+  cf.parseFormat                              #.format => .fields
   cf.nAbb = parseAbbrev(cf.maxName)           #Finalize within each directory
   cf.tAbb = parseAbbrev(cf.maxTgt)
   cf.uAbb = parseAbbrev(cf.maxUnm); cf.uAbb.realize(cf.usr)
