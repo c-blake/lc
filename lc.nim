@@ -156,10 +156,6 @@ ATTR=attr specs as above""",
             dispatchName = "lsCfFromCL")
 var cg: ptr LsCf            #Lazy way out of making many little procs take LsCf
 
-when NimVersion < "0.20.0":
-  proc `[]`[T](s: seq[T]; i: uint8): T = s[i.int]
-  proc `[]`(s: string; i: uint): char = s[i.int]
-
 ###### BUILT-IN CLASSIFICATION TESTS
 proc qualPath(p: string): string =                        #maybe-pfx & name
   if cg.pfx.len > 0: cg.pfx & p else: p
@@ -428,7 +424,6 @@ proc tKind(f: Fil): seq[uint8] =
   if f.tgt != nil: f.tgt.kind else: newSeq[uint8](cg.ukind.len)
 
 var cmpOf: Table[char, tuple[ds: DataSrcs, cmp: proc(x, y:ptr Fil):int]]
-when NimVersion < "0.20.0": cmpOf = initTable[char, tuple[ds: DataSrcs, cmp: proc(x,y:ptr Fil):int]]()
 template cAdd(code, ds, cmpr, T, data: untyped) {.dirty.} =
   cmpOf[code] = (ds, proc(a, b: ptr Fil): int {.closure.} =
                    proc get(f: Fil): T = data   #AVAILABLE: hjlqrtwxyz
@@ -560,8 +555,7 @@ proc fmtSzDevNoL(st: Statx): string =
 
 proc fmtTime(ts: Timespec, alt=false): string =
   let tfs = if cg.plain: cg.tmFmtP elif alt: cg.tmFmtU else: cg.tmFmtL
-  for tup in tfs:
-    let (age, fmt) = tup                      #Can be in for loop @>=Nim-0.20.0
+  for (age, fmt) in tfs:
     let fage = (cg.t0.tv_sec - ts.tv_sec).int #tv_nsec can only make fage off
     if fage >= age:                           #..by <= 1 s.
       return if fmt[0] != '/': strftime(fmt, ts)
@@ -612,7 +606,6 @@ proc fmtClassCode(f: var Fil): string =
 var fmtCodes: set[char]   #left below is just dflt alignment. User can override.
 var fmtOf: Table[char, tuple[ds: DataSrcs; left: bool; hdr: string;
                  fmt: proc(x: var Fil): string]]
-when NimVersion < "0.20.0": fmtOf = initTable[char, tuple[ds: DataSrcs; left: bool; hdr: string; fmt: proc(x:var Fil):string]]()
 template fAdd(code, ds, left, hdr, toStr: untyped) {.dirty.} =
   fmtCodes.incl(code)                           #AVAILABLE: hjtyz HIJNOTWXYZ
   fmtOf[code] = (ds, left.bool, hdr, proc(f:var Fil):string {.closure.} = toStr)
@@ -752,9 +745,6 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
           entry=Timespec(tv_sec: 0.Time, tv_nsec: 9.clong)) =
   ##Finalize cf ob post-user sets/updates, pre-``ls|ls1`` calls.  File ages are
   ##times relative to ``entry``.  Non-default => time of ``fin`` call.
-  when NimVersion < "0.20.0":
-    cf.usr = initTable[Uid, string](); cf.grp = initTable[Gid, string]()
-    cf.did = initSet[PathId]()
   cf.t0 = if entry.tv_sec.clong==0 and entry.tv_nsec==9: getTime() else: entry
   if cf.n1: cf.nColumn = 1
   if cf.width == 0: cf.width = terminalWidth()
@@ -783,11 +773,6 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cg       = cf.addr                          #Init global ptr
 
 ###### DRIVE ABOVE: BUILD AN FS-INTERROGATED AND CLASSIFIED Fil OBJECT
-when NimVersion < "0.20.1": #Impl until 6dc648731145efbe736afea19f7dd5d262deb91d
-  proc rfind(s: string, sub: char, start: int16): int =
-    for i in countdown(s.high, start):
-      if sub == s[i]: return i
-    return -1
 
 proc classify(cf: LsCf, f: var Fil, d: int): uint8 = #assign format kind [d]
   result = (cf.kinds.len - 1).uint8                  #all d use 1 unknown slot

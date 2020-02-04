@@ -6,5 +6,5 @@ license     = "MIT/ISC"
 bin         = @["lc"]
 
 # Dependencies
-requires "nim >= 0.19.2", "cligen#head"
+requires "nim >= 0.20.1", "cligen#head"
 skipDirs = @["configs"]
