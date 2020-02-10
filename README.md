@@ -62,7 +62,7 @@ yet another file lister?  What's the point?  Well, `lc`
  - supports latter-day Linux statx/b)irth times (but works on non-Linux, too)
 
  - supports `file(1)`/`libmagic` deep file inspection-based classification
-   (though this facility can beome woefully slow on large directories)
+   (though using this with large directories can be woefully slow)
 
  - is extensible with fully user-defined file type tests & field formats
 
