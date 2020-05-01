@@ -69,7 +69,7 @@ initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
 dispatchGen(inLsCf,"lc",usage="Usage:\n  $command $args\n${doc}$options",doc="""
 (L)ist (Classified/Colored/Customized/CBlake) files in `paths` (CWD if empty)
 in a filtered/sorted/tabular way (like ls with better idea factoring).  Pre-cmd
-options from ${LC_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}}/lc & $LC.  Config
+options from ${LC_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/lc} & $LC.  Config
 files support [include__{relPath|ENVVAR}] & take only long-form options.
 The following 1-letter codes work for BOTH format AND order specs:
   f fileName      u numeric uid a|A access time  i inode-number 0 ord0|fmtDim0
