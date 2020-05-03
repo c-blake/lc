@@ -1,4 +1,4 @@
-#A light bkgd (white BG, really) color theme with heatmap doing purple..red.
+#A dark bkgd (black BG, really) color theme with heatmap doing purple..red.
 colors = "fhot- = black"        #default fg => useless
 colors = "fhot0 = PURPLE"
 colors = "fhot1 = BLUE"
