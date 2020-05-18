@@ -15,23 +15,25 @@
   <p> Base full name directory (70 rows of 2 cols): </p>
   <img src="0-base.png"  alt="0-base.png" />
 
-  <p> Sort by name length (35 rows of 4 cols): </p>
+  <p> Sort by name length (35 rows of 4 cols) -- this is very fast and typically
+  very readable (for me) since it provides max prefix &amp; suffix context: </p>
   <img src="1-oL.png"    alt="1-oL.png" />
 
   <p> Shortest such that mid-point <code>*</code> produes a unique pattern (35 rows
   of 4 cols): </p>
   <img src="2-m,.png"    alt="2-m,.png" />
 
-  <p> Best same-column-for-<code>*</code> (28 rows of 5 cols): </p>
+  <p> Best same-column-for-<code>*</code> (28 rows of 5 cols) -- this is also
+  very fast and typically still readable, but more compact: </p>
   <img src="3-ma.png"    alt="3-ma.png" />
 
-  <p> Shortest prefix patterns (28 rows of 5 cols): </p>
+  <p> Shortest unique prefix patterns (28 rows of 5 cols): </p>
   <img src="4-m-2.png"   alt="4-m-2.png" />
 
-  <p> Shortest suffix patterns (24 rows of 6 cols): </p>
+  <p> Shortest unique suffix patterns (24 rows of 6 cols): </p>
   <img src="5-m-3.png"   alt="5-m-3.png" />
 
-  <p> Shorter of shortest prefix|suffix (18 rows of 8 cols): </p>
+  <p> Shorter of shortest unique prefix|suffix (18 rows of 8 cols): </p>
   <img src="6-m-4.png"   alt="6-m-4.png" />
 
   <p> Shortest unique single-<code>*</code> patterns (12 rows of 12 cols): </p>
@@ -53,6 +55,15 @@
   into the available tabular column space "post layout".  So, for example for
   the penultimate case above we get: </p>
   <img src="10-Fm-6.png" alt="10-Fm-6.png" />
+
+  Skipped for brevity, but with <code>-m-4</code> compression <code>-F</code>
+  winds up <em>fully</em> expanding 20% of dirents at no layout cost.
+
+  On directories with thousands of entries or more that <code>-m-[456]</code>
+  can take from 10 seconds to <em>minutes</em>.  I am unsure much faster algos
+  exist.  Sadly, large dirs are also when this kind of visual compression might
+  help most.  However, <code>-Fma</code> may be the most that remains easily
+  interpretable anyway and that is always fast.
 
   </body>
 </html>
