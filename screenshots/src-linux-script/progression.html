@@ -37,11 +37,8 @@
   <p> Shortest unique single-<code>*</code> patterns (12 rows of 12 cols): </p>
   <img src="7-m-5.png"   alt="7-m-5.png" />
 
-  <p>Shortest unique two-<code>*</code> patterns (10 rows of 14 cols)
-  (Eventually, I want to "re-expand <code>*</code>" so that, e.g., the
-  <code>Makefile.kcov</code> abbreviation goes from <code>*v</code> to
-  <code>*kcov</code> since <code>*asan</code> already forces the 4th column
-  to be 5 chars wide): </p> <img src="8-m-6.png"   alt="8-m-6.png" />
+  <p>Shortest unique two-<code>*</code> patterns (10 rows of 14 cols): </p>
+  <img src="8-m-6.png"   alt="8-m-6.png" />
 
   <p>Shortest unique two-<code>*</code> patterns, sorted by length (8 rows of
   18 cols): </p>
@@ -51,6 +48,11 @@
   be at least 5 chars (*a*b*).  The above listing tops out at 5 chars.  So, no
   further compression is possible.  <code>lc</code> does not actually do 3-star
   patterns, yet, but even if it did this example would stop here.</p>
+
+  One can also pass <code>-F</code> to re-Fit/expand the compressed patterns
+  into the available tabular column space "post layout".  So, for example for
+  the penultimate case above we get: </p>
+  <img src="10-Fm-6.png" alt="10-Fm-6.png" />
 
   </body>
 </html>
