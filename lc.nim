@@ -285,8 +285,8 @@ proc addPCRegex(cf: var LsCf; mode, nm, s: string) =    #Q: add flags/modes?
   for pattern in s.splitWhitespace: rxes.add pattern.re
   cf.tests[nm] = ({}, proc(f: var Fil): bool = rxes.testPCRegex f)
 
-proc addCSet(cf: var LsCf; nm, s: string) = #WTF: If this code is inlined into
-  var cs: set[char]                         #..parseKind then closures break.
+proc addCSet(cf: var LsCf; nm, s: string) = #Could inline into `parseKind` with
+  var cs: set[char]                         #..sugar.capture,but this is cleaner
   for c in s: cs.incl(c)
   cf.tests[nm] = ({}, proc(f: var Fil): bool = cs.testCharSet f)
 
