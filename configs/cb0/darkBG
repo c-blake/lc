@@ -1,36 +1,40 @@
-#A dark bkgd (black BG, really) color theme with heatmap doing purple..red.
-colors = "fhot- = black"        #default fg => useless
-colors = "fhot0 = PURPLE"
-colors = "fhot1 = BLUE"
-colors = "fhot2 = CYAN"
-colors = "fhot3 = GREEN"
-colors = "fhot4 = YELLOW"
-colors = "fhot5 = RED"
-colors = "fhot+ = WHITE"
+# A WHITE on_black (fhue+ BHUE-) color theme w/hue in rainbow purple..red order.
+# Exchanged cases (fhueX BHUEX | FHUEX bhueX) are high contrast while +- flips
+# polarity for fg/bg.  So, 2 grays are: fhue- & FHUE+ (in order of contrast to
+# bg) while fhue+ == bhue+ and FHUE- == BHUE-.
 
-colors = "FHOT- = BLACK"
-colors = "FHOT0 = purple"
-colors = "FHOT1 = blue"
-colors = "FHOT2 = cyan"
-colors = "FHOT3 = green"
-colors = "FHOT4 = yellow"
-colors = "FHOT5 = red"
-colors = "FHOT+ = white"        #default bg => usless
+colors = "fhue- = BLACK"
+colors = "fhue0 = PURPLE"
+colors = "fhue1 = BLUE"
+colors = "fhue2 = CYAN"
+colors = "fhue3 = GREEN"
+colors = "fhue4 = YELLOW"
+colors = "fhue5 = RED"
+colors = "fhue+ = WHITE"        #default fg => no-op
 
-colors = "bhot- = on_black"     #default fg => useless
-colors = "bhot0 = on_PURPLE"
-colors = "bhot1 = on_BLUE"
-colors = "bhot2 = on_CYAN"
-colors = "bhot3 = on_GREEN"
-colors = "bhot4 = on_YELLOW"
-colors = "bhot5 = on_RED"
-colors = "bhot+ = on_WHITE"
+colors = "FHUE- = black"        #FHUE- BHUE- is invisible
+colors = "FHUE0 = purple"
+colors = "FHUE1 = blue"
+colors = "FHUE2 = cyan"
+colors = "FHUE3 = green"
+colors = "FHUE4 = yellow"
+colors = "FHUE5 = red"
+colors = "FHUE+ = white"
 
-colors = "BHOT- = on_BLACK"
-colors = "BHOT0 = on_purple"
-colors = "BHOT1 = on_blue"
-colors = "BHOT2 = on_cyan"
-colors = "BHOT3 = on_green"
-colors = "BHOT4 = on_yellow"
-colors = "BHOT5 = on_red"
-colors = "BHOT+ = on_white"     #default bg => usless
+colors = "bhue- = on_BLACK"
+colors = "bhue0 = on_PURPLE"
+colors = "bhue1 = on_BLUE"
+colors = "bhue2 = on_CYAN"
+colors = "bhue3 = on_GREEN"
+colors = "bhue4 = on_YELLOW"
+colors = "bhue5 = on_RED"
+colors = "bhue+ = on_WHITE"     #fhue+ bhue+ is invisible
+
+colors = "BHUE- = on_black"     #default bg => no-op
+colors = "BHUE0 = on_purple"
+colors = "BHUE1 = on_blue"
+colors = "BHUE2 = on_cyan"
+colors = "BHUE3 = on_green"
+colors = "BHUE4 = on_yellow"
+colors = "BHUE5 = on_red"
+colors = "BHUE+ = on_white"
