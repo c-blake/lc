@@ -10,7 +10,7 @@
 color="dot:0x04:0      NONE"             #0x00
 #color="test1:0x24:0    GREEN on_black"   #0x00
 #color="test2:0x24:0    CYAN on_black"    #0x00
-color="onOutErr:0xF0:0 FHUE-"            #0x01
+color="onOutErr:0xF0:0 fhue-"            #0x01
 color="compress:0x3D:0 fhue0"            #0x02   #cold storage
 color="tarchive:0x3E:0 fhue0"            #0x03
 color="archive:0x3F:0  fhue0"            #0x04
@@ -27,9 +27,9 @@ color="source:0x60:0   fhue3"            #0x0B   #..to neutral warmth impls.
 color="object:0x68:0   fhue5"            #0x0C   #Could arguably swap obj&exec
 color="core:0x68:0     fhue5"            #0x0D
 color="backup:0x80:0   FHUE4"            #0x0E   #backups odd ducks=>alt bank
-color="capsdoc:0x23:0  fhue+"            #0x0F   #Docs are just a different
-color="numeric:0x21:0  fhue+"            #0x00   #process entirely => gray scl
-color="document:0x24:0 fhue+"            #0x11
+color="capsdoc:0x23:0  FHUE+"            #0x0F   #Docs are just a different
+color="numeric:0x21:0  FHUE+"            #0x00   #process entirely => gray scl
+color="document:0x24:0 FHUE+"            #0x11
 
 color="symlink:0x10:1  italic"           #0x12
 color="dir:0x20:1      WHITE  on_blue"   #0x13
