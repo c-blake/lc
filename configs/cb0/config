@@ -3,7 +3,7 @@
 
 [include__kind]     #Define our file typology
 
-[include__lightBG]  #Default to lightBG [fg][hot|HOT] defs but clobber if..
+[include__lightBG]  #Default to lightBG [fg][hue|HUE] defs but clobber if..
 [include__LC_THEME] #..LC_THEME set.  Defs used by color, ageFmt, maybe style.
 [include__color]    #Decide test order,colors,sort order,dimension of kind tests
 [include__ageFmt]   #Define various file age/timestamp formats & colors
