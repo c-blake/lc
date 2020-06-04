@@ -27,3 +27,4 @@ ageFmt =    "+86400@/86400      <d fhue2"    #..flush with likely 2 char number.
 ageFmt =     "+6000@/3600       <h fhue3"    #So, basically 3 columns no matter
 ageFmt =      "+100@/60         <m fhue4"    #..the age.  Same heatmap colors
 ageFmt =        "+0@/1          <s fhue5"    #..as above.
+ageFmt =   "+FUTURE@/3600       <h FHUE+"    #Weird in-the-future-from now times
