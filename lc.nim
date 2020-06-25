@@ -67,7 +67,7 @@ let cfDfl* = LsCf(format: "%f", glyph: " -> ", recurse: 1, nColumn: 999,
 const ess: seq[string] = @[]
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
 dispatchGen(inLsCf,"lc",usage="Usage:\n  $command $args\n${doc}$options",doc="""
-(L)ist (Classified/Colored/Customized/CBlake) files in `paths` (CWD if empty)
+(L)ist (Classified/Colored/Customized/CBlake) files in *paths* (CWD if empty)
 in a filtered/sorted/tabular way (like ls with better idea factoring).  Pre-cmd
 options from ${LC_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/lc} & $LC.  Config
 files support [include__{relPath|ENVVAR}] & take only long-form options.
@@ -79,7 +79,7 @@ The following 1-letter codes work for BOTH format AND order specs:
   n link count    p rwx perms   b|B birth time   o %sz occupied
 For format specs only capitals mean an alternate time format & there are also:
   r readlink         S size(bytes)  l ls-KindCode(dl-..)  x stxAttrCode
-  R lnk w/color tgt  P Octal Perms  L ls-KindCode(/@*|=)  Q "+" if hasAcl
+  R lnk w/color tgt  P Octal Perms  L ls-KindCode(/@\\*|=)  Q "+" if hasAcl
   Z selinux label    q spaced perm  e|E ExternProgOutput  @ 4th:Col Of colorKind
   3-8 fmtDim3-8    9./ tgtFmtDim0-2
 For MULTI-LEVEL order specs only +- mean incr(dfl)/decreasing & there are also:
@@ -123,14 +123,14 @@ ATTR=attr specs as above""",
                       "binary" : "K=size/1024, M=size/1024/1024 (vs /1000..)",
                       "dense"  : "no blanks between multiple dir listings",
                       "deref"  : "deref symlinks generally",
-                      "access" : "use 3*access(2) not st_mode for RWX perms",
+                      "access" : "use 3\\*access(2) not st_mode for RWX perms",
                       "plain"  : "plain text; aka no color escape sequences",
                       "header" : "add a row at start of data with col names",
                       "padMax" : "max spaces by which to pad major columns",
                       "nColumn": "max major columns to use",
                       "widest" : "only list this many widest entries",
                       "width"  : "override auto-detected terminal width",
-                      "maxName": "auto|M[,head(M/2)[,tail(M-hd-sep)[,sep(*)]]]",
+                      "maxName": "auto|M[,head(M/2)[,tail(M-hd-sep)[,sep(\\*)]]]",
                       "maxTgt" : "like maxName for symlink targets; No auto",
                       "maxUnm" : "like maxName for user names",
                       "maxGnm" : "like maxName for group names",
