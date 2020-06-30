@@ -533,12 +533,11 @@ proc fmtIcon(f: Fil): string =
 proc sp(cf: LsCf, st: Statx): string =          #sparse attribute
   if st.util < 75: cg.attrSize[ord('S') - ord('A')] else: ""
 
-const space = "    "
 proc fmtSzDevNo(st: Statx): string =
   proc sizeFmt(sz: string): string =            #colorized file size
     let ix = (if sz[^1] in Digits: 'B'.ord else: sz[^1].ord) - 'A'.ord
     let digs = sz.find Digits
-    space[0..<digs] & cg.attrSize[ix] & cg[].sp(st) & sz[digs..^1] & cg.a0
+    sz[0..<digs] & cg.attrSize[ix] & cg[].sp(st) & sz[digs..^1] & cg.a0
   if S_ISBLK(st.st_mode) or S_ISCHR(st.st_mode):
     toHex((((st.st_rmaj and 0xFF) shl 8) or (st.st_rmin and 0xFF)).BiggestInt,4)
   else: sizeFmt(align(humanReadable4(st.st_size.uint, cg.binary), 4))
