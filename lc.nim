@@ -218,7 +218,7 @@ tAdd("sgid"   ,{dsS}): (f.st.st_mode and 0o2000) != 0
 tAdd("tmpD"   ,{dsS}): f.isStickyDir and (f.st.st_mode and 7) != 0
 tAdd("worldW" ,{dsS}): (f.st.st_mode and 2) != 0 and f.dtype != DT_LNK and
                        not f.isStickyDir
-tAdd("unR"    ,{dsS}): not f.rOk or (f.isDir and not f.xOk)
+tAdd("unR"    ,{dsS}): myUid != 0 and (not f.rOk or (f.isDir and not f.xOk))
 tAdd("odd"    ,{dsS}):    #Check very odd st_mode's. Rare but legit wr-only in:
   let m = f.st.st_mode    #.. /dev/tty* /var/cache/man /var/spool /proc /sys
   ((m and 0o4000)!=0 and ((m and 0o111)==0 or not f.isReg)) or  #suid&(!x|!reg)
