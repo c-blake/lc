@@ -5,14 +5,14 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC      ## sources of meta data
   DataSrcs* = set[DataSrc]
 
-  Fil = object      #Abstract file metadata including classification stuff
+  Fil {.acyclic.}= object #Abstract file metadata including classification stuff
     st: Statx                    ##filesystem metadata
     kind: seq[uint8]             ##kind nums for independent format dimensions
     dtype, r, w, x, brok: int8   ##dtype & file perms (0 unknown, 1: no, 2: yes)
     acl, cap: bool               ##flags: has an ACL, has a Linux capability
     base, sext, lext: int16      ##offset of basenms,shortest|longest extens
     usr, grp, name, abb, mag: string ##ids; here to sort, name, abbrev, magic
-    tgt: ptr Fil                 ##symlnk target
+    tgt: ref Fil                 ##symlnk target
 
   Test  = tuple[ds: DataSrcs, test: proc(f:var Fil):bool]          #unattributed
   Kind  = tuple[attr:string, kord:uint8, icon:string, test:proc(f:var Fil):bool]
@@ -811,11 +811,10 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
     when defined(linux):
       if dsC in cf.need: f.cap = qP.getxattr("security.capability", d) != -1
   if dt == DT_LNK and dsT in cf.need:
-    f.tgt = Fil.create                  #zeros allocated data
+    f.tgt = Fil.new                     #zeros allocated data
     f.tgt.name = readlink(iqP, stderr)
-    f.tgt.name.GC_ref
     if f.tgt.name == "":
-      cf.nError.inc; f.tgt.name.GC_unref; dealloc f.tgt; f.tgt = nil
+      cf.nError.inc; f.tgt = nil
     elif cf.tgtDref:                    #Below -> lstat? Maybe -L<number|enum>?
       f.tgt.brok = if stat(qP.cstring, f.tgt.st) == -1: 2 else: 1
       f.tgt.base = (1 + rfind(f.tgt.name, {DirSep, AltSep})).int16
@@ -823,11 +822,10 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
       f.tgt.lext = max(0, f.tgt.name.find('.', start=f.tgt.base)).int16
       f.tgt.dtype = stat2dtype(f.tgt.st.st_mode)
       if cf.needKin:                    #tgtDref populates f.st via stat.  So,
-        when haveMagic:          #..only dsN really changes for classify
+        when haveMagic:                 #..only dsNm really changes for classify
           if dsM in cf.need:
-            f.tgt.mag = $magic_file(cf.mc, f.tgt.name.qualPath);f.tgt.mag.GC_ref
+            f.tgt.mag = $magic_file(cf.mc, f.tgt.name.qualPath)
         f.tgt.kind = newSeq[uint8](cf.ukind.len)  #alloc did not init
-        f.tgt.kind.GC_ref
         for d in 0 ..< cf.ukind.len: f.tgt.kind[d] = cf.classify(f.tgt[], d)
   if cf.needKin:                        #filter/sort may need even if cf.plain
     when haveMagic:
@@ -836,13 +834,6 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
             $magic_file(cf.mc, if f.tgt != nil: f.tgt.name.qualPath else: iqP)
     f.kind.setLen(cf.ukind.len)
     for d in 0 ..< cf.ukind.len: f.kind[d] = cf.classify(f, d)
-
-proc tfree(f: var Fil) {.inline.} =   #maybe release tgt.name, tgt.kind, tgt.mag
-  if f.tgt != nil:
-    f.tgt.name.GC_unref; f.tgt.kind.GC_unref
-    when haveMagic:
-      if f.tgt.mag != "": f.tgt.mag.GC_unref
-    discard f.tgt.resize 0; f.tgt = nil
 
 proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   var nmAbb = cf.nAbb           #realize can mutate cf.nAbb; So use a copy.
@@ -861,7 +852,7 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   var nrow, ncol, m, j: int
   let reFit = cf.reFit and nmAbb.isAbstract
   var strs = format(cf, filps, ab0, ab1, wids, m, j, reFit)
-  for i in 0 ..< fils.len: fils[i].tfree
+  for i in 0 ..< fils.len: fils[i].tgt = nil
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
   if reFit:
     nmAbb.expandFit(strs, ab0, ab1, wids, colWs, cf.width, j, m, nrow, ncol)
@@ -885,7 +876,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
   proc maybePfx(cwd, h: string): string =
     if h.startsWith("/"): h else: cwd & "/" & h
   template zeroCont(x) {.dirty.} =
-    x.tfree; zeroMem(x.addr, x.sizeof); continue
+    x.tgt = nil; zeroMem(x.addr, x.sizeof); continue
   let pf = if pfx.len > 0 and pfx != ".": pfx & $DirSep else: ""
   shallowCopy(cg.pfx, pf)               #only need pfx for duration of this proc
   cf.dirLabel = r > 0 or paths.len > 1 or cf.recurse > 1
