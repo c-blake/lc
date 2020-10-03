@@ -1,4 +1,4 @@
-import os,posix,sets,tables, terminal,strutils,algorithm, nre, critbits, cligen,
+import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre, critbits],cligen,
   cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
