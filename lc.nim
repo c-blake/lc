@@ -1,5 +1,7 @@
-import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre, critbits],cligen,
+import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre,critbits],cligen,
   cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
+from nativesockets import getHostname
+from unicode import runeLen
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC      ## sources of meta data
@@ -29,7 +31,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
      maxName*, maxTgt*, maxUnm*, maxGnm*: string
     recurse*, nColumn*, padMax*, widest*, width*: int       ##recursion,tweaks
     dirs*, binary*, dense*, deref*, tgtDref*, plain*,       ##various bool flags
-     unzipF*, header*, access*, total*, quote*, n1*, reFit*: bool
+     unzipF*, header*, access*, total*, quote*, n1*, reFit*, hyperlink*: bool
     paths*: seq[string]                                     ##paths to list
     t0: Timespec                                            #ref time for fAges
     nError: int
@@ -55,6 +57,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     cl0, cl1: seq[string]
     cwd: string
     ext1c, ext2c: ExtFmt
+    hostname: string              #required for hyperlink
     when haveMagic: mc: magic_t
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
@@ -116,36 +119,37 @@ ATTR=attr specs as above""",
   FILEAGE in {seconds,'FUTURE','ANYTIME'},
   + means AltFmt, - means plain mode fmt,
   %CODEs are any strftime + %<DIGIT>.""",
-                      "format" : "\"%[-]a %[-]b\" l/r aligned fields to ls",
-                      "order"  : "[-]x[-]y[-]z.. keys to sort files by",
-                      "recurse": "recurse N levels; 0 => unbounded",
-                      "dirs"   : "list dirs as themselves, not contents",
-                      "binary" : "K=size/1024, M=size/1024/1024 (vs /1000..)",
-                      "dense"  : "no blanks between multiple dir listings",
-                      "deref"  : "deref symlinks generally",
-                      "access" : "use 3\\*access(2) not st_mode for RWX perms",
-                      "plain"  : "plain text; aka no color escape sequences",
-                      "header" : "add a row at start of data with col names",
-                      "padMax" : "max spaces by which to pad major columns",
-                      "nColumn": "max major columns to use",
-                      "widest" : "only list this many widest entries",
-                      "width"  : "override auto-detected terminal width",
-                      "maxName": "auto|M[,head(M/2)[,tail(M-hd-sep)[,sep(\\*)]]]",
-                      "maxTgt" : "like maxName for symlink targets; No auto",
-                      "maxUnm" : "like maxName for user names",
-                      "maxGnm" : "like maxName for group names",
-                      "unzipF" : "negate default all-after-%[fF] column zip",
-                      "glyph"  : "how to render arrow in %[rR] formats",
-                      "extra"  : "add cf ARG~/.lc (.=SAME,trl/=PARS,//PR,/.r)",
-                      "tgtDref": "fully classify %R formats on their own",
-                      "ext1"   : "%e output from x.so:func(qpath: cstr)->cstr",
-                      "ext2"   : "%E output from x.so:func(qpath: cstr)->cstr",
-                      "reFit"  : "expand abbrevs up to padded column widths",
-                      "quote"  : "quote filenames with unprintable chars",
-                      "n1"     : "same as -n1; mostly to bind short form -1",
-                      "total"  : "print total of blocks before entries",
-                      "excl"   : "kinds to exclude",
-                      "incl"   : "kinds to include" },
+                    "format"   : "\"%[-]a %[-]b\" l/r aligned fields to ls",
+                    "order"    : "[-]x[-]y[-]z.. keys to sort files by",
+                    "recurse"  : "recurse N levels; 0 => unbounded",
+                    "dirs"     : "list dirs as themselves, not contents",
+                    "binary"   : "K=size/1024, M=size/1024/1024 (vs /1000..)",
+                    "dense"    : "no blanks between multiple dir listings",
+                    "deref"    : "deref symlinks generally",
+                    "access"   : "use 3\\*access(2) not st_mode for RWX perms",
+                    "plain"    : "plain text; aka no color escape sequences",
+                    "header"   : "add a row at start of data with col names",
+                    "padMax"   : "max spaces by which to pad major columns",
+                    "nColumn"  : "max major columns to use",
+                    "widest"   : "only list this many widest entries",
+                    "width"    : "override auto-detected terminal width",
+                    "maxName"  : "auto|M[,head(M/2)[,tail(M-hd-sep)[,sep(\\*)]]]",
+                    "maxTgt"   : "like maxName for symlink targets; No auto",
+                    "maxUnm"   : "like maxName for user names",
+                    "maxGnm"   : "like maxName for group names",
+                    "unzipF"   : "negate default all-after-%[fF] column zip",
+                    "glyph"    : "how to render arrow in %[rR] formats",
+                    "extra"    : "add cf ARG~/.lc (.=SAME,trl/=PARS,//PR,/.r)",
+                    "tgtDref"  : "fully classify %R formats on their own",
+                    "ext1"     : "%e output from x.so:func(qpath: cstr)->cstr",
+                    "ext2"     : "%E output from x.so:func(qpath: cstr)->cstr",
+                    "reFit"    : "expand abbrevs up to padded column widths",
+                    "quote"    : "quote filenames with unprintable chars",
+                    "n1"       : "same as -n1; mostly to bind short form -1",
+                    "hyperlink": "add hyperlinks",
+                    "total"    : "print total of blocks before entries",
+                    "excl"     : "kinds to exclude",
+                    "incl"     : "kinds to include" },
             short = { "deref":'L', "dense":'D', "access":'A', "binary":'B',
                       "width":'W',"padMax":'P', "incl":'i',"excl":'x', "n1":'1',
                       "header":'H', "maxTgt":'M', "maxUnm":'U', "maxGnm":'G',
@@ -702,6 +706,15 @@ proc fieldF(cf: LsCf): int =  #Helper for zip (%f%R | %f%R%L etc.) to keep RHS
   for j, fld in cf.fields:
     if fld.c in {'f', 'F'} and j+1 < cf.fields.len: return j
 
+proc encodeHyperlink(s: string): string =
+  result = newStringOfCap(s.len)
+  for c in s:
+    if c.ord in 32..126:
+      result.add c
+    else:
+      result.add '%'
+      result.add toHex(ord(c), 2)
+
 proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
             m, jRet: var int; reFit: bool): seq[string] =
   let fj = if cf.unzipF: -1 else: cf.fieldF         #specific %[fF].. col zip
@@ -709,6 +722,16 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
   let hdr = cf.header and filps.len > 0
   let i0 = if hdr: 1 else: 0                        #AKA hdr.int
   let n = filps.len + i0
+  var path =
+    if cf.pfx.isAbsolute:
+      if cf.pfx == "//":
+        "/"
+      else:
+        cf.pfx
+    else:
+      cf.cwd / cf.pfx
+  var pfx = encodeHyperlink(cf.hostname & path)
+  if pfx[^1] != '/': pfx.add '/'
   result.setLen(n * m)
   wids.setLen(n * m)
   if reFit:
@@ -716,23 +739,31 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
     for j in 0 ..< cf.fields.len:
       if cf.fields[j].c == 'f': jRet = j
   for i in 0 ..< n:
-   var k = 0                                        #k is the output j
-   for j in 0 ..< cf.fields.len:
-    if hdr and i == 0:
-      result[m*i+k].add cf.fields[j].hdr
-    else:
-      if cf.fields[j].prefix.len > 0:
-        result[m*i+k].add cf.fields[j].prefix
-      if reFit and cf.fields[j].c == 'f':
-        ab0[i] = result[m*i+k].len + filps[i-i0][].kattr.len
-      result[m*i+k].add cf.fields[j].fmt(filps[i-i0][])
-      if reFit and cf.fields[j].c == 'f':
-        ab1[i] = result[m*i+k].len - cf.a0.len
-    if cf.plain:  #Maybe auto-detect utf8 chars & use another flag here?
-      wids[m*i+k] = (if cf.fields[j].left: -1 else: 1) * result[m*i+k].len
-    else:
-      wids[m*i+k] = (if cf.fields[j].left: -1 else: 1)*printedLen(result[m*i+k])
-    if j < (if fj != -1: fj else: m): k.inc
+    var file = filps[i-i0][]
+    var k = 0                                        #k is the output j
+    for j in 0 ..< cf.fields.len:
+      let idx = m * i + k
+      if hdr and i == 0:
+        result[idx].add cf.fields[j].hdr
+      else:
+        if cf.fields[j].prefix.len > 0:
+          result[idx].add cf.fields[j].prefix
+        if reFit and cf.fields[j].c == 'f':
+          ab0[i] = result[idx].len + file.kattr.len
+        let formatted = cf.fields[j].fmt(file)
+        if formatted.len > 0:
+          if cf.hyperlink:
+            let encodedPath = pfx & file.name.encodeHyperlink
+            result[idx].add "\e]8;;file://" & encodedPath & "\e\\"
+          result[idx].add formatted
+          if cf.hyperlink:
+            result[idx].add "\e]8;;\e\\"
+        if reFit and cf.fields[j].c == 'f':
+          ab1[i] = result[idx].len - cf.a0.len
+      wids[idx] = (if cf.fields[j].left: -1 else: 1) *
+                  (if cf.plain and not cf.hyperlink:
+                    result[idx].runeLen else: result[idx].printedLen)
+      if j < (if fj != -1: fj else: m): k.inc
 
 var efRefDid = false
 proc efRef(qp: cstring): cstring =
@@ -934,6 +965,8 @@ when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
     cl0.add envToCL("LC")
     var cf = lsCfFromCL(cl0 & os.commandLineParams())
     cf.fin(cl0, os.commandLineParams() - cf.paths)
+    if cf.hyperlink:
+      cf.hostname = getHostname()
     cf.ls(if cf.paths.len > 0: cf.paths else: @[ "." ])
     quit(min(255, cf.nError))
   except HelpOnly, VersionOnly: quit(0)
