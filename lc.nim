@@ -715,14 +715,8 @@ proc encodeHyperlink(s: string): string =
       result.add '%'
       result.add toHex(ord(c), 2)
 
-proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
-            m, jRet: var int; reFit: bool): seq[string] =
-  let fj = if cf.unzipF: -1 else: cf.fieldF         #specific %[fF].. col zip
-  m = if fj != -1: fj + 1 else: cf.fields.len
-  let hdr = cf.header and filps.len > 0
-  let i0 = if hdr: 1 else: 0                        #AKA hdr.int
-  let n = filps.len + i0
-  var path =
+proc getHyperlinkPrefix(cf: LsCf): string =
+  let path =
     if cf.pfx.isAbsolute:
       if cf.pfx == "//":
         "/"
@@ -730,8 +724,17 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
         cf.pfx
     else:
       cf.cwd / cf.pfx
-  var pfx = encodeHyperlink(cf.hostname & path)
-  if pfx[^1] != '/': pfx.add '/'
+  result = "\e]8;;file://" & encodeHyperlink(cf.hostname & path)
+  if result[^1] != '/': result.add '/'
+
+proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
+            m, jRet: var int; reFit: bool): seq[string] =
+  let fj = if cf.unzipF: -1 else: cf.fieldF         #specific %[fF].. col zip
+  m = if fj != -1: fj + 1 else: cf.fields.len
+  let hdr = cf.header and filps.len > 0
+  let i0 = if hdr: 1 else: 0                        #AKA hdr.int
+  let n = filps.len + i0
+  let pfx = if cf.hyperlink: getHyperlinkPrefix(cf) else: ""
   result.setLen(n * m)
   wids.setLen(n * m)
   if reFit:
@@ -739,7 +742,7 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
     for j in 0 ..< cf.fields.len:
       if cf.fields[j].c == 'f': jRet = j
   for i in 0 ..< n:
-    var file = filps[i-i0][]
+    let file = filps[i-i0]
     var k = 0                                        #k is the output j
     for j in 0 ..< cf.fields.len:
       let idx = m * i + k
@@ -749,12 +752,12 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
         if cf.fields[j].prefix.len > 0:
           result[idx].add cf.fields[j].prefix
         if reFit and cf.fields[j].c == 'f':
-          ab0[i] = result[idx].len + file.kattr.len
-        let formatted = cf.fields[j].fmt(file)
+          ab0[i] = result[idx].len + file[].kattr.len
+        let formatted = cf.fields[j].fmt(file[])
         if formatted.len > 0:
           if cf.hyperlink:
-            let encodedPath = pfx & file.name.encodeHyperlink
-            result[idx].add "\e]8;;file://" & encodedPath & "\e\\"
+            let encodedPath = pfx & file[].name.encodeHyperlink
+            result[idx].add encodedPath & "\e\\"
           result[idx].add formatted
           if cf.hyperlink:
             result[idx].add "\e]8;;\e\\"
