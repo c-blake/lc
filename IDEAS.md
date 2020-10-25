@@ -27,9 +27,6 @@ expensive side. }  Abbreviating multi-component a/b/c names is also buggy.
 selinux security context labels (ls -Z)
 (first do some cligen/selinux.nim:getfilecon,etc.  Then should be easy.)
 
-Add -j option to have %[fF] & %[rR] render extra esc seqs to make clicking chase
-a file:///full/path.
-
 Though current "just has it" kinding works to color by ACL/Linux capability,
 it'd be nicer to actually format out the text. { Capabilities are short-ish,
 but ACL spellings are typically not table-friendly.  So maybe just caps. }
