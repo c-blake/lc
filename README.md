@@ -51,6 +51,8 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - has value-dependent coloring for file times, sizes, permissions, etc.
 
+ - can emit "hyperlink" escape codes to make entries clickable in some terminals
+
  - supports file/user/group/link target abbreviation via `-mNum`, `-ma`, etc.
 
  - supports "local tweak files" - extra config options in a local `.lc` (or a
