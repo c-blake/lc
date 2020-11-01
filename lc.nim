@@ -742,13 +742,13 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
     for j in 0 ..< cf.fields.len:
       if cf.fields[j].c == 'f': jRet = j
   for i in 0 ..< n:
-    let file = filps[i-i0]
     var k = 0                                        #k is the output j
     for j in 0 ..< cf.fields.len:
       let idx = m * i + k
       if hdr and i == 0:
         result[idx].add cf.fields[j].hdr
       else:
+        let file = filps[i-i0]
         if cf.fields[j].prefix.len > 0:
           result[idx].add cf.fields[j].prefix
         if reFit and cf.fields[j].c == 'f':
