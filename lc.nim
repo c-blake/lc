@@ -963,7 +963,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
 
 when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
   try:
-    let cfd = getEnv("LC_CONFIG", getConfigDir() & "lc")
+    let cfd = getEnv("LC_CONFIG", getConfigDir() & "/lc")
     var cl0 = cfToCL(if cfd.dirExists: cfd&"/config" else: cfd, "", true, true)
     cl0.add envToCL("LC")
     var cf = lsCfFromCL(cl0 & os.commandLineParams())
