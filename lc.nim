@@ -646,8 +646,8 @@ fAdd('l', {dsS},0, "l"    ): $f.st.st_mode.fmtKindCode
 fAdd('L', {dsS},1, "L"    ): f.fmtClassCode
 fAdd('x', {dsS},0, "XA"   ): fmtAttrCode(f.st.stx_attributes)
 fAdd('Q', {dsA},0, "A"    ): ["", "+"][f.acl.int]
-fAdd('e', {}   ,0, "e1"   ): $cg.ext1c(f.name.qualPath)
-fAdd('E', {}   ,0, "e2"   ): $cg.ext2c(f.name.qualPath)
+fAdd('e', {}   ,0, "e1"   ): $cg.ext1c(f.name.qualPath.cstring)
+fAdd('E', {}   ,0, "e2"   ): $cg.ext2c(f.name.qualPath.cstring)
 fAdd('@', {}   ,0, "I"    ): f.fmtIcon
 
 template dBody(i): untyped {.dirty.} =
@@ -858,14 +858,15 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
       if cf.needKin:                    #tgtDref populates f.st via stat.  So,
         when haveMagic:                 #..only dsNm really changes for classify
           if dsM in cf.need:
-            f.tgt.mag = $magic_file(cf.mc, f.tgt.name.qualPath)
+            f.tgt.mag = $magic_file(cf.mc, f.tgt.name.qualPath.cstring)
         f.tgt.kind = newSeq[uint8](cf.ukind.len)  #alloc did not init
         for d in 0 ..< cf.ukind.len: f.tgt.kind[d] = cf.classify(f.tgt[], d)
   if cf.needKin:                        #filter/sort may need even if cf.plain
     when haveMagic:
       if dsM in cf.need:
         f.mag = if cf.tgtDref and f.tgt != nil: f.tgt.mag else:
-            $magic_file(cf.mc, if f.tgt != nil: f.tgt.name.qualPath else: iqP)
+            $magic_file(cf.mc, cstring(if f.tgt != nil: f.tgt.name.qualPath
+                                       else: iqP))
     f.kind.setLen(cf.ukind.len)
     for d in 0 ..< cf.ukind.len: f.kind[d] = cf.classify(f, d)
 
