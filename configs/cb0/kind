@@ -12,7 +12,7 @@
 #tests (eg. ELF) or `ext` tests performance will crash but may remain tolerable.
 
 kind = "numeric  cset 0123456789-_.:,%"
-kind = "capsdoc  cset ABCDEFGHIJKLMNOPQRSTUVWXYZ_-."
+kind = "capsdoc  cset ABCDEFGHIJKLMNOPQRSTUVWXYZ_-.0123456789:,%"
 kind = "object   SFX .o .a .la .so .pyc .pyo .dvi .elc .obj"
 kind = "script   SFX .pl .awk .sed .sh .zsh .csh .gpi akefile .log .nims .R .js .scm .lsp .cfg .cf .conf"
 kind = "compress SFX .z .gz .bz .bz2 .lz .Lz .xz 4z .zs .zs"
