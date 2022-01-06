@@ -796,7 +796,7 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.uAbb = parseAbbrev(cf.maxUnm); cf.uAbb.realize(cf.usr)
   cf.gAbb = parseAbbrev(cf.maxGnm); cf.gAbb.realize(cf.grp)
   if dsA in cf.need or dsC in cf.need: cf.need.incl(dsS)  #To cache EOPNOTSUPP
-  cf.a0    = if cf.plain: "" else: textAttrOFF
+  cf.a0    = if cf.plain: "" else: textAttrOff
   cf.wrote = false
   cf.cl0   = cl0
   cf.cl1   = cl1
