@@ -3,7 +3,7 @@
 #should really end in "*4 if you ask me,but stdlib parsecfg sez "invalid token".
 
 Style = r"""s   = -X./.      "-f%s %f"""
-Style = r"""S   = -DLss"""
+Style = r"""S   = -DLss -os"""
 Style = r"""psa = -l -X./.   "-f%P %S %f%R"""
 Style = r"""ps  = -s psa -xdot"""
 # Same as above+ showing times
@@ -16,6 +16,10 @@ Style = r"""lt  = -s l  -om  "-f%P %s %m %f%R"""
 Style = r"""lv  = -s l  -ov  "-f%P %s %v %f%R"""
 Style = r"""lc  = -s l  -oc  "-f%P %s %c %f%R"""
 Style = r"""lb  = -s l  -ob  "-f%P %s %b %f%R"""
+Style = r"""lM  = -s l  -om  "-f%m %f%R"""
+Style = r"""lV  = -s l  -ov  "-f%v %f%R"""
+Style = r"""lC  = -s l  -oc  "-f%c %f%R"""
+Style = r"""lB  = -s l  -ob  "-f%b %f%R"""
 # Same as above+ showing owner
 Style = r"""lla = -Hl -X./.   "-f%P %{bold}U %s %m %f%R"""
 Style = r"""ll  = -Hslla -xdot"""
