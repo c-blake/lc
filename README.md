@@ -44,7 +44,7 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - supports arbitrary assignment of "file kind order" for use in sorting
 
- - supports "multi-dimensional reasoning" about file kinds including both
+ - supports "multi-dimensional reasoning" about file kinds, including both
    text attribute layers and an "icon vector" (for utf8 "icons", anyway)
 
  - supports both latter-day nanosecond file times and *very* abbreviated ages
