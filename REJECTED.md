@@ -6,6 +6,7 @@ suspect that will have combinatorially many different answers.  Also, I use `-l`
 for something else right now although that could change.  It is a boolean flag
 and doesn't outright fail.  As a guide, configs/cb0/style has "gls", though.
 
+--------
 
 So called --tree formats.  These don't interoperate very well with the simple
 "one directory at a time" recursive structure of `proc ls`.  Unlike process
@@ -15,6 +16,7 @@ likely works well in, many other things also probably work fine.  I.e., it's
 value add is marginal.  It makes more sense in GUIs where you pick and choose
 points of collapse or expansion.  There are likely other problems.
 
+--------
 
 Miller columns/cascading lists.  What people want here is (approximately):
 ```
