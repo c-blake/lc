@@ -4,7 +4,7 @@ from nativesockets import getHostname
 from unicode import runeLen
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
-  DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC      ## sources of meta data
+  DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC ## Dirent,Stat,Tgt,Access,Mag,Cap
   DataSrcs* = set[DataSrc]
 
   Fil {.acyclic.}= object #Abstract file metadata including classification stuff
