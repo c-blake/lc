@@ -77,8 +77,8 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
 
-Multi-dimensionality/Text Attribute Layers
-==========================================
+Multi-dimensionality/Attribute Layers
+=====================================
 The most obscure of these is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions may help.  One file can be
