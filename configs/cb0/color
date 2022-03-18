@@ -66,7 +66,7 @@ color="exec:0x70:6:¶   bold"             #0x22
 #color="mye1:0x80:7   blink"              #0x23
 #color="mye2:0x95:8   struck"             #0x23
 
-color="unknown:0x22:0  NONE"             #0x23 #Added if missing;Here to set ord
+color="unknown:0x23:0  NONE"             #0x23 #Added if missing;Here to set ord
 
 color = "sizeB   fhue1"                 #Value-conditional fields besides paths
 color = "sizeK   fhue2"
