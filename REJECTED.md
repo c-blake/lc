@@ -18,10 +18,10 @@ points of collapse or expansion.  There are likely other problems.
 
 Miller columns/cascading lists.  What people want here is (approximately):
 ```
-paste <(lc -1m25 ../..) <(lc -1m25 ..) <(lc -1m25 .) | column
+paste <(lc -1m25 ../..) <(lc -1m25 ..) <(lc -1m25 .) | less -x26
+
 ```
-Showing the ../.. and .. for every directory is a massive use of terminal space.
-Doing it for one-off single directories can be achieved with the above shell
+Doing this for one-off single directories can already be achieved with the above
 snippet.  So, I doubt it makes sense as a built-in `lc` feature.  It's likely
 enough to do a script with the above pipeline (being aware of how deep '.' is,
 taking a number of levels, adding thatDir/../.. when needed, etc.)  `lc -mN` is
@@ -30,4 +30,7 @@ width (but not "height") of each listing being pasted ahead of time.  So, you
 can also know how many side-by-side major columns fit in $COLUMNS for a given
 bound.  There are no scrollbars, exactly, but the terminal as a whole may have
 them or a user can pipe the output to a pager.  Also note that fixed widths
-like `-m25` cannot guarantee unique pattern expansions.
+like `-m25` cannot guarantee unique pattern expansions.  About all a built-in
+`lc` feature might add would be i-node (vs. string) identification of where to
+put some kind of "indicator string" to guide how levels of the hierarchy connect
+(E.g. a `**` after the right entry in the parent and parent-parent listings.)
