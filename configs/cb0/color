@@ -44,7 +44,7 @@ color="-sym:0x10:2     blink"            #0x19 #early since no stat data to use
 #color="ACL:0x10:2     blink"
 color="hard:0x80:2     underline"        #0x1A #maybe inverse or struck?
 
-color="odd:0x30:3      on_RED"           #0x1B  #early since combines many things
+color="odd:0x30:3      on_RED"           #0x1B #early since combines many things
 color="tmpD:0x20:3     YELLOW"           #0x1C #clobber FG only->yellow on_blue
 color="suid:0x50:3     on_CYAN"          #0x1D #pastel backgrounds for sXid
 color="sgid:0x60:3     on_green"         #0x1E
@@ -52,7 +52,7 @@ color="sgid:0x60:3     on_green"         #0x1E
 color="+sym:0x18:4     italic"           #0x1F
 color="worldW:0x40:4   on_RED"           #0x20 #world writable higherD 2clobber
 
-#struck can sometimes be hard to read text; hence hard to read dirents get it:
+#struck text can sometimes be hard to read; Hence put on hard to read dirents:
 color="unR:0xF8:5      struck"           #0x21 #unreadable or isDir & no-exec
 
 color="exec:0x70:6:¶   bold"             #0x22
