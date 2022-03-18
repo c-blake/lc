@@ -22,7 +22,7 @@ sorting, and formatting options.  With fewer CLI options (but beefier configs)
 `lc` is many-fold more flexible.  It can create similar output, but my main
 impetus to write `lc` was always a better functionality factoring not mere
 recapitulation.  So, `lc` is *not* just "ls in Nim".  If you want `ls`, it has
-giant companies supporting it and isn't going anywhere.
+big companies supporting it & isn't going anywhere.
 
 `lc` is also not `stat` or `find`.  Those have their roles for spot-checking or
 generating program-consumed data streams.  `lc` is about human-friendly output,
@@ -77,8 +77,8 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and just me as a user, there are surely many bugs.
 
-Multi-dimensionality
-====================
+Multi-dimensionality/Text Attribute Layers
+==========================================
 The most obscure of these is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions may help.  One file can be
@@ -90,8 +90,9 @@ its hackability which supports bold, italic, blink, underline, struck, inverse
 all as 6 independent text attributes. (Color inversion involves a mapping likely
 too complex to be a useful visual aid.)  So, 7 usable output dimensions, with 5
 being shallow 1-bit dimensions.  Though subjective, I find text with all these
-embellishments at once legible on my primary displays.  `lc` aids "aligning"
-rendering or output dimensions with classification or input dimensions.
+embellishments at once legible on my primary displays.  Geographical map people
+often call this "layers".  `lc` aids "aligning" rendering or output dimensions
+with classification or input dimensions.
 
 On the input/data side there are a few natural "query" dimensions such as traits
 based on dtype data, stat data, ACLs, .., that performance-sensitive folk may
