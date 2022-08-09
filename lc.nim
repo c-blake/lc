@@ -818,7 +818,7 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
   var didLst = false            #dt clobbered when lstat was needed for it.
   var qP: string
   template iqP(): string = (if qP.len == 0: (qP = name.qualPath; qP) else: qP)
-  shallowCopy(f.name, name)     #ls.args lives long enough.
+  f.name = name
   f.base = (1 + rfind(name, {DirSep, AltSep})).int16    #ix(basenm);0 if unqual
   f.sext = max(0, rfind(name, '.', f.base)).int16       #ix(shortest exten|0)
   f.lext = max(0, name.find('.', f.base)).int16         #ix(longest exten|0)
