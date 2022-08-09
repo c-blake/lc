@@ -432,13 +432,14 @@ template cAdd(code, ds, cmpr, T, data: untyped) {.dirty.} =
   cmpOf[code] = (ds, proc(a, b: ptr Fil): int {.closure.} =
                    proc get(f: Fil): T = data   #AVAILABLE: hjlqrtwxyz
                    cmpr(get(a[]), get(b[])))    #           ABCHIJMOPQRSTVWXYZ
+proc abbr(f: Fil): string = (if f.abb.len > 0: f.abb else: f.name)
 cAdd('f', {}   , cmp , string  ): f.name
-cAdd('A', {}   , cmp , string  ): f.abb
+cAdd('A', {}   , cmp , string  ): f.abbr
 cAdd('F', {}   , cmp , string  ): f.name[f.base..^1]
 cAdd('e', {}   , cmpN, string  ): f.name[f.sext..^1]
 cAdd('E', {}   , cmpN, string  ): f.name[f.lext..^1]
 cAdd('N', {}   , cmpN, string  ): f.name
-cAdd('L', {}   , cmp , uint    ): f.abb.len.uint
+cAdd('L', {}   , cmp , uint    ): f.abbr.len.uint
 cAdd('s', {dsS}, cmp , uint    ): f.st.st_size.uint
 cAdd('K', {dsS}, cmp , uint    ): f.st.st_blocks.uint
 cAdd('k', {dsS}, cmp , uint    ): f.st.st_blksize.uint
@@ -516,7 +517,7 @@ proc maybeQuote(cf: LsCf, path: string): string {.inline.} =  #WTF safeUnixChars
   if cf.quote: path.quoteShellPosix else: path                #..should incl ','
 
 proc fmtName(f: Fil, p: string, abbrev=true): string =
-  f.kattr & (if abbrev: f.abb else: cg[].maybeQuote(p)) & cg.a0
+  f.kattr & (if abbrev: f.abbr else: cg[].maybeQuote(p)) & cg.a0
 
 proc fmtTgtD(f: Fil): string =  #Colorize link targets (in deref|tgtDref mode)
   if cg.deref: return           #..according to stat|string type of *target*.
@@ -876,9 +877,7 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
     var nms: seq[string]
     for f in fils: nms.add cf.maybeQuote(f.name)
     nmAbb.realize nms
-  if nmAbb.mx == 0:             #Populate .abb w/name ref when not abbreviating
-    for i, f in fils: fils[i].abb.shallowCopy fils[i].name #..s.t. just use .abb
-  else:
+  if nmAbb.mx != 0:
     for i, f in fils: fils[i].abb = nmAbb.abbrev(f.name)
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
   for i in 0 ..< fils.len: filps[i] = fils[i].addr
