@@ -133,7 +133,9 @@ ATTR=attr specs as above""",
                     "nColumn"  : "max major columns to use",
                     "widest"   : "only list this many widest entries",
                     "width"    : "override auto-detected terminal width",
-                    "maxName"  : "auto|M[,head(M/2)[,tail(M-hd-sep)[,sep(\\*)]]]",
+                    "maxName":"""a\*|M,head(M/2),tail(M-hdSep),sep(\*),quoChs()
+  a:bestPos -2:pfx -3:sfx -4:mfx -5:1\* -6:2\*
+  POSITIVE_NUMBER=thatWidth/head/tail""",
                     "maxTgt"   : "like maxName for symlink targets; No auto",
                     "maxUnm"   : "like maxName for user names",
                     "maxGnm"   : "like maxName for group names",
