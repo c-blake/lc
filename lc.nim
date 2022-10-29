@@ -2,6 +2,7 @@ import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre,critbits],clige
   cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
 from nativesockets import getHostname
 from unicode import runeLen
+when not declared(File): import std/syncio
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC ## Dirent,Stat,Tgt,Access,Mag,Cap
