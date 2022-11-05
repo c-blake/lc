@@ -974,6 +974,6 @@ when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
     if cf.hyperlink:
       cf.hostname = getHostname()
     cf.ls(if cf.paths.len > 0: cf.paths else: @[ "." ])
-    quit(min(255, cf.nError))
+    quit(min(127, cf.nError))
   except HelpOnly, VersionOnly: quit(0)
   except ParseError: quit(1)
