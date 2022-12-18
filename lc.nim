@@ -321,7 +321,7 @@ proc addCombo(cf: var LsCf; tester: auto; nm, s: string) =
   for t in s.splitWhitespace:
     try:
       let tt = cf.tests[t]; tsts.add tt; ds = ds + tt.ds
-    except: raise newException(ValueError, "bad kind: \"" & t & "\"")
+    except Ce: raise newException(ValueError, "bad kind: \"" & t & "\"")
   cf.tests[nm] = (ds, proc(f: var Fil): bool = tester(tsts, f))
 
 proc addExt(cf: var LsCf; nm, s: string) =
@@ -413,7 +413,7 @@ proc compileFilter(cf: var LsCf, spec: seq[string], msg: string): set[uint8] =
       result.incl(k.slot)
       cf.need = cf.need + k.ds
       cf.needKin = true   #must fully classify if any kind is used as a filter
-    except: raise newException(ValueError, msg & " name \"" & nm & "\"")
+    except Ce: raise newException(ValueError, msg & " name \"" & nm & "\"")
 
 proc parseFilters(cf: var LsCf) =
   cf.sin = cf.compileFilter(cf.incl, "incl filter"); cf.nin = cf.sin.card
@@ -482,8 +482,8 @@ proc parseOrder(cf: var LsCf) =
   for c in cf.order:
     if   c == '-': sgn = -1; continue
     elif c == '+': sgn = +1; continue
-    try   : cmpEntry = cmpOf[c]
-    except: raise newException(ValueError, "unknown sort key code " & c.repr)
+    try      : cmpEntry = cmpOf[c]
+    except Ce: raise newException(ValueError, "unknown sort key code " & c.repr)
     cf.cmps.add((sgn, cmpEntry.cmp))
     cf.need = cf.need + cmpEntry.ds
     if   c == 'U' and cf.usr.len == 0: cf.usr = users()
@@ -504,14 +504,14 @@ proc parseAge(cf: var LsCf) =
     let aF = aFs.split('@')
     if aF.len != 2: raise newException(ValueError, "bad ageFmt:\"" & aFs & "\"")
     if aF[0].startsWith('+'): #2**31 =~ 68 yrs in future from when fin is run.
-     try   : cf.tmFmtU.add((parseInt(aF[0]), hl(aF[1], strftimeCodes,cf.plain)))
-     except: cf.tmFmtU.add((-2147483648.int, hl(aF[1], strftimeCodes,cf.plain)))
+     try      :cf.tmFmtU.add((aF[0].parseInt, hl(aF[1],strftimeCodes,cf.plain)))
+     except Ce:cf.tmFmtU.add((-2147483648.int,hl(aF[1],strftimeCodes,cf.plain)))
     elif aF[0].startsWith('-'): #plain mode formats
-     try:    cf.tmFmtP.add((-parseInt(aF[0]),hl(aF[1], strftimeCodes,cf.plain)))
-     except: cf.tmFmtP.add((-2147483648.int, hl(aF[1], strftimeCodes,cf.plain)))
+     try      :cf.tmFmtP.add((-aF[0].parseInt,hl(aF[1],strftimeCodes,cf.plain)))
+     except Ce:cf.tmFmtP.add((-2147483648.int,hl(aF[1],strftimeCodes,cf.plain)))
     else:
-     try   : cf.tmFmtL.add((parseInt(aF[0]), hl(aF[1], strftimeCodes,cf.plain)))
-     except: cf.tmFmtL.add((-2147483648.int, hl(aF[1], strftimeCodes,cf.plain)))
+     try      :cf.tmFmtL.add((aF[0].parseInt, hl(aF[1],strftimeCodes,cf.plain)))
+     except Ce:cf.tmFmtL.add((-2147483648.int,hl(aF[1],strftimeCodes,cf.plain)))
 
 proc kattr(f: Fil): string =
   for e in f.kind: result.add cg.kinds[e].attr
@@ -685,8 +685,8 @@ proc parseFormat(cf: var LsCf) =
     of inField:
       if c in {'-', '+'}: algn = c; continue  #Any number of 'em;Last one wins
       state = inPrefix
-      try   : fmtEntry = fmtOf[c]
-      except: raise newException(ValueError, "unknown format code " & c.repr)
+      try      : fmtEntry = fmtOf[c]
+      except Ce: raise newException(ValueError, "unknown format code " & c.repr)
       let leftAlign = if algn != '\0': algn == '-' #User spec always wins else..
                       else:                        #..1st col left&field default
                         if leftMost: true else: fmtEntry.left
@@ -956,7 +956,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
             c = lsCfFromCL(cf.cl0 & x & cf.cl1)
             c.fin(cf.cl0, cf.cl1, cf.t0); cg = c.addr
             break                               #done at first success
-          except: discard                       #tweak files are very optional
+          except Ce: discard                    #tweak files are very optional
           if not cf.extra.endsWith('/') or
                (cf.extra == "./" and d.len < 1) or d.len < cf.extra.len:
             break           #Either not looking in par dirs or topped out @root

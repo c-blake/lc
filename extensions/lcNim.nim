@@ -26,7 +26,7 @@ proc cmdOutput(cmd: string, qualPath: cstring): cstring =
     res = f.readAll.strip     # External command-based user-defined fmt fields.
     f.close                   # User must keep output easy on tabulation, but
     return res.cstring        # we do at least strip any trailing newline.
-  except:
+  except CatchableError:
     res.setLen(0)
 
 proc fe1(qualPath: cstring): cstring {.noconv, exportc, dynlib.} =
