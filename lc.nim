@@ -1,7 +1,6 @@
-import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre,critbits],cligen,
+import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre,critbits],
   cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
-from nativesockets import getHostname
-from unicode import runeLen
+import cligen; from unicode import runeLen
 when not declared(File): import std/syncio
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
@@ -965,6 +964,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
       cg = cg0
 
 when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
+  from nativesockets import getHostname
   try:
     let cfd = getEnv("LC_CONFIG", getConfigDir() & "/lc")
     var cl0 = cfToCL(if cfd.dirExists: cfd&"/config" else: cfd, "", true, true)
