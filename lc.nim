@@ -385,7 +385,7 @@ proc parseColor(cf: var LsCf) =
       let (key, test) = cf.tests.match(nm, "kind", if ok: nil else: stderr)
       let kno = cf.kinds.len.uint8                #Found test; add to used kinds
       cf.kslot[key] = (kno, test.ds, dim)         #Record kind number, DataSrc
-      add(cf.kinds, (attr: attrs, kord: ko, icon: icon, test: test.test))
+      cf.kinds.add (attr: attrs, kord: ko, icon: icon, test: test.test)
       if dim + 1 > cf.ukind.len: cf.ukind.setLen(dim + 1)
       cf.ukind[dim].add kno
       cf.need = cf.need + test.ds
@@ -401,8 +401,8 @@ proc parseColor(cf: var LsCf) =
             raise newException(ValueError, "bad perm \""&nm&"\". Octal digit.")
           cf.attrPerm[ord(nm[4]) - ord('0')] = attrs
       else: raise newException(ValueError, "unknown color key: \""&nm&"\"")
-  if unknown == 255:  #Terminate .kinds if usr did not specify attrs for unknown
-   add(cf.kinds, ("", 255.uint8, "", cf.tests["unknown"].test))
+  if unknown == 255: # auto-terminate .kinds if usr gave no attrs for "unknown"
+    cf.kinds.add ("", 255.uint8, "", proc(f: var Fil): bool {.closure.} = true)
 
 ###### FILTERING
 proc compileFilter(cf: var LsCf, spec: seq[string], msg: string): set[uint8] =
@@ -951,8 +951,8 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
                 else: simplifyPath(cf.extra & "/" & maybePfx(cf.cwd, here),true)
         while true:
           try:
-            let x = cfToCL(d & "/.lc", quiet=true)
-            c = lsCfFromCL(cf.cl0 & x & cf.cl1)
+            var merged = cf.cl0; merged.add cfToCL(d & "/.lc", quiet=true)
+            merged.add cf.cl1; c = lsCfFromCL(merged)
             c.fin(cf.cl0, cf.cl1, cf.t0); cg = c.addr
             break                               #done at first success
           except Ce: discard                    #tweak files are very optional
@@ -969,7 +969,8 @@ when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
     let cfd = getEnv("LC_CONFIG", getConfigDir() & "/lc")
     var cl0 = cfToCL(if cfd.dirExists: cfd&"/config" else: cfd, "", true, true)
     cl0.add envToCL("LC")
-    var cf = lsCfFromCL(cl0 & os.commandLineParams())
+    let nCl0 = cl0.len; cl0.add os.commandLineParams()
+    var cf = lsCfFromCL(cl0); cl0.setLen nCl0
     cf.fin(cl0, os.commandLineParams() - cf.paths)
     if cf.hyperlink:
       cf.hostname = getHostname()
