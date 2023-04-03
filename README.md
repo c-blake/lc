@@ -115,10 +115,11 @@ a shell alias that does the `-xdot` and a related alias ending with an "a" that
 does not.  That mimics `ls` usage, but without spaces and '-'s to enter.  If the
 listing is well organized, seeing dot files by default may be considered as much
 a feature as a bug.  Including everything by default lets "dot" be user-defined.
-You can also do `-idot` to see *only* the dot files (or any other user/system
+
+You can also do `-idot` to list *only* the dot files (or any other user/system
 defined file kind) which is not something available in most file listers.  It's
 also not always easy to replicate via shell globbing the input list.  Eg., `lc
--r0 -idir -iodd` can often be illuminating on very aged file trees.
+-r0 -idir -iodd` in my config can be illuminating on very aged file trees.
 
 Multi-level sorting and user format strings are similar ideas to other tools
 like the Linux `ps`, `stat -c`, and `find -printf`.  Sorting by file kind is
@@ -133,7 +134,8 @@ This lets you name canned queries & reports and refer to them, like `lc -sl`.
 My view is that there is no one-size-fits-all-or-even-most long-format listing.
 `ls -sl` or a shorter `ll='lc -sl'` alias is the way to go.  Then you can make
 columns included (and their `order`, `--header` or not, ..) all just how you
-like.  I usually like 5 levels of long-ness, not 2, in my personal setup.
+like.  I usually like 5 levels of long-ness, not 2, in my personal setup in
+`configs/cb0/config` (& files included there).
 
 Automatic Abbreviations
 =======================
@@ -144,7 +146,7 @@ overlong filenames in a directory messing up column widths in a file listing.
 `lc -m16` lets you limit displayed length to 16 (or whatever) characters.  `lc`
 replaces the (user-definable) "middle slice" with a user-definable string.
 While you can use some UTF8 ellipsis, you probably want `*` since that choice
-will make most abbreviations valid shell patterns that you can copy-paste.
+will make most abbreviations copy-pasteable shell patterns.
 
 Manual width & slice selection may not result in patterns that expand uniquely,
 but `lc` has you covered with a variety of automatic abbreviation options that
@@ -171,26 +173,25 @@ In many little ways, `lc` tries hard to let you manage terminal real estate,
 targeting max information per row, while staying within an easy to visually
 parse table format.  Features along these lines are terse 4 column octal
 permission codes, rounding to 3-column file ages, 4 column file sizes.  If it
-succeeds too well you can have fewer, more spaced columns out more with `lc -n4`
-or something.  If it succeeds too poorly, you can use `-m`, drop format fields
-*or* identify the most effective rename targets with `lc -w5 -W$((COLUMNS+10))`
-which shows the widest 5 files in each output column (formatted as if you had
-10 more terminal cols).  A hard-to-advocate-but-possible way to save space is
-`lc -oL`.  Try it.  { I suspect this minimizes rows within a table constraint,
-but the proof is too small to fit in the margin. ;-)  Maybe some 2D bin packing
-expert can weigh in with a counter example. }
+succeeds too well you can have fewer, more spaced out columns with `lc -n4` or
+similar.  If it succeeds too poorly, you can use `-m`, drop format fields *or*
+identify the most effective rename targets with `lc -w5 -W$((COLUMNS+10))` which
+shows the widest 5 files in each output column (formatted as if you had 10 more
+terminal cols).  A hard-to-advocate-but-possible way to save space is `lc -oL`.
+Try it. { I suspect this minimizes rows within a table constraint, but the proof
+is too small to fit in the margin. ;-)  Maybe a 2D bin packing expert can weigh
+in with a counter example. }
 
 In the other direction, `lc` supports informational bonuses like ns-resolution
 file timestamps with `%1..%9` extensions to the `strftime` format language for
 fractions of a second to that many places as per your discretion, rate of disk
-utilization (`512*st_blocks/st_size` = allocated/addressable file bytes), as
-well as newer Linux `statx` attributes and birth times.
+utilization (`512*st_blocks/st_size` = allocated/addressable file bytes), newer
+Linux `statx` attributes and birth times, and more.
 
-`lc` also comes with boolean logic combiners for file kind tests, quite a few
-built-in tests, and is extensible for totally user-defined tests and formats.
-So, if there's just a thing or two missing then you can probably add it without
-much work.  Given human reading time and fast NVMe devices, even doing "du -s"
-inside a format call is not unthinkable, though unlikely to be a popular default
-style.  Hard-coding Git support seems popular these days.  I do not do that yet,
-and I'm not sure I want the direct dependency, but you may be able to hack
-something together.
+`lc` also comes with boolean logic combiners for file kind tests, many built-in
+tests, and is extensible for totally user-defined tests and formats.  If there's
+just a thing or two missing then you can likely add it without much work.  Given
+human reading time and fast NVMe devices, even doing "du -s" inside a format is
+not unthinkable, though unlikely to be a popular default style.  Hard-coding Git
+support seems popular these days.  I do not do that yet, and I'm not sure I want
+the direct dependency, but you may be able to hack something together.
