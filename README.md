@@ -89,8 +89,8 @@ blinking, and so on).  I happen to like [st](https://git.suckless.org/st/) for
 its hackability which supports bold, italic, blink, underline, struck, inverse
 all as 6 independent text attributes. (Color inversion involves a mapping likely
 too complex to be a useful visual aid.)  So, 7 usable output dimensions, with 5
-being shallow 1-bit dimensions.  Though subjective, I find text with all these
-embellishments at once legible on my primary displays.  Geographical map people
+being shallow 1-bit dimensions.  While subjective, I find text with all those
+attributes at once legible on my primary displays.  Geographical map people
 often call this "layers".  `lc` aids "aligning" rendering or output dimensions
 with classification or input dimensions.
 
