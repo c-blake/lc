@@ -103,7 +103,7 @@ with picked poisons of output traits.[^1]
 This may sound daunting, but many highlighting systems follow this model - e.g.
 a misspelled word bolded inside a source code comment.  `lc` simply recognizes
 the mathematical structure to try to enable smarter allocation/assignment over
-more than just 2 dimensions like (misspelling, comment).
+more dimensions than (misspelling, comment) due to file kind diversity.
 
 Configurability
 ===============
