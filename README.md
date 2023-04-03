@@ -81,28 +81,30 @@ Multi-dimensionality/Attribute Layers
 =====================================
 The most obscure of these is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
-graphical file tree sense.  Examples of dimensions may help.  One file can be
-both an executable regular file and some kind of script source.  Or both a
-directory and a directory with a sticky bit set.  On the output side, you can
-also set the foreground & background colors of text independently (as well as
-blinking, and so on).  I happen to like [st](https://git.suckless.org/st/) for
-its hackability which supports bold, italic, blink, underline, struck, inverse
-all as 6 independent text attributes. (Color inversion involves a mapping likely
-too complex to be a useful visual aid.)  So, 7 usable output dimensions, with 5
-being shallow 1-bit dimensions.  While subjective, I find text with all those
-attributes at once legible on my primary displays.  Geographical map people
-often call this "layers".  `lc` aids "aligning" rendering or output dimensions
-with classification or input dimensions.
+graphical file tree sense.  Examples of dimensions/attributes may help.
 
-On the input/data side there are a few natural "query" dimensions such as traits
-based on dtype data, stat data, ACLs, .., that performance-sensitive folk may
-like, but there are also *many* independent fields & bits just in `struct stat`.
-Not much is mutually exclusive like the dtype.  So, `lc` users can configure
-however many classification dimensions to line up against their picked poisons
-of output dimensions.  Operationally, users just pick small integer labels for
-dimensions/series of order-dependent tests.  The first test passing within a
-given dimension wins that dimension.  To aid debugging kind assignments you can
-do things like `lc -f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.
+Output text can set the foreground & background colors of text independently.  I
+happen to like [st](https://git.suckless.org/st/) for its hackability.  That can
+do bold, italic, blink, underline, struck, inverse as 6 independent attributes.
+(Color inversion involves a mapping too complex to be a very useful visual aid.)
+So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions.  While
+subjective, I find identifying/distinguishing text with all those attributes not
+hard my primary displays/fonts.  Geographical map folk often call this "layers".
+`lc` aids "aligning" rendered output traits with classified input traits.
+
+The input/data side has *many* more independent fields & bits.  While `d_type`
+is mutually exclusive, most are not.  E.g., a file can be both an executable
+regular file and some kind of script source or both a directory and a directory
+with a sticky bit set.  Add all of `struct stat` and deep file header inspection
+and the type space explodes.  Only end users can decide priority of matching
+precious few output traits.
+
+To aid this matching, `lc` users can configure classification dimensions to line
+up against picked poisons of output dimensions.  Operationally, users just pick
+small integer labels for dimensions aka series of order-dependent tests aka
+classes.  The first passing kind test within a dimension wins that dimension.
+To aid debugging kind assignments you can do things like `lc -f%0%1%2%3%4%5\ %f`
+to see coordinates in the first 6 dims.
 
 Configurability
 ===============
@@ -110,11 +112,13 @@ As for the bread and butter of file listing, many things that are hard-coded in
 other file listers are fully user-defined in `lc`, like a concept of dot files.
 Assuming you define a "dot" or "dotfile" type `lc -xdot` will probably exclude
 those from a listing.  (Unique prefixes being adequate may mean a longer string
-if you define other file kinds with names starting with "dot".)  I usually have
-a shell alias that does the `-xdot` and a related alias ending with an "a" that
-does not.  That mimics `ls` usage, but without spaces and '-'s to enter.  If the
-listing is well organized, seeing dot files by default may be considered as much
-a feature as a bug.  Including everything by default lets "dot" be user-defined.
+if you define other file kinds with names starting with "dot".)
+
+I usually have a shell alias that does the `-xdot` and a related alias ending
+with an "a" that does not.  That mimics `ls` usage, but without spaces and '-'s
+to enter.  If the listing is well organized, seeing dot files by default may be
+considered as much a feature as a bug.  Including everything by default lets
+"dot" be user-defined.
 
 You can also do `-idot` to list *only* the dot files (or any other user/system
 defined file kind) which is not something available in most file listers.  It's
@@ -143,8 +147,9 @@ A feature I don't know of any terminal file listers using is abbreviation (GUIs
 have this, though and PowerShell9k/10k in single-path prompt contexts).  Most
 everyone has probably been annoyed at one time or another by some pesky few
 overlong filenames in a directory messing up column widths in a file listing.
-`lc -m16` lets you limit displayed length to 16 (or whatever) characters.  `lc`
-replaces the (user-definable) "middle slice" with a user-definable string.
+`lc -m16` lets you limit displayed length to 16 (or whatever) characters.
+
+`lc` replaces the (user-definable) "middle slice" with a user-definable string.
 While you can use some UTF8 ellipsis, you probably want `*` since that choice
 will make most abbreviations copy-pasteable shell patterns.
 
@@ -163,6 +168,7 @@ There are similar `-U`, `-G`, `-M` for user user names, group names, and symlink
 targets.  While shells will not expand `*` in user/group names, you can change
 the separator to something else or even the empty string to save terminal
 columns as in `-U4,,,` and have a little `grep <PASTE> /etc/passwd` helper.
+
 Auto modes are not yet available for symlink targets since when they matter most
 they are a bit expensive (requiring minimizing patterns over whole directories
 for every path component).
@@ -172,12 +178,13 @@ Some Details On Other Features
 In many little ways, `lc` tries hard to let you manage terminal real estate,
 targeting max information per row, while staying within an easy to visually
 parse table format.  Features along these lines are terse 4 column octal
-permission codes, rounding to 3-column file ages, 4 column file sizes.  If it
-succeeds too well you can have fewer, more spaced out columns with `lc -n4` or
-similar.  If it succeeds too poorly, you can use `-m`, drop format fields *or*
+permission codes, rounding to 3-column file ages, 4 column file sizes.
+
+If it is too dense, you can have fewer, more spaced out columns with `lc -n4` or
+similar.  If it is too sparse, you can use `-m`, drop format fields *or*
 identify the most effective rename targets with `lc -w5 -W$((COLUMNS+10))` which
-shows the widest 5 files in each output column (formatted as if you had 10 more
-terminal cols).  A hard-to-advocate-but-possible way to save space is `lc -oL`.
+shows the widest 5 files in each output column formatted as if you had 10 more
+terminal cols.  A hard-to-advocate-but-possible way to save space is `lc -oL`.
 Try it. { I suspect this minimizes rows within a table constraint, but the proof
 is too small to fit in the margin. ;-)  Maybe a 2D bin packing expert can weigh
 in with a counter example. }
