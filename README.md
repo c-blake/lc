@@ -200,5 +200,5 @@ tests, and is extensible for totally user-defined tests and formats.  If there's
 just a thing or two missing then you can likely add it without much work.  Given
 human reading time and fast NVMe devices, even doing "du -s" inside a format is
 not unthinkable, though unlikely to be a popular default style.  Hard-coding Git
-support seems popular these days.  I do not do that yet, and I'm not sure I want
-the direct dependency, but you may be able to hack something together.
+support seems popular these days.  I don't do that yet.  I'm not sure I want a
+direct dependency, but you may be able to hack something together.
