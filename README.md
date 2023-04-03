@@ -190,10 +190,10 @@ is too small to fit in the margin. ;-)  Maybe a 2D bin packing expert can weigh
 in with a counter example. }
 
 In the other direction, `lc` supports informational bonuses like ns-resolution
-file timestamps with `%1..%9` extensions to the `strftime` format language for
-fractions of a second to that many places as per your discretion, rate of disk
-utilization (`512*st_blocks/st_size` = allocated/addressable file bytes), newer
-Linux `statx` attributes and birth times, and more.
+file times with `%1..%9` extensions to the `strftime` format language for
+fractions of a second to that many places, rate of disk utilization
+(`512*st_blocks/st_size` = allocated/addressable file bytes), newer Linux
+`statx` attributes and birth times, and more.
 
 `lc` also comes with boolean logic combiners for file kind tests, many built-in
 tests, and is extensible for totally user-defined tests and formats.  If there's
