@@ -97,14 +97,7 @@ is mutually exclusive, most are not.  E.g., a file can be both an executable
 regular file and some kind of script source or both a directory and a directory
 with a sticky bit set.  Add all of `struct stat` and deep file header inspection
 and the type space explodes.  Only end users can decide priority of matching
-precious few output traits.
-
-To aid this matching, `lc` users can configure classification dimensions to line
-up against picked poisons of output dimensions.  Operationally, users just pick
-small integer labels for dimensions aka series of order-dependent tests aka
-classes.  The first passing kind test within a dimension wins that dimension.
-To aid debugging kind assignments you can do things like `lc -f%0%1%2%3%4%5\ %f`
-to see coordinates in the first 6 dims.
+precious few output traits.[^1]
 
 Configurability
 ===============
@@ -130,8 +123,7 @@ like the Linux `ps`, `stat -c`, and `find -printf`.  Sorting by file kind is
 possible and "kind orders" are user-configurable.  Between kind order assignment
 and multi-dimensionality you can filter & group almost any way that makes sense,
 and none of that needs any changing of `lc` proper - just your configuration.
-Less can be more with good factoring.  `lc` is almost an "`ls`-Construction
-toolkit".
+Less can be more with good factoring.  `lc` is more an "`ls` framework".
 
 Because of all that flexibility, `lc` has a built in style/aliasing system.
 This lets you name canned queries & reports and refer to them, like `lc -sl`.
@@ -202,3 +194,12 @@ human reading time and fast NVMe devices, even doing "du -s" inside a format is
 not unthinkable, though unlikely to be a popular default style.  Hard-coding Git
 support seems popular these days.  I don't do that yet.  I'm not sure I want a
 direct dependency, but you may be able to hack something together.
+
+[^1]: To aid this matching, `lc` users can configure classification dimensions
+to line up against picked poisons of output dimensions.  Operationally, users
+just pick small integer labels for dimensions aka series of order-dependent
+tests aka classes.  The first passing kind test within a dimension wins that
+dimension.  To aid debugging kind assignments you can do things like `lc
+-f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.  The inspiration
+for this system was having "dot-file directories" sorted in a block before all
+dot regular files, but it is obviously much more general.
