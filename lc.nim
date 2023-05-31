@@ -803,8 +803,9 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.cl0   = cl0
   cf.cl1   = cl1
   cf.cwd   = getCurrentDir()
-  cf.ext1c = cast[ExtFmt](if cf.ext1.len > 0: loadSym(cf.ext1) else: efRef)
-  cf.ext2c = cast[ExtFmt](if cf.ext2.len > 0: loadSym(cf.ext2) else: efRef)
+  template x(e,d):untyped=cast[ExtFmt](if e.len>0:e.loadSym else:cast[pointer](d))
+  cf.ext1c = x(cf.ext1, efRef)
+  cf.ext2c = x(cf.ext2, efRef)
   cg       = cf.addr                          #Init global ptr
 
 ###### DRIVE ABOVE: BUILD AN FS-INTERROGATED AND CLASSIFIED Fil OBJECT
