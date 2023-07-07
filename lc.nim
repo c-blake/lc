@@ -86,8 +86,8 @@ For format specs only capitals mean an alternate time format & there are also:
   Z selinux label    q spaced perm  e|E ExternProgOutput  @ 4th:Col Of colorKind
   3-8 fmtDim3-8    9./ tgtFmtDim0-2
 For MULTI-LEVEL order specs only +- mean incr(dfl)/decreasing & there are also:
-  e shortestExtension(last.->end)   N numericFileName A abbreviatedFileName
-  E longestExtension(first.->end)   L fileNameLength  3-5,6-8,9./ ~ fK,tO,tK 0-2
+  e shortestExtension(LAST'.'->END) N NumericFileName A AbbreviatedFileName
+  E longestExtension(FIRST'.'->END) L fileNameLength  3-5,6-8,9./ ~ fK,tO,tK 0-2
 ATTR specs: plain, bold, italic, underline, blink, inverse, struck, NONE, black,
 red, green, yellow, blue, purple, cyan, white; UPPERCASE =>HIGH intensity while
 "on_" prefix => BACKGROUND color; 256-color xterm attrs are [fb][0..23] for
