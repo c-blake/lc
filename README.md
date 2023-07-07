@@ -79,7 +79,7 @@ yet another file lister?  What's the point?  Well, `lc`
 
 Multi-dimensionality/Attribute Layers
 =====================================
-The most obscure of these is likely "multi-dimensional".  I mean this in the
+The most obscure idea is likely "multi-dimensional".  I mean this in the
 mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions/attributes may help.
 
@@ -88,9 +88,10 @@ happen to like [st](https://git.suckless.org/st/) for its hackability.  That can
 do bold, italic, blink, underline, struck, inverse as 6 independent attributes.
 (Color inversion involves a mapping too complex to be a very useful visual aid.)
 So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions.  While
-subjective, I find identifying/distinguishing text with all those attributes not
-hard my primary displays/fonts.  Geographical map folk often call this "layers".
-`lc` aids "aligning" rendered output traits with classified input traits.
+subjective, I find identifying/distinguishing text with *all* those attributes
+on|off not hard with my primary displays/fonts.  Geographical map folk often
+call this "layers".  `lc` aids "aligning" rendered output traits with classified
+input traits.
 
 The input/data side has *many* more independent fields & bits.  While `d_type`
 is mutually exclusive, most are not.  E.g., a file can be both an executable
