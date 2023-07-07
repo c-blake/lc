@@ -101,9 +101,9 @@ output traits.  To aid this use, `lc` users can configure file kinds to pair
 with picked poisons of output traits.[^1]
 
 This may sound daunting, but many highlighting systems follow this model - e.g.
-a misspelled word bolded inside a source code comment.  `lc` simply recognizes
-the mathematical structure to try to enable smarter allocation/assignment over
-more dimensions than (misspelling, comment) due to file kind diversity.
+a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
+simply recognizes this structure to try to enable smarter allocation/assignment
+over more dimensions than (misspelling, comment) due to file kind diversity.
 
 Configurability
 ===============
