@@ -11,5 +11,7 @@
 
 #Just some global default overrides.  All easily overridden on cmd line/by ".lc"
 glyph  = "▶ "  #UTF8 "play button+SPC", not " -> "; FONT/TERMINAL SENSITIVE
-order  = 0134EN   #Default sort order: kind-order0,1; fmtKindNum0,1; longExt,Nm
+order  = 0134EN   #Default sort order:
+                  #  kind-order0,1; fmtKindNum0,1;
+                  #    longExtension (.tar.gz .tar.xz together), Numeric-y Name
 format = %f       #Default format; easily overridden on cmd-line or by style
