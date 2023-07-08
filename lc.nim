@@ -85,7 +85,7 @@ The following 1-letter codes work for **BOTH format AND order specs**:
 For **format specs ONLY** capitals mean an alternate time format & there are also:
   *r* readlink        *S* size(bytes)  *l* ls-KindCode(dl-..)  *x* stxAttrCode
   *R* lnk w/color tgt *P* Octal Perms  *L* ls-KindCode(/@\\*|=)  *Q* "+" if hasAcl
-  *Z* selinux label   *q* spaced perm *e|E* ExternProgOutput   *@* 4th:Col Of colorKind
+  *Z* selinux label   *q* "rwx" perms *e|E* ExternProgOutput   *@* 4th:Col Of colorKind
  *3-8* fmtDim3-8     *9./* tgtFmtDim0-2
 
 For **MULTI-LEVEL order specs ONLY** +- mean incr(dfl)/decreasing &there are also:
