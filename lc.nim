@@ -82,13 +82,13 @@ The following 1-letter codes work for **BOTH format AND order specs**:
   *K* file blocks   *G* group name  *v*|*V* vsnTm=mx(cm) *d* minor devno
   *n* link count    *p* rwx perms   *b*|*B* birth time   *o* %sz occupied
 
-For **format specs only** capitals mean an alternate time format & there are also:
+For **format specs ONLY** capitals mean an alternate time format & there are also:
   *r* readlink        *S* size(bytes)  *l* ls-KindCode(dl-..)  *x* stxAttrCode
   *R* lnk w/color tgt *P* Octal Perms  *L* ls-KindCode(/@\\*|=)  *Q* "+" if hasAcl
   *Z* selinux label   *q* spaced perm *e|E* ExternProgOutput   *@* 4th:Col Of colorKind
  *3-8* fmtDim3-8     *9./* tgtFmtDim0-2
 
-For **MULTI-LEVEL order specs only** +- mean incr(dfl)/decreasing &there are also:
+For **MULTI-LEVEL order specs ONLY** +- mean incr(dfl)/decreasing &there are also:
   *e* shortestExtension(LAST'.'->END) *N* NumericFileName *A* AbbreviatedFileName
   *E* longestExtension(FIRST'.'->END) *L* fileNameLength  *3-5|6-8|9./* ~ fK|tkO|tK
 
