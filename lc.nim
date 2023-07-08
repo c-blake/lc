@@ -115,23 +115,23 @@ BUILTIN: *reg* *dir* *bdev* *cdev* *fifo* *sock* *symlink*
  *xatr*: CAP hasLinuxCapability *ACL* hasACL""",
                       "colors" : "color aliases; Syntax: name = ATTR1 ATTR2..",
                       "color"  : """text attrs for file kind/fields. Syntax:
-  **NAME**[[:**KEY**][:**DIM**]]<WSPC>ATTR<WSPC>ATTR..
-**NAME** kind nm as above|size{BKMGT}|perm{0-7}
-**KEY** a 0..255 sort/ord key, **DIM** dimension no.
-ATTR attr specs as above""",
-                      "ageFmt":"""Syntax: FILEAGE'@'[-+]STRFTIME_FMT where:
-  FILEAGE in {seconds,'FUTURE','ANYTIME'},
-  + means AltFmt, - means plain mode fmt,
-  %CODEs are any strftime + %<DIGIT>.""",
-                    "format"   : "\"%[-]a %[-]b\" l/r aligned fields to ls",
+  **NAME[[:KEY][:DIM]] ATTR ATTR..**
+**NAME** kind as above | *size{BKMGT}* | *perm{0-7}*
+**KEY** a 0..255 *SORT/ORD* key **DIM** dimension no.
+**ATTR** specs as above""",
+                      "ageFmt":"""Syntax: *<FILEAGE>@[-+]<STRFTIME_FMT>* where:
+  *FILEAGE* is in {seconds,'FUTURE','ANYTIME'}
+  '+' means AltFmt, '-' means plain mode fmt
+  strftime %CODEs are any strftime & %DIGIT""",
                     "order"    : "[-]x[-]y[-]z.. keys to sort files by",
+                    "format"   : "\"%a %b ..\" dirent format; %-X left-aligns",
                     "recurse"  : "recurse N levels; 0 => unbounded",
                     "dirs"     : "list dirs as themselves, not contents",
                     "binary"   : "K=size/1024, M=size/1024/1024 (vs /1000..)",
                     "dense"    : "no blanks between multiple dir listings",
                     "deref"    : "deref symlinks generally",
                     "access"   : "use 3\\*access(2) not st_mode for RWX perms",
-                    "plain"    : "plain text; aka no color escape sequences",
+                    "plain"    : "plain text; No color escape sequences",
                     "header"   : "add a row at start of data with col names",
                     "padMax"   : "max spaces by which to pad major columns",
                     "nColumn"  : "max major columns to use",
