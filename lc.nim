@@ -432,33 +432,35 @@ var cmpOf: Table[char, tuple[ds: DataSrcs, cmp: proc(x, y:ptr Fil):int]]
 template cAdd(code, ds, cmpr, T, data: untyped) {.dirty.} =
   cmpOf[code] = (ds, proc(a, b: ptr Fil): int {.closure.} =
                    proc get(f: Fil): T = data   #AVAILABLE: hjlqrtwxyz
-                   cmpr(get(a[]), get(b[])))    #           ABCHIJMOPQRSTVWXYZ
+                   cmpr(get(a[]), get(b[])))    #           BCHIJMOPQRSTVWXYZ
 proc abbr(f: Fil): string = (if f.abb.len > 0: f.abb else: f.name)
-cAdd('f', {}   , cmp , string  ): f.name
-cAdd('A', {}   , cmp , string  ): f.abbr
-cAdd('F', {}   , cmp , string  ): f.name[f.base..^1]
-cAdd('e', {}   , cmpN, string  ): f.name[f.sext..^1]
-cAdd('E', {}   , cmpN, string  ): f.name[f.lext..^1]
-cAdd('N', {}   , cmpN, string  ): f.name
-cAdd('L', {}   , cmp , uint    ): f.abbr.len.uint
-cAdd('s', {dsS}, cmp , uint    ): f.st.st_size.uint
-cAdd('K', {dsS}, cmp , uint    ): f.st.st_blocks.uint
-cAdd('k', {dsS}, cmp , uint    ): f.st.st_blksize.uint
-cAdd('n', {dsS}, cmp , uint    ): f.st.st_nlink.uint
-cAdd('u', {dsS}, cmp , uint    ): f.st.st_uid.uint
-cAdd('g', {dsS}, cmp , uint    ): f.st.st_gid.uint
-cAdd('U', {dsS}, cmp , string  ): f.usr  #Could do a hash lookup each time here,
-cAdd('G', {dsS}, cmp , string  ): f.grp  #..but usr/grp names are usually short.
-cAdd('p', {dsS}, cmp , uint    ): f.st.st_mode.uint and 4095
-cAdd('a', {dsS}, cmp , Timespec): f.st.st_atim
-cAdd('m', {dsS}, cmp , Timespec): f.st.st_mtim
+cAdd('f', {}   , cmp , string  ): f.name              # Basic thing ls/glob do
+cAdd('A', {}   , cmp , string  ): f.abbr              # Our auto-glob-abbrevs
+cAdd('F', {}   , cmp , string  ): f.name[f.base..^1]  # Just *base*name(if diff)
+cAdd('e', {}   , cmpN, string  ): f.name[f.sext..^1]  # File extensions; See..
+cAdd('E', {}   , cmpN, string  ): f.name[f.lext..^1]  #.. cligen/humanUt.cmpN
+cAdd('N', {}   , cmpN, string  ): f.name              # Name w/number tuples
+cAdd('L', {}   , cmp , uint    ): f.abbr.len.uint     # Savagely compact table
+cAdd('s', {dsS}, cmp , uint    ): f.st.st_size.uint   # File-address space
+cAdd('K', {dsS}, cmp , uint    ): f.st.st_blocks.uint  # KiB usually cap 'K'
+cAdd('k', {dsS}, cmp , uint    ): f.st.st_blksize.uint # Arguably not useful
+cAdd('n', {dsS}, cmp , uint    ): f.st.st_nlink.uint  # Num hard-links/SubDirs
+cAdd('u', {dsS}, cmp , uint    ): f.st.st_uid.uint    # Most know root=0..
+cAdd('g', {dsS}, cmp , uint    ): f.st.st_gid.uint    #   or wheel=0
+cAdd('U', {dsS}, cmp , string  ): f.usr # Could hashmap->an Id each time here,
+cAdd('G', {dsS}, cmp , string  ): f.grp #..but usr/grp names are mostly short
+cAdd('p', {dsS}, cmp , uint    ): f.st.st_mode.uint and 4095  #P)ermissions
+cAdd('a', {dsS}, cmp , Timespec): f.st.st_atim  # File times: a)ccess, m)odify,
+cAdd('m', {dsS}, cmp , Timespec): f.st.st_mtim  #          c)hangeInode, b)irth
 cAdd('c', {dsS}, cmp , Timespec): f.st.st_ctim
-cAdd('v', {dsS}, cmp , Timespec): f.st.st_vtim
+cAdd('v', {dsS}, cmp , Timespec): f.st.st_vtim  # v-time is max(c,m)=V)ersionTm
 cAdd('b', {dsS}, cmp , Timespec): f.st.st_btim
-cAdd('D', {dsS}, cmp , Dev     ): f.st.st_rmaj
+cAdd('D', {dsS}, cmp , Dev     ): f.st.st_rmaj  # Major&minor dev & i-node nums
 cAdd('d', {dsS}, cmp , Dev     ): f.st.st_rmin
 cAdd('i', {dsS}, cmp , uint    ): f.st.st_ino.uint
-cAdd('o', {dsS}, cmp , float   ): f.st.util
+cAdd('o', {dsS}, cmp , float   ): f.st.util     # o)ccupancy; '%' instead?
+# User-defined (hard to make memorable) 1st 3dims of kord,fKind & for symLn tgts
+# If do cligen/strUt.MacroCall, could instead be: fko0-9, fk0-9, tko0-9, tk0-9.
 cAdd('0', {dsS}, cmp , uint8   ): cg.kinds[f.kind[0]].kord  #{dsS} should be..
 cAdd('1', {dsS}, cmp , uint8   ): cg.kinds[f.kind[1]].kord  #..union of all data
 cAdd('2', {dsS}, cmp , uint8   ): cg.kinds[f.kind[2]].kord  #..needs in tests
