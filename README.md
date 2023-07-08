@@ -80,31 +80,36 @@ yet another file lister?  What's the point?  Well, `lc`
 Multi-dimensionality/Attribute Layers
 =====================================
 The most obscure idea is likely "multi-dimensional".  I mean this in the
-mathematical "independent coordinate" sense **not** a Jurassic Park (1993)-esque
+mathematical "**INDEPENDENT coordinate**" sense **not** a Jurassic Park (1993)-esque
 graphical file tree sense.  Examples of dimensions/attributes may help.
 
-Output text can set the foreground & background colors of text independently.  I
-happen to like [st](https://git.suckless.org/st/) for its hackability.  That can
-do bold, italic, blink, underline, struck, inverse as 6 independent attributes.
+Output text can set the foreground & background colors of text **independently**.
+I happen to like [st](https://git.suckless.org/st/) for its hackability.  That
+can do bold, italic, blink, underline, struck, inverse as 6 independent traits.
 (Color inversion involves a mapping too complex to be a very useful visual aid.)
-So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions.  While
+So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions and the
+foreground & background colors having more continuous value ranges.  While
 subjective, I find identifying/distinguishing text with *all* those attributes
 on|off not hard with my primary displays/fonts.  Geographical map folk often
 call this "layers".  `lc` aids "aligning" rendered output traits with classified
 input traits.
 
 The input/data side has *many* more independent fields & bits.  While `d_type`
-is mutually exclusive, most are not.  E.g., a file can be both an executable
+is mutually exclusive, most types aren't. E.g., a file can be both an executable
 regular file and some kind of script source or both a directory and a directory
-with a sticky bit set.  Add all of `struct stat` and deep file header inspection
-and the type space explodes.  Only end users can prioritize use of precious few
-output traits.  To aid this use, `lc` users can configure file kinds to pair
-with picked poisons of output traits.[^1]
+with a sticky bit set and independently of both beginning with a '.' or not.
+Add all of `struct stat` and deep file header inspection and the type space just
+explodes both in kinds and independent sub-kinds/dimensions (stripped or not,
+32-bit, 64-bit binaries, etc., etc.).
+
+Only end users can prioritize use of precious few output dimensions.  To aid
+this use, `lc` users can configure file kinds to pair with picked poisons of
+output traits.[^1]
 
 This may sound daunting, but many highlighting systems follow this model - e.g.
 a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
-simply recognizes this structure to try to enable smarter allocation/assignment
-over more dimensions than (misspelling, comment) due to file kind diversity.
+simply models this structure explicitly to try to enable better allocation over
+more dimensions than just the 2 (misspelling,comment) due to diverse file types.
 
 Configurability
 ===============
