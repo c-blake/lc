@@ -87,7 +87,7 @@ For format specs only capitals mean an alternate time format & there are also:
   3-8 fmtDim3-8    9./ tgtFmtDim0-2
 For MULTI-LEVEL order specs only +- mean incr(dfl)/decreasing & there are also:
   e shortestExtension(LAST'.'->END) N NumericFileName A AbbreviatedFileName
-  E longestExtension(FIRST'.'->END) L fileNameLength  3-5,6-8,9./ ~ fK,tO,tK 0-2
+  E longestExtension(FIRST'.'->END) L fileNameLength  3-5|6-8|9./ ~ fK|tkO|tK
 ATTR specs: plain, bold, italic, underline, blink, inverse, struck, NONE, black,
 red, green, yellow, blue, purple, cyan, white; UPPERCASE =>HIGH intensity while
 "on_" prefix => BACKGROUND color; 256-color xterm attrs are [fb][0..23] for
