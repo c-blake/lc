@@ -1,0 +1,423 @@
+.Dd July 9, 2023
+.Os
+.Dt LC 1
+.Sh NAME
+.Nm lc
+.Nd list directory contents custom-classified-colorfully
+.Sh SYNOPSIS
+.Nm
+.Bk -words
+.Op Fl OPTIONS..
+.Op Fl -
+.Op Cm PATHS..
+.Ek
+.Sh DESCRIPTION
+.Nm
+lists directory contents like
+.Xr ls 1
+in a filtered, sorted, tabular way, but with idea factoring tuned towards
+more customizability.
+.Nm
+does not come with any built-in configuration, but the distribution does ship
+with one which may serve as a starting point.
+.Pp
+There are quite a few specification nano-languages with many sometimes terse
+codes { after the style of
+.Xr find 1
+&
+.Xr strftime 3
+} that drive all of this.  Though the source code will always be the best
+reference, not everyone has the energy for Nim as well as all these bespoke
+nano-langs.  While \fIlc --help\fR gives a quick reference, this present
+document goes into more detail.
+.Sh "OPTIONS (AKA FLAGS)"
+Defaults are in () except for boolean flags which all default to false.
+.Ss "File typology"
+\fB\-k=\fR, \fB\-\-kind=\fR ({}) \fI[TYPE-NAME-BINDINGS/DEFINITION STRINGS]\fP
+.br
+where a binding/def string is: "\fBNAME RELATION PARAMS\fP" with 3 or more
+fields are whitespace-separated and:
+.Bl -tag -width "any|all|none" -compact -offset indent
+.It Em RELATION
+PARAMS
+.It Em cset
+param=str of chars base name can have
+.It Em SFX|sfx
+case\-(|in)sensitive base name suffixes
+.It Em PFX|pfx
+case\-(|in)sensitive base name prefixes
+.It Em pcr
+Perl\-Compatible Regexes match base name
+.It Em uid|gid
+numeric uids|gids (or Uid|Gid) file owners
+.It Em usr|grp
+exact string users or groups file owners
+.It Em mag
+pcRegexes matching
+.Xr libmagic 3
+description 
+.It Em ext
+extension - x.so:func(qpath: cstring) != 0
+.It Em any|all|none
+earlier defined | builtin kind names
+.El
+BUILTIN TYPE \fBNAME\fRs:
+.Bl -tag -width SYMLINK -compact
+.It Em reg
+Is a regular file
+.It Em dir
+Is a directory
+.It Em bdev
+Is a block device
+.It Em cdev
+Is a character device
+.It Em fifo
+Is a FIFO / named pipe
+.It Em sock
+Is a Unix domain socket
+.It Em symlink
+Is any symbolic link
+.It Em +\-sym
+Is a symlink pointing to +present/-missing
+.It Em hard
+Non-(dir|symlink) file with hard link count > 1
+.It Em exec
+File is executable non-(dir|symlink)
+.It Em suid
+Is setuid & executable
+.It Em sgid
+Is setgid & executable
+.It Em tmpD
+Is a directory with sticky bit set (like /tmp)
+.It Em worldW
+Is world writable (but not sticky)
+.It Em unR
+Is unreadable (by invoking user) file/untraversable dir
+.It Em odd
+Has odd permissions: u+s & (!x | !reg), g+s & g-x, +t & !o+w, !(u >= g >= o), +w & -r
+.It Em IMMUT
+statx - has immutable attribute
+.It Em APPEND
+statx - has append-only attribute
+.It Em COMPR
+statx - has compressed attribute
+.It Em ENCRYP
+statx - has encrypted attribute
+.It Em NODUMP
+statx - has NoDump attribute
+.It Em AUTOMT
+statx - has AutoMount attribute
+.It Em CAP
+Linux - has some Linux FS Capability
+.It Em ACL
+has some ACL
+.El
+.Ss "Formatting & Sorting"
+\fB\-c=\fR, \fB\-\-color=\fR ({})   RenderSpecificationStrings
+.br
+each with syntax: \fBNAME[:KEY[:DIM[:ICON]]] ATTR ATTR..\fP
+.br
+where whitespace amounts do not matter and:
+.Bl -tag -width NAME: -compact -offset indent
+.It Em NAME:
+(as in --kind) | \fIsize{BKMGT}\fP | \fIperm{0\-7}\fP
+.It Em KEY:
+optional 0..255 \fISORT/ORDER\fP key
+.It Em DIM:
+optional format dimension (for layers)
+.It Em ICON:
+optional UTF-8 icon string
+.It Em ATTR:
+color/text attr specs as in TEXT ATTRIBUTE section
+.El
+\fB\-a=\fR, \fB\-\-ageFmt=\fR ({})   \fIFileAgeFormatStrings\fP
+.br
+each with syntax: \fI<FileAge>@[\-+]<STRFTIME_FMT>\fP where:
+.Bl -tag -width STRFTIME -compact -offset indent
+.It Em FileAge
+is {seconds | 'FUTURE' | 'ANYTIME'}
+.It Em \&'+'
+means the alternate format
+.It Em '\-'
+means plain mode format
+.It Em strftime
+%CODEs are any strftime & %DIGIT
+.It Order can matter here; Arrange oldest to youngest.
+.El
+\fB\-o=\fR, \fB\-\-order=\fR ("") [\-]x[\-]y[\-]z.. keys to sort files
+by.  For what x,y,z can be see FORMAT & ORDER CODES section of this page.
+.Pp
+\fB\-f=\fR, \fB\-\-format=\fR ("%f") "%a %b .." dirent format; %\-X
+left\-aligns For what a,b,.. can be see FORMAT & ORDER CODES section of this
+page.
+.Pp
+\fB\-q\fR, \fB\-\-quote\fR           quote filenames with unprintable chars
+.Pp
+\fB\-e=\fR, \fB\-\-ext1=\fR ("")     %e output from x.so:func(qpath: cstr)\->cstr
+.Pp
+\fB\-E=\fR, \fB\-\-ext2=\fR ("")     %E output from x.so:func(qpath: cstr)\->cstr
+.Ss "Meta"
+\fB\-C=\fR, \fB\-\-colors=\fR ({})   color aliases; Syntax: name = ATTR1 ATTR2..
+.Pp
+\fB\-S=\fR, \fB\-\-Style=\fR ("")    DEFINE an output style arg bundle
+.Pp
+\fB\-s=\fR, \fB\-\-style=\fR ("")    APPLY an output style
+.Pp
+\fB\-X=\fR, \fB\-\-extra=\fR ("")    add params from config ARG
+.br
+where ARG means:
+.Bl -tag -width trailingXX -compact -offset indent
+.It "[SHADOW]."
+Look for \fI.lc\fP in the same dir as being listed
+.It "[SHADOW]/"
+Look for \fI.lc\fP in any parent dir of that being listed
+.It "[SHADOW]/."
+Look for \fI.lc\fP in the same dir as that being listed if auto-recursing
+.It "[SHADOW]//"
+Look for \fI.lc\fP in any parent dir of that being listed if auto-recursing
+.El
+.Ip
+If optional \fISHADOW\fP is not "", paths relative to that directory are where
+\fIlc\fP is actually searched for.  (You may need \fISHADOW\fP for various
+reasons - no write perm to /usr/lib, no persistence to /dev, etc.)
+.Ss "Content Generation & Filtering"
+\fB\-d\fR, \fB\-\-dirs\fR            list dirs as themselves, not contents
+.Pp
+\fB\-r=\fR, \fB\-\-recurse=\fR (1)   recurse N levels; 0 => unbounded
+.Pp
+\fB\-i=\fR, \fB\-\-incl=\fR ({})     kind \fINAME\fPs to include
+.Pp
+\fB\-x=\fR, \fB\-\-excl=\fR ({})     kind \fINAME\fPs to exclude
+.Pp
+\fB\-w=\fR, \fB\-\-widest=\fR (0)    only list this many widest entries
+in each column; 0 => do not filter.  This seemingly odd feature is useful to see
+if there are a few files where renaming to shorter names would allow more
+columns.
+.Ss "Table Controls"
+\fB\-n=\fR, \fB\-\-nColumn=\fR (999) max major columns to use
+.Pp
+\fB\-1\fR, \fB\-\-n1\fR              same as \fB\-n1\fR; mostly to have a long
+option to bind short form \fB\-1\fR commonly available in file listers.
+.Pp
+\fB\-P=\fR, \fB\-\-padMax=\fR (999)  max spaces by which to pad major columns
+.Pp
+\fB\-W=\fR, \fB\-\-width=\fR (0)     override auto\-detected terminal width
+.Pp
+\fB\-D\fR, \fB\-\-dense\fR           no blanks between multiple dir listings
+.Pp
+\fB\-u\fR, \fB\-\-unzipF\fR          negate default all\-after\-%[fF] column zip
+.Pp
+\fB\-H\fR, \fB\-\-header\fR          add a row at start of data with col names
+.Pp
+\fB\-t\fR, \fB\-\-total\fR           print total of blocks before entries
+.Ss "Auto-Abbreviation"
+\fB\-m=\fR, \fB\-\-maxName=\fR ("") \fIAbbreviationSpecifier\fP
+.br
+where an abbreviation specifier can be:
+.Bl -tag -width "Positive Number" -compact -offset indent
+.It Em "aANYTEXT"
+automatic - best same-location single-'*'
+.It Em "Positive Number"
+thatManualWidth=M[,head(M/2)
+.br
+    [,tail(M-head+len(sep))
+.br
+    [,sep('*')
+.br
+    [,quoteChars]]]]
+.It Em "-2"
+pfx
+.It Em "-3"
+sfx
+.It Em "-4"
+mfx
+.It Em "-5"
+shortest any-location single-* glob with unique match
+.It Em "-6"
+shortest any-location double-* glob with unique match
+.El
+\fB\-M=\fR, \fB\-\-maxTgt=\fR ("") \fIAbbreviationSpecifier\fP for symlink targets; No auto
+.Pp
+\fB\-U=\fR, \fB\-\-maxUnm=\fR ("") \fIAbbreviationSpecifier\fP for user names
+.Pp
+\fB\-G=\fR, \fB\-\-maxGnm=\fR ("") \fIAbbreviationSpecifier\fP for group names
+.Pp
+\fB\-F\fR, \fB\-\-reFit\fR   expand abbrevs up to padded column
+widths.  The idea here is to abbreviate only to the extent it allows a table
+with more columns.
+.Ss "Miscellaneous"
+\fB\-g=\fR, \fB\-\-glyph=\fR (" \-> ") how to render arrow in %r/%R readlink formats
+.Pp
+\fB\-b\fR, \fB\-\-binary\fR   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
+.Pp
+\fB\-L\fR, \fB\-\-deref\fR    deref symlinks generally
+.Pp
+\fB\-l\fR, \fB\-\-tgtDref\fR  fully classify %R formats on their own
+.Pp
+\fB\-p\fR, \fB\-\-plain\fR    plain text; No color escape sequences
+.Pp
+\fB\-A\fR, \fB\-\-access\fR   use 3*access(2) not st_mode for RWX perms
+.Pp
+\fB\-\-hyperlink\fR    add hyperlinks
+.Pp
+\fB\-\-version\fR      print version and exit
+.Sh FORMAT & ORDER CODES
+.Ss "SHARED codes for BOTH format AND order specs:"
+.Bl -tag -width "pMMMMpermUGO" -compact
+.It CODE HEADER
+DESCRIPTION
+.It Em "f    Nm"
+file / path name
+.It Em "F    Bs"
+baseName
+.It Em "s    SzDv"
+human readable size | dev number (if block | char)
+.It Em "K    Bk"
+file blocks
+.It Em "n    N"
+link count; number of hard links | subdirs
+.It Em "u    uid"
+numeric uid
+.It Em "U    Usr"
+user name string
+.It Em "g    gid"
+numeric gid
+.It Em "G    Grp"
+group name string
+.It Em "p    permUGO"
+rwxr-xr-x perms for user, group, other bit banks
+.It Em "a|A  a|Atm"
+access time: ~ time of last read(2) to file
+.It Em "m|M  m|Mtm"
+modify time: ~ time of last write(2) to file
+.It Em "c|C  c|Ctm"
+create/change status time: ~ mtm for most file metadata
+.It Em "v|V  v|Vtm"
+version time = max(c, m)
+.It Em "b|B  b|Btm"
+birth time (~ when blocks first allocated for i-nodes)
+.It Em "i    inode"
+inode-number
+.It Em "k    BkZ"
+st_blksize
+.It Em "D    Mj"
+major dev number
+.It Em "d    Mn"
+minor dev number
+.It Em "o    %o"
+%allocated byte range occupied by data blocks
+.El
+.Ss "FORMAT ONLY 1-letter codes:"
+.Bl -tag -width qMMMMpermUGO -compact
+.It Em "r    ln"
+readlink(2) output aka link target
+.It Em "R    Ln"
+like 'r' but with colorized target
+.It Em "Z    SecLab"
+selinux label
+.It Em "S    ByDv"
+size in bytes | dev number (if block | char)
+.It Em "P    perm"
+Colored, Octal Perms
+.It Em "q    permUGO"
+rwx perms with space separators
+.It Em "Q    A"
+\'+\' if a file has an ACL
+.It Em "l    l"
+ls-KindCode(dl-..)
+.It Em "L    L"
+ls-KindCode(/@\|=)
+.It Em "e    e1"
+Output of External Program 1
+.It Em "E    e2"
+Output of External Program 2
+.It Em "x    XA"
+stxAttrCode
+.It Em "@    I"
+4th:Col Of colorKind
+.It Em "0-8  D0-8"
+User-defined format components 0-8; See CONFIGURING
+.It Em "9./  L0-2"
+User-defined format components 0-2 for symlink target
+.El
+.Ss "ORDER ONLY 1-letter codes:"
+.Bl -tag -width CODE -compact
+.It CODE
+DESCRIPTION
+.It Em e
+shortest file name (e)xtension; LAST '.' -> END of name
+.It Em E
+longest file name (E)xtension; FIRST '.' -> END of name
+.It Em N
+(N)umeric File Name
+.It Em L
+file Name (L)ength 
+.It Em A
+(A)bbreviated File Name
+.It Em 0-2
+file kind order Components 0-2
+.It Em 3-5
+file kind id Components 0-2
+.It Em 6-8
+symlink target order Components 0-2
+.It Em 9./
+symlink target file kind Components 0-2
+.El
+.Sh "TEXT ATTRIBUTE / COLOR SPECIFICATION"
+.Ss "Basic SGR/Font Attributes"
+\fIplain\fP, \fIbold\fP, \fIitalic\fP, \fIunderline\fP, \fIblink\fP, \fIinverse\fP, \fIstruck\fP, \fINONE\fP
+.Ss "Basic Foreground Colors"
+\fIblack\fP, \fIred\fP, \fIgreen\fP, \fIyellow\fP, \fIblue\fP, \fIpurple\fP, \fIcyan\fP, \fIwhite\fP
+.Ss "Basic Background Colors"
+An \fIon_\fP prefix implies using this color as the BACKGROUND color.
+
+So, for example, \fBbold white on_red\fR specifies what it sounds like.
+.Ss "High Intensity Colors"
+UPPERCASE of the same names implies the HIGH intensity bank (for either fore- or
+background colors).
+.Ss "256-color xterm Colors"
+256\-color xterm attrs are \fI[fb][0..23]\fP for FORE/BACKground grey scale &
+\fI[fb]RGB\fP a 6x6x6 color cube; each [RGB] is on [0,5].
+.Ss "xterm/st/kitty true colors"
+xterm/st/kitty true colors are \fI[fb]HHHHHH\fP (usual R,G,B mapping).
+.Ss "Where these can be used"
+Field & strftime formats both accept \fI%{ATTR..}CODE\fP to set attributes.
+.Sh "EXIT STATUS"
+.Nm
+exits with a status which is the max of 127 (the biggest non-signal exit code
+on Unix) and the number of OS errors encountered collecting data (such as files
+being removed after readdir but before stat).
+.Sh ENVIRONMENT
+.Bl -tag -width XDG_CONFIG_HOME
+.It Ev CLIGEN
+The path to the config file or directory for cligen CL framework configuration.
+This can tune \fI--help\fR colorization, layout, and content as well as a few CL
+syntax variations such as whether long options require unique prefixes or being
+fully spelled out.
+.It Ev LC_CONFIG
+If set, this is a path to a Nim std/parsecfg configuration file or
+directory containing parameters processed by every invocation of
+.Nm .
+If compiled with \fI-d:cgCfgToml\fP the format of this file is TOML, but you
+must first have installed github.com/NimParsers/parsetoml somewhere in your \fInim
+c --path:SEARCH\fP
+.It Ev XDG_CONFIG_HOME
+XDG directory for configuration files; ~/.config is a common choice.
+.It Ev HOME
+Users home directory used here as a fallback parent for .config if neither
+LC_CONFIG nor XDG_CONFIG_HOME are set.
+.It Ev LC
+Additional command parameters for every invocation
+.El
+.Sh SEE ALSO
+.Xr ls 1 .
+Full
+.Nm
+documentation is linked off of github.com/c-blake/lc
+.Sh HISTORY
+Ideas relating to this program date back to a circa 2000 Python script system
+(largely user-definable via environment variables containing lambdas) that was
+too slow.  It later became a long, ugly C program & then a Nim program, partly
+as a way to drive feature development in cligen (like the --Style system).
+.Sh BUGS
+Probably.  Please report on Github.
