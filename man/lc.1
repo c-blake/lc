@@ -164,20 +164,22 @@ See FORMAT & ORDER CODES section of this page for a,b,...
 .It \fB-S=, --Style=\fR (\fI''\fR)    DEFINE an output style arg bundle
 .It \fB-s=, --style=\fR (\fI''\fR)    APPLY an output style
 .It \fB-X=, --extra=\fR (\fI''\fR)    add params from config ARG where ARG means:
-.Bl -tag -width .ROOT.// -compact -offset 2n
-.It "[ROOT]."
+.Bl -tag -width ROOT// -compact -offset 2n
+.It "ROOT."
 Load any \fB.lc\fP in the same dir as being listed
-.It "[ROOT]/"
+.It "ROOT/"
 Load any \fB.lc\fP in any parent dir of those listed
-.It "[ROOT]/."
+.It "ROOT/."
 Load \fB.lc\fP in the same dir as being listed (--recurse)
-.It "[ROOT]//"
+.It "ROOT//"
 Load \fB.lc\fP in parent dirs of those listed (--recurse)
 .El
-If optional \fIROOT\fP is not "", paths relative to that dir are where \fB.lc\fR
-is actually sought.  (You may need \fIROOT\fP for various reasons - no write
-perm to /usr/lib, no persistence of /dev, etc.)
-
+Useful values of \fIROOT\fP are either "." for paths relative to the dir being
+listed (if you have durable write access, say).  You can make a partial shadow
+of a dir-tree, though, and
+.Nm
+will look for \fB.lc\fR relative to an alternate root.  (Examples of non-durable
+write access might be /usr/lib or /dev.)
 .El
 .Ss "Content Generation & Filtering"
 .Bl -hang -width MM
