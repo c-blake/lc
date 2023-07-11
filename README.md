@@ -44,7 +44,7 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - supports arbitrary assignment of "file kind order" for use in sorting
 
- - supports "multi-dimensional reasoning" about file kinds, including both
+ - supports a kind/type-**vector** for multi-dimensional reasoning, including
    text attribute layers and an "icon vector" (for utf8 "icons", anyway)
 
  - supports both latter-day nanosecond file times and *very* abbreviated ages
@@ -77,30 +77,29 @@ yet another file lister?  What's the point?  Well, `lc`
  - is a work in progress, but a unique enough bundle of useful ideas to share.
    With so many features and few users, there are likely bugs.
 
-Multi-dimensionality/Attribute Layers
-=====================================
+Vector Type/Multi-dimensionality/Attribute Layers
+=================================================
 The most obscure idea is likely "multi-dimensional".  I mean this in the
 mathematical "**INDEPENDENT coordinate**" sense **not** a Jurassic Park (1993)-esque
-graphical file tree sense.  Examples of dimensions/attributes may help.
+graphical file tree sense.  Examples of slots/dimensions/attributes may help.
 
-Output text can set the foreground & background colors of text **independently**.
+Output text can set foreground & background colors of text **independently**.
 I happen to like [st](https://git.suckless.org/st/) for its hackability.  That
 can do bold, italic, blink, underline, struck, inverse as 6 independent traits.
 (Color inversion involves a mapping too complex to be a very useful visual aid.)
-So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions and the
-foreground & background colors having more continuous value ranges.  While
-subjective, I find identifying/distinguishing text with *all* those attributes
-on|off not hard with my primary displays/fonts.  Geographical map folk often
-call this "layers".  `lc` aids "aligning" rendered output traits with classified
-input traits.
+So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions and colors
+having larger value ranges.  While subjective, I find it not hard to distinguish
+text with *all* those attributes varying.  Geographical map folk often call this
+"layers" (such as political borders layered atop satellite imagery).  `lc` aids
+"aligning" rendered output traits with classified input traits.
 
-The input/data side has *many* more independent fields & bits.  While `d_type`
-is mutually exclusive, most types aren't. E.g., a file can be both an executable
-regular file and some kind of script source or both a directory and a directory
-with a sticky bit set and independently of both beginning with a '.' or not.
-Add all of `struct stat` and deep file header inspection and the type space just
-explodes both in kinds and independent sub-kinds/dimensions (stripped or not,
-32-bit, 64-bit binaries, etc., etc.).
+The input/data side has *many* more independent fields & bits.  While
+`dirent.d_type` is mutually exclusive type codes, most types aren't.  E.g., a
+file can be both an executable regular file and some kind of script source or
+both a directory and a directory with a sticky bit set.  Independently of all
+that, it can begin with a '.' or not.  Add all of `struct stat` and deep file
+header inspection and the type space just explodes both in kinds and independent
+sub-kinds/dimensions (stripped or not, 32-bit, 64-bit binaries, etc., etc.).
 
 Only end users can prioritize use of precious few output dimensions.  To aid
 this use, `lc` users can configure file kinds to pair with picked poisons of
