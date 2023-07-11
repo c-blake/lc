@@ -33,6 +33,12 @@ document goes into more detail.  Even more details, rationale, and even screen
 shots are available at github.com/c-blake/lc .
 .Sh "OPTIONS (AKA FLAGS)"
 Defaults are in () except for boolean flags which all default to false.
+It is not expected that you will often/ever issue more involved options like
+\fB--kind\fR, \fB--color\fR & \fB--ageFmt\fR interactively.  Rather they will
+be in a config file, but options syntax is unified with that.  It may be easier
+to learn how to drive
+.Nm
+from its example configuration files.
 .Ss "File typology"
 .Bl -hang -width MM
 .It Sy "-k=, --kind=" ( Em "{}" ) Em "[TYPE-NAME-BINDINGS/DEFINITION STRINGS]"
@@ -158,36 +164,37 @@ See FORMAT & ORDER CODES section of this page for a,b,...
 .It \fB-S=, --Style=\fR (\fI''\fR)    DEFINE an output style arg bundle
 .It \fB-s=, --style=\fR (\fI''\fR)    APPLY an output style
 .It \fB-X=, --extra=\fR (\fI''\fR)    add params from config ARG where ARG means:
-.Bl -tag -width trailingXX -compact -offset indent
-.It "[SHADOW]."
-Look for \fB.lc\fP in the same dir as being listed
-.It "[SHADOW]/"
-Look for \fB.lc\fP in any parent dir of that being listed
-.It "[SHADOW]/."
-Look for \fB.lc\fP in the same dir as that being listed if auto-recursing
-.It "[SHADOW]//"
-Look for \fB.lc\fP in any parent dir of that being listed if auto-recursing
+.Bl -tag -width .ROOT.// -compact -offset 2n
+.It "[ROOT]."
+Load any \fB.lc\fP in the same dir as being listed
+.It "[ROOT]/"
+Load any \fB.lc\fP in any parent dir of those listed
+.It "[ROOT]/."
+Load \fB.lc\fP in the same dir as being listed (--recurse)
+.It "[ROOT]//"
+Load \fB.lc\fP in parent dirs of those listed (--recurse)
 .El
-If optional \fISHADOW\fP is not "", paths relative to that dir are where
-\fB.lc\fP is actually searched for.  (You may need \fISHADOW\fP for various
-reasons - no write perm to /usr/lib, no persistence to /dev, etc.)
+If optional \fIROOT\fP is not "", paths relative to that dir are where \fB.lc\fR
+is actually sought.  (You may need \fIROOT\fP for various reasons - no write
+perm to /usr/lib, no persistence of /dev, etc.)
+
 .El
 .Ss "Content Generation & Filtering"
 .Bl -hang -width MM
 .It \fB-d, --dirs\fR            list dirs as themselves, not contents
-.It \fB-r=, --recurse=\fR (1)   recurse N levels; 0 => unbounded
-.It \fB-i=, --incl=\fR ({})     kind \fINAME\fPs to include
-.It \fB-x=, --excl=\fR ({})     kind \fINAME\fPs to exclude
-.It \fB-w=, --widest=\fR (0)    only list this many widest entries
+.It \fB-r=, --recurse=\fR (\fI1\fR)   recurse N levels; 0 => unbounded
+.It \fB-i=, --incl=\fR (\fI{}\fR)     kind \fINAME\fPs to include
+.It \fB-x=, --excl=\fR (\fI{}\fR)     kind \fINAME\fPs to exclude
+.It \fB-w=, --widest=\fR (\fI0\fR)    only list this many widest entries
 in each column; 0 => do not filter.  This feature is useful to see if there are
 a few files where renaming to shorter names would allow more columns.
 .El
 .Ss "Table Controls"
 .Bl -hang -width MM
-.It \fB-n=, --nColumn=\fR (999) max major columns to use
+.It \fB-n=, --nColumn=\fR (\fI999\fR) max major columns to use
 .It \fB-1, --n1\fR              same as \fB-n1\fR; Mostly to have a long option to bind short form \fB-1\fR commonly available in file listers.
-.It \fB-P=, --padMax=\fR (999)  max spaces by which to pad major columns
-.It \fB-W=, --width=\fR (0)     override auto-detected terminal width
+.It \fB-P=, --padMax=\fR (\fI999\fR)  max spaces by which to pad major columns
+.It \fB-W=, --width=\fR (\fI0\fR)     override auto-detected terminal width
 .It \fB-D, --dense\fR           no blanks between multiple dir listings
 .It \fB-u, --unzipF\fR          negate default all-after-%[fF] column zip
 .It \fB-H, --header\fR          add a row at start of data with col names
@@ -218,15 +225,15 @@ shortest any-location 1-'*' glob with unique match
 .It Em "-6"
 shortest any-location 2-'*' glob with unique match
 .El
-.It \fB-M=, --maxTgt=\fR ("") \fIAbbreviationSpecifier\fP for symlink targets; No auto
-.It \fB-U=, --maxUnm=\fR ("") \fIAbbreviationSpecifier\fP for user names
-.It \fB-G=, --maxGnm=\fR ("") \fIAbbreviationSpecifier\fP for group names
+.It \fB-M=, --maxTgt=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for symlink targets; No auto
+.It \fB-U=, --maxUnm=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for user names
+.It \fB-G=, --maxGnm=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for group names
 .It \fB-F, --reFit\fR   expand abbrevs up to padded column widths.
 The idea here is to abbreviate only to the extent it helps a table have fewer columns.
 .El
 .Ss "Miscellaneous"
 .Bl -hang -width MM
-.It \fB-g=, --glyph=\fR (" -> ") how to render arrow in %r/%R readlink formats
+.It \fB-g=, --glyph=\fR (\fI" -> "\fR) how to render arrow in %r/%R readlink formats
 .It \fB-b, --binary\fR   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
 .It \fB-L, --deref\fR    deref symlinks generally
 .It \fB-l, --tgtDref\fR  fully classify %R formats on their own
