@@ -69,56 +69,60 @@ extension - x.so:func(qpath: cstring) != 0
 earlier defined | builtin kind names
 .El
 BUILTIN TYPE \fBNAME\fRs:
-.Bl -tag -width SYMLINK -compact
-.It Em reg
+.Bl -tag -width worldWritable -compact
+.It Em regular
 Is a regular file
-.It Em dir
+.It Em directory
 Is a directory
-.It Em bdev
-Is a block device
-.It Em cdev
-Is a character device
+.It Em blockDevice
+Is a block device special file
+.It Em charDevice
+Is a character device special file
 .It Em fifo
-Is a FIFO / named pipe
-.It Em sock
-Is a Unix domain socket
+Is a FIFO / named pipe special file
+.It Em socket
+Is a Unix domain socket special file
 .It Em symlink
-Is any symbolic link
-.It Em +-sym
-Is a symlink pointing to +present/-missing
-.It Em hard
+Is any symbolic link special file
+.It Em -symlink
+Is a symlink pointing to a missing file
+.It Em +symlink
+Is a symlink pointing to a present file
+.It Em hardLinks
 Non-(dir|symlink) file with hard link count > 1
-.It Em exec
+.It Em executable
 File is executable non-(dir|symlink)
 .It Em suid
 Is setuid & executable
 .It Em sgid
 Is setgid & executable
-.It Em tmpD
+.It Em tmpDir
 Is a directory with sticky bit set (like /tmp)
-.It Em worldW
-Is world writable (but not sticky)
-.It Em unR
-Is unreadable (by invoking user) file/untraversable dir
-.It Em odd
-Has odd permissions: u+s & (!x | !reg), g+s & g-x, +t & !o+w, !(u >= g >= o), +w & -r
-.It Em IMMUT
+.It Em worldWritable
+world writable by user (but not sticky)
+.It Em unReadable
+unreadable (by user) file/untraversable dir
+.It Em oddPerm
+Has odd permissions: u+s & (!x | !reg), g+s & g-x, dir+t & !o+w, !(u >= g >= o), +w & -r
+.It Em IMMUTABLE
 statx - has immutable attribute
-.It Em APPEND
+.It Em APPENDONLY
 statx - has append-only attribute
-.It Em COMPR
+.It Em COMPRESSED
 statx - has compressed attribute
-.It Em ENCRYP
+.It Em ENCRYPTED
 statx - has encrypted attribute
 .It Em NODUMP
 statx - has NoDump attribute
-.It Em AUTOMT
+.It Em AUTOMOUNT
 statx - has AutoMount attribute
-.It Em CAP
+.It Em CAPABILITY
 Linux - has some Linux FS Capability
 .It Em ACL
 has some ACL
 .El
+\fBNOTE\fR: in config files / on the command-line, you may usually use \fIany
+unique prefix\fR to refer to file kind names.
 .El
 .Ss "Formatting & Sorting"
 .Bl -hang -width MM

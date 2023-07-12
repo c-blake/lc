@@ -109,10 +109,10 @@ where <RELATION> says base names match:
   *mag*  pcRegexs against file(1) type descrip
   *any|all|none*  earlier defd kind test names
   *ext*      x.so:func(qpath: cstring)->cint
-BUILTIN: *reg* *dir* *bdev* *cdev* *fifo* *sock* *symlink*
- *+-sym* *hard* *exec* *s[ug]id* *tmpD* *worldW* *unR* *odd*
- *stx* *IMMUT* *APPEND* *COMPR* *ENCRYP* *NODUMP* *AUTOMT*
- *xatr*: CAP hasLinuxCapability *ACL* hasACL""",
+BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
+ *+-sym* *hard* *exec* *sUGid* *tmpDir* *worldW* *unR* *odd*
+ *Linux* *IMMUT* *APPEND* *COMPR* *ENCRYPT* *NODUMP*
+   *AUTOM* *CAP* hasLinuxCapability *ACL* hasACL""",
                       "colors" : "color aliases; Syntax: name = ATTR1 ATTR2..",
                       "color"  : """text attrs for file kind/fields. Syntax:
   **NAME[[:KEY][:DIM]] ATTR ATTR..**
@@ -208,27 +208,29 @@ proc util(st: Statx): float =
 
 var builtin: CritBitTree[Test]
 template tAdd(name, ds, t: untyped) {.dirty.} =
-  builtin[name] = (ds, proc(f: var Fil): bool {.closure.} = t)
+  builtin[name] = (ds, proc(f: var Fil): bool {.closure.} = t.bool)
 tAdd("unknown",{})   : true
-tAdd("reg"    ,{dsD}): f.stModeOrDtype(S_ISREG , DT_REG)
-tAdd("dir"    ,{dsD}): f.stModeOrDtype(S_ISDIR , DT_DIR)
-tAdd("bdev"   ,{dsD}): f.stModeOrDtype(S_ISBLK , DT_BLK)
-tAdd("cdev"   ,{dsD}): f.stModeOrDtype(S_ISCHR , DT_CHR)
+tAdd("regular",{dsD}): f.stModeOrDtype(S_ISREG , DT_REG)
+tAdd("directory",{dsD}): f.stModeOrDtype(S_ISDIR , DT_DIR)
+tAdd("blockDevice",{dsD}): f.stModeOrDtype(S_ISBLK , DT_BLK)
+tAdd("charDevice" ,{dsD}): f.stModeOrDtype(S_ISCHR , DT_CHR)
+tAdd("bdev"   ,{dsD}): f.stModeOrDtype(S_ISBLK , DT_BLK)  # Should deprecate..
+tAdd("cdev"   ,{dsD}): f.stModeOrDtype(S_ISCHR , DT_CHR)  #..um, SOMEHOW..
 tAdd("fifo"   ,{dsD}): f.stModeOrDtype(S_ISFIFO, DT_FIFO)
 tAdd("socket" ,{dsD}): f.stModeOrDtype(S_ISSOCK, DT_SOCK)
 tAdd("symlink",{dsD}): f.stModeOrDtype(S_ISLNK , DT_LNK)      #Any symlink
-tAdd("-sym"   ,{dsD}): f.dtype == DT_LNK and not f.maybeSt    #Broken symlink
-tAdd("+sym"   ,{dsD}): f.dtype == DT_LNK and f.maybeSt        #Good symlink
-tAdd("exec"   ,{dsD}): not (f.isDir or f.isLnk) and f.maybeSt and f.xOk
-tAdd("hard"   ,{dsD}): not f.isDir and f.maybeSt and f.st.st_nlink > 1.Nlink
+tAdd("-symlink",{dsD}): f.dtype == DT_LNK and not f.maybeSt   #Broken symlink
+tAdd("+symlink",{dsD}): f.dtype == DT_LNK and f.maybeSt       #Good symlink
+tAdd("executable",{dsD}): not (f.isDir or f.isLnk) and f.maybeSt and f.xOk
+tAdd("hardLinks" ,{dsD}): not f.isDir and f.maybeSt and f.st.st_nlink > 1.Nlink
 tAdd("suid"   ,{dsD}): f.isReg and f.maybeSt and(f.st.st_mode and 0o4000)!=0 and
                        (f.st.st_mode and 0o0111) != 0         #exec by *someone*
 tAdd("sgid"   ,{dsS}): (f.st.st_mode and 0o2000) != 0
-tAdd("tmpD"   ,{dsS}): f.isStickyDir and (f.st.st_mode and 7) != 0
-tAdd("worldW" ,{dsS}): (f.st.st_mode and 2) != 0 and f.dtype != DT_LNK and
-                       not f.isStickyDir
-tAdd("unR"    ,{dsS}): myUid != 0 and (not f.rOk or (f.isDir and not f.xOk))
-tAdd("odd"    ,{dsS}):    #Check very odd st_mode's. Rare but legit wr-only in:
+tAdd("tmpDir" ,{dsS}): f.isStickyDir and (f.st.st_mode and 7) != 0
+tAdd("worldWritable",{dsS}): (f.st.st_mode and 2) != 0 and f.dtype != DT_LNK and
+                             not f.isStickyDir
+tAdd("unReadable", {dsS}): myUid != 0 and (not f.rOk or (f.isDir and not f.xOk))
+tAdd("oddPerm",{dsS}):    #Check very odd st_mode's. Rare but legit wr-only in:
   let m = f.st.st_mode    #.. /dev/tty* /var/cache/man /var/spool /proc /sys
   ((m and 0o4000)!=0 and ((m and 0o111)==0 or not f.isReg)) or  #suid&(!x|!reg)
    ((m and 0o2000)!=0 and (m and 0o010)==0) or                  #sgid & g-x
@@ -236,14 +238,14 @@ tAdd("odd"    ,{dsS}):    #Check very odd st_mode's. Rare but legit wr-only in:
    not (m.S_IUSR >= m.S_IGRP and m.S_IGRP >= m.S_IOTH) or       #!(u >= g >= o)
    (m.S_IUSR and 0o6)==2 or (m.S_IGRP and 0o6)==2 or (m.S_IOTH and 0o6)==2 #w&!r
 
-when haveStatx:          #Linux only via statx
- tAdd("IMMUT" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_IMMUTABLE.uint64)!=0
- tAdd("APPEND",{dsS}):(f.st.stx_attributes and STATX_ATTR_APPEND.uint64)!=0
- tAdd("COMPR" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_COMPRESSED.uint64)!=0
- tAdd("ENCRYP",{dsS}):(f.st.stx_attributes and STATX_ATTR_ENCRYPTED.uint64)!=0
- tAdd("NODUMP",{dsS}):(f.st.stx_attributes and STATX_ATTR_NODUMP.uint64)!=0
- tAdd("AUTOMT",{dsS}):(f.st.stx_attributes and STATX_ATTR_AUTOMOUNT.uint64)!=0
-when defined(linux): tAdd("CAP",{dsC}): f.cap
+when haveStatx:           # Linux only via statx
+ tAdd("IMMUTABLE" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_IMMUTABLE.uint64)
+ tAdd("APPENDONLY",{dsS}):(f.st.stx_attributes and STATX_ATTR_APPEND.uint64)
+ tAdd("COMPRESSED",{dsS}):(f.st.stx_attributes and STATX_ATTR_COMPRESSED.uint64)
+ tAdd("ENCRYPTED" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_ENCRYPTED.uint64)
+ tAdd("NODUMP"    ,{dsS}):(f.st.stx_attributes and STATX_ATTR_NODUMP.uint64)
+ tAdd("AUTOMOUNT" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_AUTOMOUNT.uint64)
+when defined(linux): tAdd("CAPABILITY",{dsC}): f.cap
 tAdd("ACL",{dsA}): f.acl
 
 ###### USER-DEFINED CLASSIFICATION TESTS

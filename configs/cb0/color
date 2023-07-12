@@ -1,10 +1,11 @@
-#Value-conditional attr settings; %[fFrR] first; ORDER MATTERS: 1st ck passed
-#WITHIN a (string, dtype, inode) dimension decides KIND WITHIN that dimension.
-#Optional :KEY is a 0..255 overall order for that kind.  3rd :-separated field
-#is DIMENSION NUMBER.  Attributes add across dimensions.
-#General theme here: non-lnk specials get boxy BG on_purple|on_blue, likely
-#problem files get on_RED|blinking, soft|hard links ~ italic|under.  In string
-#test categories things are roughly temperature-ordered by temporal stability.
+# Value-conditional attr settings; %[fFrR] first; ORDER MATTERS: 1st ck passed
+# WITHIN a (string, dtype, inode) slot decides KIND WITHIN that slot/dimension.
+# Optional :KEY is a 0..255 overall order for that kind.  3rd :-separated field
+# is SLOT NUMBER.  Attributes overlay ACROSS slots/dimensions, but not within.
+# After the slot number, you can also include an optional "icon" for %@ formats.
+#
+# General theme here: non-link specials get "boxy" BG on_(purple|blue|green),
+# likely problem files get on_RED|blinking, soft|hard links ~ italic|underlined.
 
 #      nm:ord:dim      attrs             #overall test number for reference
 color="dot:0x04:0      NONE"             #0x00
@@ -32,30 +33,30 @@ color="numeric:0x21:0  FHUE+"            #0x00   #process entirely => gray scl
 color="document:0x24:0 FHUE+"            #0x11
 
 color="symlink:0x10:1  italic"           #0x12
-color="dir:0x20:1      WHITE  on_blue"   #0x13
-color="reg:0x65:1      NONE"             #0x14
-color="cdev:0x30:1     YELLOW on_purple" #0x15
-color="bdev:0x40:1     CYAN   on_purple" #0x16
+color="dir:0x20:1      WHITE  on_blue"   #0x13  # directory
+color="regular:0x65:1  NONE"             #0x14
+color="char:0x30:1     YELLOW on_purple" #0x15  # char device
+color="block:0x40:1    CYAN   on_purple" #0x16  # block device
 color="fifo:0x50:1     BLUE   on_purple" #0x17
 color="socket:0x60:1   WHITE  on_purple" #0x18
 
-color="-sym:0x10:2     blink"            #0x19 #early since no stat data to use
-#color="CAP:0x10:2     blink"
-#color="ACL:0x10:2     blink"
-color="hard:0x80:2     underline"        #0x1A #maybe inverse or struck?
+color="-symlink:0x10:2  blink"           #0x19 # early since no stat data to use
+#color="CAPABILITY:0x10:2 blink"               # has some linux FS capability
+#color="ACL:0x10:2     blink"                  # has some Access Control List
+color="hardLinks:0x80:2 underline"       #0x1A # maybe inverse | struck?
 
-color="odd:0x30:3      on_RED"           #0x1B #early since combines many things
-color="tmpD:0x20:3     YELLOW"           #0x1C #clobber FG only->yellow on_blue
+color="oddPerm:0x30:3  on_RED"           #0x1B # early since combines much
+color="tmpDir:0x20:3   YELLOW"           #0x1C # clobber FG only->yellow on_blue
 color="suid:0x50:3     on_CYAN"          #0x1D #pastel backgrounds for sXid
 color="sgid:0x60:3     on_green"         #0x1E
 
-color="+sym:0x18:4     italic"           #0x1F
-color="worldW:0x40:4   on_RED"           #0x20 #world writable higherD 2clobber
+color="+symlink:0x18:4 italic"           #0x1F
+color="worldWr:0x40:4  on_RED"           #0x20 # world writable;HigherD 2clobber
 
 #struck text can sometimes be hard to read; Hence put on hard to read dirents:
-color="unR:0xF8:5      struck"           #0x21 #unreadable or isDir & no-exec
+color="unR:0xF8:5      struck"           #0x21  # unreadable | isDir & no-exec
 
-color="exec:0x70:6:¶   bold"             #0x22
+color="executable:0x70:6:¶   bold"        #0x22 # goofy ¶ "icon" for kicks
 
 #color="ELF:0x71:7      RED"              #0x23 #Another dimension for magics
 
@@ -68,6 +69,7 @@ color="exec:0x70:6:¶   bold"             #0x22
 
 color="unknown:0x23:0  NONE"             #0x23 #Added if missing;Here to set ord
 
+# In string test fields, values are roughly hue-ordered.
 color = "sizeB   fhue1"                 #Value-conditional fields besides paths
 color = "sizeK   fhue2"
 color = "sizeM   fhue3"
