@@ -21,7 +21,9 @@ after install:  # Also install the man page
       let (pkgs, _,_) = installDir.strip.splitFile    # either pkgs | pkgs2
       let (nimbleDir, _,_) = pkgs.splitFile
       let (nimbleParent, _,_) = nimbleDir.splitFile
-      result = nimbleParent & "/man"                  # Eg. $HOME/man | /opt/man
+      let share = nimbleParent & "/share"
+      result = if share.dirExists: share & "/man"     # Eg. ($HOME|/opt)/man or
+               else: nimbleParent & "/man"            # $(HOME|/opt)/share/man
   if hostOS == "linux":
     let manDir = getManDir()
     exec "install -Dvm644 man/lc.1 " & manDir & "/man1/lc.1"
