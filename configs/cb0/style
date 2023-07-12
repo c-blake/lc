@@ -31,7 +31,7 @@ Style = r"""llv = -Hsll  -ov "-f%{bold}U %P %s %v %f%R"""
 Style = r"""llc = -Hsll  -oc "-f%{bold}U %P %s %c %f%R"""
 Style = r"""llb = -Hsll  -ob "-f%{bold}U %P %s %b %f%R"""
 # Show most things:
-Style = r"""La =  -Hl -X./.   "-f%o %P %n %{bold}U %{italic}G %S %M %f%R"""
+Style = r"""La =  -Hl -X./.  "-f%o %P %n %{bold}U %{italic}G %S %M %f%R"""
 Style = r"""L  =  -HsLa -xdot"""
 Style = r"""Ls =  -HsL  -os"""
 Style = r"""Lu =  -HsL  -oa  "-f%n %o %{bold}U %{italic}G %P %S %A %f%R"""
