@@ -242,7 +242,7 @@ The idea here is to abbreviate only to the extent it helps a table have fewer co
 .It \fB-g=, --glyph=\fR (\fI" -> "\fR) how to render arrow in %r/%R readlink formats
 .It \fB-b, --binary\fR   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
 .It \fB-L, --deref\fR    deref symlinks generally
-.It \fB-l, --tgtDref\fR  fully classify %R formats on their own
+.It \fB-l, --tgtDref\fR  fully classify \&%R formats on their own
 .It \fB-p, --plain\fR    plain text; No color escape sequences
 .It \fB-A, --access\fR   use 3*access(2) not st_mode for RWX perms
 .It \fB--hyperlink\fR    add hyperlinks
@@ -258,7 +258,9 @@ file / path name
 .It Em "F    Bs"
 baseName
 .It Em "s    SzDv"
-human readable size | dev number (if block | char)
+human readable size | dev number (if block | char).  This is rounded with
+a metric-ish prefix on it (or a pair of hex numbers) to only ever occupy 4
+terminal columns.
 .It Em "K    Bk"
 file blocks
 .It Em "n    N"
@@ -303,7 +305,8 @@ like 'r' but with colorized target
 .It Em "Z    SecLab"
 selinux label
 .It Em "S    ByDv"
-size in bytes | dev number (if block | char)
+size in bytes | dev number (if block | char); Overloading this column is ancient
+file listing tradition.
 .It Em "P    perm"
 Colored, Octal Perms
 .It Em "q    permUGO"
@@ -357,18 +360,27 @@ symlink target file kind Components 0-2
 \fIblack\fP, \fIred\fP, \fIgreen\fP, \fIyellow\fP, \fIblue\fP, \fIpurple\fP, \fIcyan\fP, \fIwhite\fP
 .Ss "Basic Background Colors"
 An \fIon_\fP prefix implies using this color as the BACKGROUND color.
-
-So, for example, \fBbold white on_red\fR specifies what it sounds like.
+.Pp
+So, for example, \fBbold white on_red\fR specifies what it sounds like -- bold
+font white foreground text with a dark red background.
 .Ss "High Intensity Colors"
 UPPERCASE of the same names implies the HIGH intensity bank (for either fore- or
-background colors).
+background colors).  Fewer terminals support this.  SGR codes are, respectively,
+9x & 10x with x in [0,7] (for fore- & background).  E.g., \fBYELLOW on_red
+italic\fR means render bright yellow on dark red text with italic font.
 .Ss "256-color xterm Colors"
 256-color xterm attrs are \fI[fb][0..23]\fP for FORE/BACKground grey scale &
-\fI[fb]RGB\fP a 6x6x6 color cube; each [RGB] is on [0,5].
+\fI[fb]RGB\fP a 6x6x6 color cube; each [RGB] is on [0,5].  So, \fBf123 b20 blink\fR
+means blinking red 1/5, green 2/5, blue 3/5 text on a gray 20/23 background.
 .Ss "xterm/st/kitty true colors"
-xterm/st/kitty true colors are \fI[fb]HHHHHH\fP (usual R,G,B mapping).
+xterm/st/kitty true colors are \fI[fb]HHHHHH\fP (usual R,G,B mapping).  E.g.,
+\fBwhite underline b081830\fR is underlined white text on Red=0x08=8/255,
+Green=0x18=24/255, Blue=0x30=48/255.
 .Ss "Where these can be used"
 Field & strftime formats both accept \fI%{ATTR..}CODE\fP to set attributes.
+E.g., \fBlc -f '%{inverse}f'\fR will list directory entries with whatever other
+colorization they would have had, but with whatever your terminal maps color
+inversion to overlaid.
 .Sh "EXIT STATUS"
 .Nm
 exits with a status which is the max of 127 (the biggest non-signal exit code
