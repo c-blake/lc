@@ -361,17 +361,18 @@ proc parseKind(cf: var LsCf) =
   for kin in cf.kind:
     let col = kin.splitWhitespace(maxsplit=2)
     if col.len < 3: raise newException(ValueError, "bad kind: \"" & kin & "\"")
-    if   col[1].toLower == "pcr": cf.addPCRegex(col[1], col[0], col[2])
-    elif col[1] == "cset": cf.addCSet(col[0], col[2])
-    elif col[1].toLower.endsWith("fx"): cf.addPreSuf(col[1][0], col[0], col[2])
+    if col[1].toLower in ["pcr","perlRx"]: cf.addPCRegex(col[1], col[0], col[2])
+    elif col[1] in ["cset", "asciiChars"]: cf.addCSet(col[0], col[2])
+    elif col[1].toLower.endsWith("fx") or col[1].toLower.endsWith("fix"):
+      cf.addPreSuf(col[1][0], col[0], col[2])
     elif col[1].endsWith("id"):cf.addOwnId(col[1][0].toLowerAscii,col[0],col[2])
-    elif col[1] == "usr": cf.addOwner(col[1][0], col[0], col[2])
-    elif col[1] == "grp": cf.addOwner(col[1][0], col[0], col[2])
+    elif col[1] in ["usr", "user"]: cf.addOwner(col[1][0], col[0], col[2])
+    elif col[1] in ["grp", "group"]: cf.addOwner(col[1][0], col[0], col[2])
     elif col[1] == "any": cf.addCombo(testAny, col[0], col[2])
     elif col[1] == "all": cf.addCombo(testAll, col[0], col[2])
     elif col[1] == "none": cf.addCombo(testNone, col[0], col[2])
-    elif col[1] == "ext": cf.addExt(col[0], col[2])
-    elif col[1] == "mag": cf.addMagic(col[1], col[0], col[2])
+    elif col[1] in ["ext", "extension"]: cf.addExt(col[0], col[2])
+    elif col[1] in ["mag", "magic"]: cf.addMagic(col[1], col[0], col[2])
     else: raise newException(ValueError, "bad kind: \"" & kin & "\"")
 
 proc parseColor(cf: var LsCf) =

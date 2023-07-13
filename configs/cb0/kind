@@ -8,42 +8,42 @@
 # while less flexible GNU ls w/Gentoo DIR_COLORS takes about 1.5 ms on the same.
 # In Soviet dosimeter terms: Not great, not terrible. ;-) Fairly warned be thee.
 #
-# pcr is much slower than PFX/SFX and as you add things like the libmagic tests
+# pcr is much slower than Prefix/Suffix.  As you add things like libmagic tests
 # (eg. ELF) or `ext` tests performance will crash but may remain tolerable.
 
-kind = "numeric  cset 0123456789-_.:,%"
-kind = "capsdoc  cset ABCDEFGHIJKLMNOPQRSTUVWXYZ_-.0123456789:,%"
-kind = "object   SFX .o .a .la .so .pyc .pyo .dvi .elc .obj"
-kind = "script   SFX .pl .awk .sed .sh .zsh .csh .gpi akefile .log .nims .R .js .scm .lsp .cfg .cf .conf"
-kind = "compress SFX .z .gz .bz .bz2 .lz .Lz .xz 4z .zs .zs"
-kind = "tarchive SFX .tar .tgz .tbz .tbz2 .tlz .txz .tLz .tzs"
-kind = "archive  SFX .zip .rar .deb .rpm"
-kind = "pointer  SFX .torrent .uri .url .urls"
-kind = "backup   SFX .swp .vim .bak .orig ~"
-kind = "header   sfx .h .hh .pxi .pxd .diff .patch"
-kind = "source   sfx .s .c .cc .cpp .i .java .f .f95 .m .nb .py .pyx .nim .vim .el .tex .fig .jl"
+kind = "numeric  asciiChars 0123456789-_.:,%"
+kind = "capsdoc  asciiChars ABCDEFGHIJKLMNOPQRSTUVWXYZ_-.0123456789:,%"
+kind = "object   Suffix .o .a .la .so .pyc .pyo .dvi .elc .obj"
+kind = "script   Suffix .pl .awk .sed .sh .zsh .csh .gpi akefile .log .nims .R .js .scm .lsp .cfg .cf .conf"
+kind = "compress Suffix .z .gz .bz .bz2 .lz .Lz .xz 4z .zs .zs"
+kind = "tarchive Suffix .tar .tgz .tbz .tbz2 .tlz .txz .tLz .tzs"
+kind = "archive  Suffix .zip .rar .deb .rpm"
+kind = "pointer  Suffix .torrent .uri .url .urls"
+kind = "backup   Suffix .swp .vim .bak .orig ~"
+kind = "header   suffix .h .hh .pxi .pxd .diff .patch"
+kind = "source   suffix .s .c .cc .cpp .i .java .f .f95 .m .nb .py .pyx .nim .vim .el .tex .fig .jl"
 #Both man pages and many versioned entities end in .[0-9]
-kind = "document sfx .txt .doc .html .htm .ps .eps .pdf .prn .mif .fm .md .rst"
-kind = "image    sfx .img .bmp .jpg .gif .jpeg .png .ppm"
-kind = "audio    sfx .au .mp3 .wav .ogg .m4a"
-kind = "video    sfx .mpg .mpeg .mp4 .avi .flv .ogm .mkv .m4v .mts .m2ts .wmv .mov .swf .asf .rm webm"
-kind = "dot      PFX ."                 #classic Unix dot file/dir/ln/etc.
-kind = "onOutErr PFX o. e."             #outputs from cb's "on hosts cmd" system
-kind = "core     PFX core"
+kind = "document suffix .txt .doc .html .htm .ps .eps .pdf .prn .mif .fm .md .rst"
+kind = "image    suffix .img .bmp .jpg .gif .jpeg .png .ppm"
+kind = "audio    suffix .au .mp3 .wav .ogg .m4a"
+kind = "video    suffix .mpg .mpeg .mp4 .avi .flv .ogm .mkv .m4v .mts .m2ts .wmv .mov .swf .asf .rm webm"
+kind = "dot      Prefix ."                 #classic Unix dot file/dir/ln/etc.
+kind = "onOutErr Prefix o. e."             #outputs from cb's "on hosts cmd" system
+kind = "core     Prefix core"
 #NOTE: below ELF works, but can be very slow on large directories.  Also, you
 #      may need to recompile lc with "nim c -d:danger -d:lcMagic lc.nim".
 #kind = "ELF      mag ELF.*64.*exec"     #proper 64-bit elf executables.
-#NOTE: below pcr tests work fine, but can be slow on large directories.
-#kind = "test1    pcr [@%+_-]"           #Test perl-compatible-regexes.
-#kind = "test2    pcr [,:]"              #These are general but slow.
+#NOTE: below regex tests work fine, but can be slow on large directories.
+#kind = "test1    perlRx [@%+_-]"        #Test perl-compatible-regexes.
+#kind = "test2    perlRx [,:]"           #These are general but slow.
 #kind = "media    any image audio video" #combo
 #kind = "special  none reg"
-#kind = "sWithL   PFX l"
-#kind = "eWithC   SFX c"
+#kind = "sWithL   Prefix l"                    # startsWith lowercase 'l'
+#kind = "eWithC   Suffix c"                    # endsWith lowercase 'c'
 #kind = "combo    all sWithL eWithC ELF"
-#kind = "sysOwn   uid 0 1 2 3 4 5 6 7 8 9"  #call first 10 owners "sys"
-#kind = "sysGrp   gid 0 1 2 3 4 5 6 7 8 9"  #call first 10 group ids "sys"
-#kind = "rootCb   usr root cb"           #ad hoc user set
-#kind = "wheelCb  grp root cb"           #ad hoc group set
+#kind = "sysOwn   uid 0 1 2 3 4 5 6 7 8 9"  #call first 10 owners "sysOwn"
+#kind = "sysGrp   gid 0 1 2 3 4 5 6 7 8 9"  #call first 10 group ids "sysGrp"
+#kind = "rootCb   user  root cb"           #ad hoc user set
+#kind = "wheelCb  group root cb"           #ad hoc group set
 #kind = "mye1     ext liblcNim.so:te1"     #user-defined kind
 #kind = "mye2     ext liblcNim.so:te2"     #user-defined kind

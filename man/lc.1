@@ -44,29 +44,41 @@ from its example configuration files.
 .It Sy "-k=, --kind=" ( Em "{}" ) Em "[TYPE-NAME-BINDINGS/DEFINITION STRINGS]"
 where each string is: \fBNAME RELATION PARAMS\fR with 3 or more fields are
 whitespace-separated and:
-.Bl -tag -width "any|all|none" -compact -offset indent
+.Bl -tag -width "asciiChars | cset" -compact -offset indent
 .It Em RELATION
 PARAMS
-.It Em cset
+.It Em asciiChars | cset
 param=str of chars base name can have
-.It Em SFX|sfx
-case-(|in)sensitive base name suffixes
-.It Em PFX|pfx
-case-(|in)sensitive base name prefixes
-.It Em pcr
+.It Em Suffix | SFX
+case-sensitive base name suffixes
+.It Em suffix | sfx
+case-insensitive base name suffixes
+.It Em Prefix | PFX
+case-sensitive base name prefixes
+.It Em prefix | pfx
+case-insensitive base name prefixes
+.It Em perlRx | pcr
 Perl-Compatible Regexes match base name
-.It Em uid|gid
-numeric uids|gids (or Uid|Gid) file owners
-.It Em usr|grp
-exact string users or groups file owners
-.It Em mag
-pcRegexes matching
+.It Em uid
+numeric uids of file owners
+.It Em gid
+numeric gids of file file owners
+.It Em user
+exact string user names for file owners
+.It Em group
+exact string group names for file owners
+.It Em magic | mag
+pcRes matching a
 .Xr libmagic 3
 description 
-.It Em ext
-extension - x.so:func(qpath: cstring) != 0
-.It Em any|all|none
-earlier defined | builtin kind names
+.It Em extension | ext
+parameter \fBX.so:FUNC\fR applied to paths != 0
+.It Em any
+matches any one of listed kind names
+.It Em all
+matches all one of listed kind names
+.It Em none
+matches no listed kind names
 .El
 BUILTIN TYPE \fBNAME\fRs:
 .Bl -tag -width worldWritable -compact
