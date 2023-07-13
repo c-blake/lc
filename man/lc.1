@@ -389,10 +389,10 @@ xterm/st/kitty true colors are \fI[fb]HHHHHH\fP (usual R,G,B mapping).  E.g.,
 \fBwhite underline b081830\fR is underlined white text on Red=0x08=8/255,
 Green=0x18=24/255, Blue=0x30=48/255.
 .Ss "Where these can be used"
-Field & strftime formats both accept \fI%{ATTR..}CODE\fP to set attributes.
-E.g., \fBlc -f '%{inverse}f'\fR will list directory entries with whatever other
-colorization they would have had, but with whatever your terminal maps color
-inversion to overlaid.
+While \fB--color\fP values are the primary use case, field & strftime formats
+both accept \fI%{ATTR..}CODE\fP.  E.g., \fBlc -f '%{inverse}f'\fR will list
+directory entries with whatever other colorization they would have had, but with
+whatever your terminal maps color inversion to overlaid.
 .Sh "EXIT STATUS"
 .Nm
 exits with a status which is the max of 127 (the biggest non-signal exit code
