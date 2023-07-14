@@ -11,28 +11,37 @@ requires "nim >= 1.6.0", "cligen >= 1.6.8"
 skipDirs    = @["configs"]
 installDirs = @["man"]
 
-import os       # splitFile
-after install:  # Also install the man page
-  proc getManDir(): string =
-    # The below is sadly *NOT* robust to `nimble install --nimbleDir:somesuch`.
-    # (which may even be a common case for some OS package manager sandboxes..)
-    let (installDir, ex) = gorgeEx("nimble path lc")  # nimbleDir/pkgs*/x
-    if ex == 0:
-      let (pkgs, _,_) = installDir.strip.splitFile    # either pkgs | pkgs2
-      let (nimbleDir, _,_) = pkgs.splitFile
-      let (nimbleParent, _,_) = nimbleDir.splitFile
-      let share = nimbleParent & "/share"
-      result = if share.dirExists: share & "/man"     # Eg. ($HOME|/opt)/man or
-               else: nimbleParent & "/man"            # $(HOME|/opt)/share/man
+import os #XXX from os import parentDir, getEnv, dirExists fails
+proc getNimbleDir(): string =
+  result = getEnv("NIMBLE_DIR", getEnv("nimbleDir", ""))
+  if result.len > 0: return
+  if (let (installDir, ex) = gorgeEx("nimble path lc"); ex == 0):
+    result = installDir.parentDir.parentDir     # nimbleDir/pkgs*/x
+
+proc getManDir(): string =
+  result = getEnv("MAN_DIR", getEnv("MANDIR", getEnv("manDir", "")))
+  if result.len > 0: return
+  let nDir = getNimbleDir()
+  if nDir.len == 0: return
+  let share = nDir & "/../share"                # $(HOME|/opt)(/share)*/man
+  result = if share.dirExists: share & "/man" else: nDir & "/../man"
+
+task installData, "install the man page lc.1":  # Named ~as automake does
+  let md = getManDir()
+  if md.len == 0: echo """ERROR: Could not infer MAN_DIR
+Try doing `nimble install lc` first or else force override
+with `MAN_DIR=/x/y/share/man nimble installData`"""; return
   if hostOS == "linux":
-    let manDir = getManDir()
-    exec "install -Dvm644 man/lc.1 " & manDir & "/man1/lc.1"
-    if manDir notin staticExec("manpath") and         #NOTE: man-db-specific
-       manDir notin getEnv("MANPATH", ""):
-      echo "warning: ", manDir, " is in neither manpath output nor $MANPATH."
+    exec "install -Dvm644 man/lc.1 " & md & "/man1/lc.1"
   else: # if hostOS == "macosx" or hostOS.endsWith("bsd"):
-    let manDir = getManDir(); let m1 = manDir & "/man1"
+    let m1 = md & "/man1"
     echo "installing man page as " & m1 & "/lc.1"
     exec "umask 022 && mkdir -p "&m1&" && install -m644 man/lc.1 "&m1&"/lc.1"
-    if manDir notin getEnv("MANPATH", ""):
-      echo "warning: ", manDir, " is not in $MANPATH; `man lc` may not work."
+  if (let (_, ex) = gorgeEx("man lc | grep -q custom-classified"); ex != 0):
+    echo "WARNING: `man lc` may not work; ",md," --> $MANPATH may help."
+
+task uninstallData, "uninstall the man page lc.1":
+  let md = getManDir()
+  if md.len == 0: echo """ERROR: Could not infer MAN_DIR;
+`MAN_DIR=/x/y/share/man nimble uninstallData` may work"""; return
+  exec "rm -f "&md&"/man1/lc.1 && rmdir "&md&"/man1 && rmdir "&md&" || :"
