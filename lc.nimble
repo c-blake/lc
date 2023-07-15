@@ -26,8 +26,8 @@ proc getManDir: string =
 task installMan, "install the man page lc.1":   # Named ~as automake does
   let mD = getManDir()
   if mD.len == 0: echo """ERROR: Could not infer MAN_DIR
-Try doing `nimble install lc` first or else force override
-with `MAN_DIR=/x/y/share/man nimble installMan`"""; return
+Try doing `nimble install lc` first
+or try `MAN_DIR=/x/y/share/man nimble installMan`"""; return
   if hostOS == "linux":
     exec "install -Dvm644 man/lc.1 " & mD & "/man1/lc.1"
   else: # if hostOS == "macosx" or hostOS.endsWith("bsd"):
