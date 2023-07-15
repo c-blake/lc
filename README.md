@@ -6,13 +6,17 @@ Getting an `lc` config going *should* be as easy as (on Debian):
 ```
 apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
-git clone https://github.com/c-blake/lc
-cp -r lc/configs/cb0 $HOME/.config/lc
-$HOME/.nimble/bin/lc    #-h gives a large help message
+cd $(nimble path lc); nimble installData
 ```
-The Nim experience can sometimes have fairly rough-hewn edges, though.  So far,
-though, something like the above has worked for me on Gentoo Linux, Debian,
-Android Termux, and FreeBSD.
+though the Nim experience can sometimes have fairly rough-hewn edges.  With such
+you may get an interesting 8-level sort-colorized listing from (configs/cb0 has
+details):
+```
+~/.nimble/bin/lc -oDd0134EN /dev
+```
+You can put `~/.nimble/bin` in `$PATH`.  As root, you may be able to export
+`NIMBLE_DIR=/usr/local/nimble` or `NIMBLE_DIR=/opt/nimble` before the above to
+possibly avoid `PATH` or `MANPATH` changes.[^1]
 
 What `lc` is Not
 ================
@@ -103,7 +107,7 @@ sub-kinds/dimensions (stripped or not, 32-bit, 64-bit binaries, etc., etc.).
 
 Only end users can prioritize use of precious few output dimensions.  To aid
 this use, `lc` users can configure file kinds to pair with picked poisons of
-output traits.[^1]
+output traits.[^2]
 
 This may sound daunting, but many highlighting systems follow this model - e.g.
 a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
@@ -206,7 +210,10 @@ not unthinkable, though unlikely to be a popular default style.  Hard-coding Git
 support seems popular these days.  I don't do that yet.  I'm not sure I want a
 direct dependency, but you may be able to hack something together.
 
-[^1]: Operationally, users just pick small integer labels for kinds aka series
+[^1]: While we hope you appreciate `lc`, if you don't, uninstall looks like:
+`(export NIMBLE_DIR=/opt/nimble; cd $(nimble path lc|grep -v Info:);nimble uninstallData)`
+
+[^2]: Operationally, users just pick small integer labels for kinds aka series
 of order-dependent tests aka classes.  The first passing kind test within a
 dimension wins that dimension.  To aid debugging kind assignments you can do
 things like `lc -f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.  The

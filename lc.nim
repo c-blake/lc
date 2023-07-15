@@ -978,6 +978,10 @@ when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
     let cfd = getEnv("LC_CONFIG", getConfigDir() & "/lc")
     var cl0 = cfToCL(if cfd.dirExists: cfd&"/config" else: cfd, "", true, true)
     cl0.add envToCL("LC")
+    if cl0.len == 0:    # No config; Try "system" config; Use e.g. LC=-w0 to cf
+      let argv {.importc: "cmdLine".}: cstringArray #.. all in wrapper script.
+      let et = ($argv[0]).parentDir.parentDir.parentDir & "/etc/lc"
+      cl0.add cfToCL(if et.dirExists: et&"/config" else: et, "", true, true)
     let nCl0 = cl0.len; cl0.add os.commandLineParams()
     var cf = lsCfFromCL(cl0); cl0.setLen nCl0
     cf.fin(cl0, os.commandLineParams() - cf.paths)
