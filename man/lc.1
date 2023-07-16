@@ -94,16 +94,16 @@ Is a character device special file
 Is a FIFO / named pipe special file
 .It Em socket
 Is a Unix domain socket special file
-.It Em symlink
+.It Em symLink
 Is any symbolic link special file
-.It Em -symlink
-Is a symlink pointing to a missing file
-.It Em +symlink
-Is a symlink pointing to a present file
+.It Em -symLink
+Is a symLink pointing to a missing file
+.It Em +symLink
+Is a symLink pointing to a present file
 .It Em hardLinks
-Non-(dir|symlink) file with hard link count > 1
+Non-(dir|symLink) file with hard link count > 1
 .It Em executable
-File is executable non-(dir|symlink)
+File is executable non-(dir|symLink)
 .It Em suid
 Is setuid & executable
 .It Em sgid
@@ -139,20 +139,33 @@ unique prefix\fR to refer to file kind names.
 .Ss "Formatting & Sorting"
 .Bl -hang -width MM
 .It \fB-c=, --color=\fR ( \fI{}\fR ) Em RenderSpecificationStrings
-each with syntax \fBNAME[:KEY[:DIM[:ICON]]] ATTR ATTR..\fP where whitespace
+each with syntax \fBNAME[:KEY[:SLOT[:ICON]]] ATTR ATTR..\fP where whitespace
 amounts do not matter and:
-.Bl -tag -width NAME: -compact -offset indent
-.It Em NAME:
+.Bl -tag -width "NAME -" -compact -offset indent
+.It Em NAME -
 (as in --kind) | \fIsize{BKMGT}\fP | \fIperm{0-7}\fP
-.It Em KEY:
+.It Em KEY -
 optional 0..255 \fISORT/ORDER\fP key
-.It Em DIM:
-optional format dimension (for layers)
-.It Em ICON:
+.It Em SLOT -
+optional format slot/dimension (for layers)
+.It Em ICON -
 optional UTF-8 icon string
-.It Em ATTR:
+.It Em ATTR -
 color/text attr specs as in TEXT ATTRIBUTE section
 .El
+\fB--color\fP is really about more than colors.  It a meta-type specification
+directive.  The \fIKEY\fP lets you decide where in \fB--order\fP a given kind
+will fit as well as which slot is used for this kind \fINAME\fP.
+.Pp
+When might you want a different slot?  When a quality is "importantly"
+independent of other qualities.  The simplest example of this might be file
+readability which is something files of all types have (or do not have).  If you
+want unreadable files to be struck-through text no matter what other classifying
+occurs, then you want that file kind to have its own slot/dimension.
+.Pp
+\fIICON\fP should be self-explanatory and \fIATTR\fP is covered in the below
+section: \fBTEXT ATTRIBUTE / COLOR SPECIFICATION\fP which gives this option its
+name.
 .It Sy "-a=, --ageFmt=" ( Em "{}" )   Em FileAgeFormatStrings
 each with syntax: \fI<FileAge>@[-+]<STRFTIME_FMT>\fP where:
 .Bl -tag -width STRFTIME -compact -offset indent
@@ -243,7 +256,7 @@ shortest any-location 1-'*' glob with unique match
 .It Em "-6"
 shortest any-location 2-'*' glob with unique match
 .El
-.It \fB-M=, --maxTgt=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for symlink targets; No auto
+.It \fB-M=, --maxTgt=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for symLink targets; No auto
 .It \fB-U=, --maxUnm=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for user names
 .It \fB-G=, --maxGnm=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for group names
 .It \fB-F, --reFit\fR   expand abbrevs up to padded column widths.
@@ -253,7 +266,7 @@ The idea here is to abbreviate only to the extent it helps a table have fewer co
 .Bl -hang -width MM
 .It \fB-g=, --glyph=\fR (\fI" -> "\fR) how to render arrow in %r/%R readlink formats
 .It \fB-b, --binary\fR   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
-.It \fB-L, --deref\fR    deref symlinks generally
+.It \fB-L, --deref\fR    deref symLinks generally
 .It \fB-l, --tgtDref\fR  fully classify \&%R formats on their own
 .It \fB-p, --plain\fR    plain text; No color escape sequences
 .It \fB-A, --access\fR   use 3*access(2) not st_mode for RWX perms
@@ -340,7 +353,7 @@ stxAttrCode
 .It Em "0-8  D0-8"
 User-defined format components 0-8; See CONFIGURING
 .It Em "9./  L0-2"
-User-defined format components 0-2 for symlink target
+User-defined format components 0-2 for symLink target
 .El
 .Ss "ORDER ONLY 1-letter codes:"
 .Bl -tag -width CODE -compact
@@ -361,9 +374,9 @@ file kind order Components 0-2
 .It Em 3-5
 file kind id Components 0-2
 .It Em 6-8
-symlink target order Components 0-2
+symLink target order Components 0-2
 .It Em 9./
-symlink target file kind Components 0-2
+symLink target file kind Components 0-2
 .El
 .Sh "TEXT ATTRIBUTE / COLOR SPECIFICATION"
 .Ss "Basic SGR/Font Attributes"
