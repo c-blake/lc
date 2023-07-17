@@ -6,6 +6,9 @@ suspect that will have combinatorially many different answers.  Also, I use `-l`
 for something else right now although that could change.  It is a boolean flag
 and doesn't outright fail.  As a guide, configs/cb0/style has "gls", though.
 
+So, if you alias ll='ls -l' you could probably change that to `=lc -sgls` with
+little perturbation, though you are better off learning more.
+
 --------
 
 So called --tree formats.  These don't interoperate very well with the simple
@@ -15,6 +18,12 @@ So, it's easy to lose track of alignment visually.  In as small scale as tree
 likely works well in, many other things also probably work fine.  I.e., it's
 value add is marginal.  It makes more sense in GUIs where you pick and choose
 points of collapse or expansion.  There are likely other problems.
+
+One way to add something sort of like this would be like [procs
+display](https://github.com/c-blake/procs/blob/master/screenshots/basic.png)
+indentation, but with indent proportional to directory depth.  This may help
+some people with very shallow hierarchies and terminal rows to burn.  I'm not
+very interested in this, but it would probably be easy to add.
 
 --------
 
