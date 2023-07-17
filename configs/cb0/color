@@ -23,7 +23,7 @@ color="video:0x72:0    fhue1"            #0x07
 #color="combo:0x00:0    blink"            #0x07
 color="script:0x40:0   fhue4"            #0x08
 color="pointer:0x50:0:ɷ FHUE0"           #0x09   #pointers odd ducks=>alt bank
-color="header:0x58:0   fhue2"            #0x0A   #Intefaces are cooler prelude
+color="header:0x58:0   fhue2"            #0x0A   #Interfaces are cooler prelude
 color="source:0x60:0   fhue3"            #0x0B   #..to neutral warmth impls.
 color="object:0x68:0   fhue5"            #0x0C   #Could arguably swap obj&exec
 color="core:0x68:0     fhue5"            #0x0D
