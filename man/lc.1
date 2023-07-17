@@ -291,22 +291,21 @@ shortest 2-'*' anywhere glob with unique match
 .El
 That is quite a lot.  There is much flexibility since circumstances vary enough
 that any one heuristic can fail badly.  While examples here might help, there is
-really no substitute for images here:
-.br
-  https://htmlpreview.github.io/?https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/progression.html
+no substitute for images: https://github.com/c-blake/lc#automatic-abbreviations .
+The link at the end to a larger /usr/src/linux e.g. may also help.
 .Pp
 "pattern quoting" is AFAIK a term of my own invention but refers to the fact
-that in many shells '?' can match any character, even shell meta-characters.
-So, assuming a unique match (which
+that in many shells '?' can match any character in filenames, even shell
+meta-characters.  So, assuming a unique match (which
 .Nm
-abbreviation often ensures), one way to "quote" a shell-meta character is to
-replace it with '?' which I call "pattern quoting".  In other words, if shell
-auto-expansion/magic space is set up, you should be able to click or otherwise
-select unique globs, hit a <TAB>-equivalent, and see just one match, at least if
-the PWD is the same as what
+abbreviation often ensures), one way to suppress the shell syntax effect of a
+shell-meta character is to use '?' instead - hence "pattern quoting".  In other
+words, if shell magic space / auto-expansion space is set up, you should be able
+to copy-paste unique globs, hit a <TAB>-equivalent, and see just one match, at
+least if the PWD is the same as what
 .Nm
 is rendering for.  (Of course, you need not expand before using in commands.
-That is just a way to describe what is going on.)
+That is just a way to describe things.)
 .It \fB-M=, --maxTgt=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for symLink targets; No auto
 .It \fB-U=, --maxUnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for user names
 .It \fB-G=, --maxGnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for group names
