@@ -249,26 +249,46 @@ a few files where renaming to shorter names would allow more columns.
 .It \fB-m=, --maxName=\fP (\fI''\fP) \fIAbbreviationSpecifier\fP where an abbreviation specifier can be:
 .Bl -tag -width "Number>0" -compact -offset indent
 .It Em "aANYTEXT"
-automatic - best same-location single-'*'
+automatic - best unique same-location single-'*'
 .It Em "Number>0"
-thatManualWidth=M[,head(M/2)
+=M - manual terminal-width M
 .br
-    [,tail(M-head+len(sep))
+    [,head(M/2) - manual prefix length
 .br
-    [,sep('*')
+    [,tail(M-head+len(sep)) - manual suffix length
 .br
-    [,quoteChars]]]]
+    [,sep('*') - override separator, e.g. "..."
+.br
+    [,quoteChars]]]] - chars to be ?-pattern-quoted
 .It Em "-2"
-pfx
+shortest unique prefix
 .It Em "-3"
-sfx
+shortest unique suffix
 .It Em "-4"
-mfx
+shorter of minimal prefix & suffix
 .It Em "-5"
-shortest any-location 1-'*' glob with unique match
+shortest 1-'*' anywhere glob with unique match
 .It Em "-6"
-shortest any-location 2-'*' glob with unique match
+shortest 2-'*' anywhere glob with unique match
 .El
+That is quite a lot.  There is much flexibility since circumstances vary enough
+that any one heuristic can fail badly.  While examples here might help, there is
+really no substitute for images here:
+.br
+  https://htmlpreview.github.io/?https://raw.githubusercontent.com/c-blake/lc/master/screenshots/src-linux-script/progression.html
+.Pp
+"pattern quoting" is AFAIK a term of my own invention but refers to the fact
+that in many shells '?' can match any character, even shell meta-characters.
+So, assuming a unique match (which
+.Nm
+abbreviation often ensures), one way to "quote" a shell-meta character is to
+replace it with '?' which I call "pattern quoting".  In other words, if shell
+auto-expansion/magic space is set up, you should be able to click or otherwise
+select unique globs, hit a <TAB>-equivalent, and see just one match, at least if
+the PWD is the same as what
+.Nm
+is rendering for.  (Of course, you need not expand before using in commands.
+That is just a way to describe what is going on.)
 .It \fB-M=, --maxTgt=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for symLink targets; No auto
 .It \fB-U=, --maxUnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for user names
 .It \fB-G=, --maxGnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for group names
