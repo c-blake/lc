@@ -71,3 +71,10 @@ task uninstallConf, "uninstall the default config from \".../etc/lc/\"":
 
 task installData, "installMan;Conf": installManTask(); installConfTask()
 task uninstallData, "uninstallMan;Conf": uninstallManTask(); uninstallConfTask()
+
+proc absent(evs: openArray[string]): bool =             # True if *NONE* of evs
+  for ev in evs: result = result and not ev.existsEnv   #..is set to anything.
+after install:          # Evidently, `after uninstall:` is not honored
+  if ["NIMBLE_MINI","mini"].absent:
+    if ["NIMBLE_NOMAN","noman"].absent: installManTask()
+    if ["NIMBLE_NOETC","noetc","NIMBLE_NOCONF","noconf"].absent: installConfTask()

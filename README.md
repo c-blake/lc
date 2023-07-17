@@ -2,21 +2,16 @@ For the impatient, here is a screenshot:
 
 ![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/main.png)
 
-Getting an `lc` config going *should* be as easy as (on Debian):
+Getting an `lc` config going *should* be as easy as (on Debian):[^1]
 ```
 apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
-cd $(nimble path lc); nimble installData
 ```
-though the Nim experience can sometimes have fairly rough-hewn edges.  With such
-you may get an interesting 8-level sort-colorized listing from (configs/cb0 has
-details):
+though the Nim experience can sometimes have fairly rough-hewn edges.  You may
+even get interesting 8-level sort-colorized listings from (etc/lc has details):
 ```
 ~/.nimble/bin/lc -oDd0134EN /dev
 ```
-You can put `~/.nimble/bin` in `$PATH`.  As root, you may be able to export
-`NIMBLE_DIR=/usr/local/nimble` or `NIMBLE_DIR=/opt/nimble` before the above to
-possibly avoid `PATH` or `MANPATH` changes.[^1]
 
 What `lc` is Not
 ================
@@ -210,8 +205,7 @@ not unthinkable, though unlikely to be a popular default style.  Hard-coding Git
 support seems popular these days.  I don't do that yet.  I'm not sure I want a
 direct dependency, but you may be able to hack something together.
 
-[^1]: While we hope you appreciate `lc`, if you don't, uninstall looks like:
-`(export NIMBLE_DIR=/opt/nimble; cd $(nimble path lc|grep -v Info:);nimble uninstallData)`
+[^1]: You may need `PATH` or `MANPATH` changes.
 
 [^2]: Operationally, users just pick small integer labels for kinds aka series
 of order-dependent tests aka classes.  The first passing kind test within a
