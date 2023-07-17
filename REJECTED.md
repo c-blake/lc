@@ -18,10 +18,10 @@ points of collapse or expansion.  There are likely other problems.
 
 --------
 
-Miller columns/cascading lists.  What people want here is (approximately):
+[Miller columns/cascading lists](https://en.wikipedia.org/wiki/Miller_columns).
+What people want here is (approximately):
 ```
 paste <(lc -1m25 ../..) <(lc -1m25 ..) <(lc -1m25 .) | less -x26
-
 ```
 Doing this for one-off single directories can already be achieved with the above
 snippet.[^1]  So, I doubt it makes sense as a built-in `lc` feature.  It's likely
