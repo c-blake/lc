@@ -170,6 +170,11 @@ independent slot.  How much you can layer is very limited.
 \fIICON\fP should be self-explanatory and \fIATTR\fP is covered in the below
 section: \fBTEXT ATTRIBUTE / COLOR SPECIFICATION\fP which gives this option its
 name.
+.Pp
+Besides text colors/attributes for file types, \fB--color\fR also lets you set
+how certain value-dependent columns are rendered like file size & permissions
+via pseudo-type-names like \fIsizeM\fP for size in megabytes or \fIperm5\fP for
+the octal code indicating "r-x" permissions.
 .It Sy "-a=, --ageFmt=" ( Em "{}" )   Em FileAgeFormatStrings
 each with syntax: \fI<FileAge>@[-+]<STRFTIME_FMT>\fP where:
 .Bl -tag -width STRFTIME -compact -offset indent
@@ -183,10 +188,14 @@ means plain mode format
 %CODEs are any strftime & %DIGIT
 .It Order can matter here; Arrange oldest to youngest.
 .El
-.It \fB-o=, --order=\fP ( \fI''\fP ) [-]x[-]y[-]z.. keys to sort files by.
-See FORMAT & ORDER CODES section of this page for x,y,z.
-.It \fB-f=, --format=\fP ( \fI%f\fP ) "%a %b .." dirent format; %-b left-aligns.
-See FORMAT & ORDER CODES section of this page for a,b,...
+For example, \fB-a86400@%{purple}y%{blue}m%{cyan}d
+-a0@%{green}H%{yellow}M%{red}S\fP will render file times older than 86400
+seconds (1 day) in a "cooler" hue (blue side) by date (%y%m%d) but younger files
+in a "warmer" hue by time of day (%H%M%S).
+.It \fB-o=, --order=\fP ( \fI''\fP ) [-]X[-]Y[-]Z... keys to multi-level sort files by.
+See FORMAT & ORDER CODES section of this page for X,Y,Z,...
+.It \fB-f=, --format=\fP ( \fI%f\fP ) "%X %{bold}Y %-Z .." dirent format; %-Z left-aligns.
+See FORMAT & ORDER CODES section of this page for X,Y,Z,...
 .It \fB-q, --quote\fP "" "" "" "" "" "" quote filenames with unprintable chars
 .It \fB-e=, --ext1=\fP ( \fI''\fP )  %e output from x.so:func(qpath: cstr)->cstr
 .It \fB-E=, --ext2=\fP ( \fI''\fP )  %E output from x.so:func(qpath: cstr)->cstr
