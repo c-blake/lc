@@ -660,6 +660,7 @@ fAdd('Q', {dsA},0, "A"    ): ["", "+"][f.acl.int]
 fAdd('e', {}   ,0, "e1"   ): $cg.ext1c(f.name.qualPath.cstring)
 fAdd('E', {}   ,0, "e2"   ): $cg.ext2c(f.name.qualPath.cstring)
 fAdd('@', {}   ,0, "I"    ): f.fmtIcon
+fAdd('I', {}   ,0, "I"    ): f.fmtIcon
 
 template dBody(i): untyped {.dirty.} =
   if f.kind.len>i: cg.kinds[f.kind[i]].attr & f.kind[i].toHex & cg.a0 else: "xx"
