@@ -28,21 +28,21 @@ codes { after the style of
 .Xr strftime 3
 } that drive all of this.  Though the source code will always be the best
 reference, not everyone has the energy to learn Nim as well as all these bespoke
-nano-langs.  While \fBlc --help\fR gives a quick reference, this present
+nano-langs.  While \fBlc --help\fP gives a quick reference, this present
 document goes into more detail.  Even more details, rationale, and even screen
 shots are available at github.com/c-blake/lc .
 .Sh "OPTIONS (AKA FLAGS)"
 Defaults are in () except for boolean flags which all default to false.
 It is not expected that you will often/ever issue more involved options like
-\fB--kind\fR, \fB--color\fR & \fB--ageFmt\fR interactively.  Rather they will
+\fB--kind\fP, \fB--color\fP & \fB--ageFmt\fP interactively.  Rather they will
 be in a config file, but options syntax is unified with that.  It may be easier
 to learn how to drive
 .Nm
 from its example configuration files.
-.Ss "File typology"
+.Ss "File typology / taxonomy"
 .Bl -hang -width MM
 .It Sy "-k=, --kind=" ( Em "{}" ) Em "[TYPE-NAME-BINDINGS/DEFINITION STRINGS]"
-where each string is: \fBNAME RELATION PARAMS\fR with 3 or more fields are
+where each string is: \fBNAME RELATION PARAMS\fP with 3 or more fields are
 whitespace-separated and:
 .Bl -tag -width "asciiChars | cset" -compact -offset indent
 .It Em RELATION
@@ -72,7 +72,7 @@ pcRes matching a
 .Xr libmagic 3
 description 
 .It Em extension | ext
-parameter \fBX.so:FUNC\fR applied to paths != 0
+parameter \fBX.so:FUNC\fP applied to paths != 0
 .It Em any
 matches any one of listed kind names
 .It Em all
@@ -133,12 +133,12 @@ Linux - has some Linux FS Capability
 .It Em ACL
 has some ACL
 .El
-\fBNOTE\fR: in config files / on the command-line, you may usually use \fIany
-unique prefix\fR to refer to file kind names.
+\fBNOTE\fP: in config files / on the command-line, you may usually use \fIany
+unique prefix\fP to refer to file kind names.
 .El
 .Ss "Formatting & Sorting"
 .Bl -hang -width MM
-.It \fB-c=, --color=\fR ( \fI{}\fR ) Em RenderSpecificationStrings
+.It \fB-c=, --color=\fP ( \fI{}\fP ) Em RenderSpecificationStrings
 each with syntax \fBNAME[:KEY[:SLOT[:ICON]]] ATTR ATTR..\fP where whitespace
 amounts do not matter and:
 .Bl -tag -width "NAME -" -compact -offset indent
@@ -183,61 +183,61 @@ means plain mode format
 %CODEs are any strftime & %DIGIT
 .It Order can matter here; Arrange oldest to youngest.
 .El
-.It \fB-o=, --order=\fR ( \fI''\fR ) [-]x[-]y[-]z.. keys to sort files by.
+.It \fB-o=, --order=\fP ( \fI''\fP ) [-]x[-]y[-]z.. keys to sort files by.
 See FORMAT & ORDER CODES section of this page for x,y,z.
-.It \fB-f=, --format=\fR ( \fI%f\fR ) "%a %b .." dirent format; %-b left-aligns.
+.It \fB-f=, --format=\fP ( \fI%f\fP ) "%a %b .." dirent format; %-b left-aligns.
 See FORMAT & ORDER CODES section of this page for a,b,...
-.It \fB-q, --quote\fR "" "" "" "" "" "" quote filenames with unprintable chars
-.It \fB-e=, --ext1=\fR ( \fI''\fR )  %e output from x.so:func(qpath: cstr)->cstr
-.It \fB-E=, --ext2=\fR ( \fI''\fR )  %E output from x.so:func(qpath: cstr)->cstr
+.It \fB-q, --quote\fP "" "" "" "" "" "" quote filenames with unprintable chars
+.It \fB-e=, --ext1=\fP ( \fI''\fP )  %e output from x.so:func(qpath: cstr)->cstr
+.It \fB-E=, --ext2=\fP ( \fI''\fP )  %E output from x.so:func(qpath: cstr)->cstr
 .El
 .Ss "Meta"
 .Bl -hang -width MM
-.It \fB-C=, --colors=\fR (\fI{}\fR)   color aliases; Syntax: name = ATTR1 ATTR2..
-.It \fB-S=, --Style=\fR (\fI''\fR)    DEFINE an output style arg bundle
-.It \fB-s=, --style=\fR (\fI''\fR)    APPLY an output style
-.It \fB-X=, --extra=\fR (\fI''\fR)    add params from config ARG where ARG means:
+.It \fB-C=, --colors=\fP (\fI{}\fP)   color aliases; Syntax: name = ATTR1 ATTR2..
+.It \fB-S=, --Style=\fP (\fI''\fP)    DEFINE an output style arg bundle
+.It \fB-s=, --style=\fP (\fI''\fP)    APPLY an output style
+.It \fB-X=, --extra=\fP (\fI''\fP)    add params from config ARG where ARG means:
 .Bl -tag -width ROOT// -compact -offset 2n
-.It "\fIROOT\fR."
+.It "\fIROOT\fP."
 Load any \fB.lc\fP in the same dir as being listed
-.It "\fIROOT\fR/"
+.It "\fIROOT\fP/"
 Load any \fB.lc\fP in any parent dir of those listed
-.It "\fIROOT\fR/."
+.It "\fIROOT\fP/."
 Load \fB.lc\fP in the same dir as being listed (--recurse)
-.It "\fIROOT\fR//"
+.It "\fIROOT\fP//"
 Load \fB.lc\fP in parent dirs of those listed (--recurse)
 .El
 Useful values of \fIROOT\fP are either "." for paths relative to the dir being
 listed (if you have durable write access, say).  You can make a partial shadow
 of a dir-tree, though, and
 .Nm
-will look for \fB.lc\fR relative to an alternate root.  (Examples of non-durable
+will look for \fB.lc\fP relative to an alternate root.  (Examples of non-durable
 write access might be /usr/lib or /dev.)
 .El
 .Ss "Content Generation & Filtering"
 .Bl -hang -width MM
-.It \fB-d, --dirs\fR            list dirs as themselves, not contents
-.It \fB-r=, --recurse=\fR (\fI1\fR)   recurse N levels; 0 => unbounded
-.It \fB-i=, --incl=\fR (\fI{}\fR)     kind \fINAME\fPs to include
-.It \fB-x=, --excl=\fR (\fI{}\fR)     kind \fINAME\fPs to exclude
-.It \fB-w=, --widest=\fR (\fI0\fR)    only list this many widest entries
+.It \fB-d, --dirs\fP            list dirs as themselves, not contents
+.It \fB-r=, --recurse=\fP (\fI1\fP)   recurse N levels; 0 => unbounded
+.It \fB-i=, --incl=\fP (\fI{}\fP)     kind \fINAME\fPs to include
+.It \fB-x=, --excl=\fP (\fI{}\fP)     kind \fINAME\fPs to exclude
+.It \fB-w=, --widest=\fP (\fI0\fP)    only list this many widest entries
 in each column; 0 => do not filter.  This feature is useful to see if there are
 a few files where renaming to shorter names would allow more columns.
 .El
 .Ss "Table Controls"
 .Bl -hang -width MM
-.It \fB-n=, --nColumn=\fR (\fI999\fR) max major columns to use
-.It \fB-1, --n1\fR              same as \fB-n1\fR; Mostly to have a long option to bind short form \fB-1\fR commonly available in file listers.
-.It \fB-P=, --padMax=\fR (\fI999\fR)  max spaces by which to pad major columns
-.It \fB-W=, --width=\fR (\fI0\fR)     override auto-detected terminal width
-.It \fB-D, --dense\fR           no blanks between multiple dir listings
-.It \fB-u, --unzipF\fR          negate default all-after-%[fF] column zip
-.It \fB-H, --header\fR          add a row at start of data with col names
-.It \fB-t, --total\fR           print total of blocks before entries
+.It \fB-n=, --nColumn=\fP (\fI999\fP) max major columns to use
+.It \fB-1, --n1\fP              same as \fB-n1\fP; Mostly to have a long option to bind short form \fB-1\fP commonly available in file listers.
+.It \fB-P=, --padMax=\fP (\fI999\fP)  max spaces by which to pad major columns
+.It \fB-W=, --width=\fP (\fI0\fP)     override auto-detected terminal width
+.It \fB-D, --dense\fP           no blanks between multiple dir listings
+.It \fB-u, --unzipF\fP          negate default all-after-%[fF] column zip
+.It \fB-H, --header\fP          add a row at start of data with col names
+.It \fB-t, --total\fP           print total of blocks before entries
 .El
 .Ss "Auto-Abbreviation"
 .Bl -hang -width MM
-.It \fB-m=, --maxName=\fR (\fI''\fR) \fIAbbreviationSpecifier\fP where an abbreviation specifier can be:
+.It \fB-m=, --maxName=\fP (\fI''\fP) \fIAbbreviationSpecifier\fP where an abbreviation specifier can be:
 .Bl -tag -width "Number>0" -compact -offset indent
 .It Em "aANYTEXT"
 automatic - best same-location single-'*'
@@ -260,22 +260,22 @@ shortest any-location 1-'*' glob with unique match
 .It Em "-6"
 shortest any-location 2-'*' glob with unique match
 .El
-.It \fB-M=, --maxTgt=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for symLink targets; No auto
-.It \fB-U=, --maxUnm=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for user names
-.It \fB-G=, --maxGnm=\fR (\fI""\fR) \fIAbbreviationSpecifier\fP for group names
-.It \fB-F, --reFit\fR   expand abbrevs up to padded column widths.
-The idea here is to abbreviate only to the extent it helps a table have fewer columns.
+.It \fB-M=, --maxTgt=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for symLink targets; No auto
+.It \fB-U=, --maxUnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for user names
+.It \fB-G=, --maxGnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for group names
+.It \fB-F, --reFit\fP   expand abbrevs up to padded column widths.
+Basically, abbreviate only to the extent it helps a table have fewer columns.
 .El
 .Ss "Miscellaneous"
 .Bl -hang -width MM
-.It \fB-g=, --glyph=\fR (\fI" -> "\fR) how to render arrow in %r/%R readlink formats
-.It \fB-b, --binary\fR   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
-.It \fB-L, --deref\fR    deref symLinks generally
-.It \fB-l, --tgtDref\fR  fully classify \&%R formats on their own
-.It \fB-p, --plain\fR    plain text; No color escape sequences
-.It \fB-A, --access\fR   use 3*access(2) not st_mode for RWX perms
-.It \fB--hyperlink\fR    add hyperlinks
-.It \fB--version\fR      print version and exit
+.It \fB-g=, --glyph=\fP (\fI" -> "\fP) how to render arrow in %r/%R readlink formats
+.It \fB-b, --binary\fP   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
+.It \fB-L, --deref\fP    deref symLinks generally
+.It \fB-l, --tgtDref\fP  fully classify \&%R formats on their own
+.It \fB-p, --plain\fP    plain text; No color escape sequences
+.It \fB-A, --access\fP   use 3*access(2) not st_mode for RWX perms
+.It \fB--hyperlink\fP    add hyperlinks
+.It \fB--version\fP      print version and exit
 .El
 .Sh FORMAT & ORDER CODES
 .Ss "SHARED codes for BOTH format AND order specs:"
@@ -390,24 +390,24 @@ symLink target file kind Components 0-2
 .Ss "Basic Background Colors"
 An \fIon_\fP prefix implies using this color as the BACKGROUND color.
 .Pp
-So, for example, \fBbold white on_red\fR specifies what it sounds like -- bold
+So, for example, \fBbold white on_red\fP specifies what it sounds like -- bold
 font white foreground text with a dark red background.
 .Ss "High Intensity Colors"
 UPPERCASE of the same names implies the HIGH intensity bank (for either fore- or
 background colors).  Fewer terminals support this.  SGR codes are, respectively,
 9x & 10x with x in [0,7] (for fore- & background).  E.g., \fBYELLOW on_red
-italic\fR means render bright yellow on dark red text with italic font.
+italic\fP means render bright yellow on dark red text with italic font.
 .Ss "256-color xterm Colors"
 256-color xterm attrs are \fI[fb][0..23]\fP for FORE/BACKground grey scale &
-\fI[fb]RGB\fP a 6x6x6 color cube; each [RGB] is on [0,5].  So, \fBf123 b20 blink\fR
+\fI[fb]RGB\fP a 6x6x6 color cube; each [RGB] is on [0,5].  So, \fBf123 b20 blink\fP
 means blinking red 1/5, green 2/5, blue 3/5 text on a gray 20/23 background.
 .Ss "xterm/st/kitty true colors"
 xterm/st/kitty true colors are \fI[fb]HHHHHH\fP (usual R,G,B mapping).  E.g.,
-\fBwhite underline b081830\fR is underlined white text on Red=0x08=8/255,
+\fBwhite underline b081830\fP is underlined white text on Red=0x08=8/255,
 Green=0x18=24/255, Blue=0x30=48/255.
 .Ss "Where these can be used"
 While \fB--color\fP values are the primary use case, field & strftime formats
-both accept \fI%{ATTR..}CODE\fP.  E.g., \fBlc -f '%{inverse}f'\fR will list
+both accept \fI%{ATTR..}CODE\fP.  E.g., \fBlc -f '%{inverse}f'\fP will list
 directory entries with whatever other colorization they would have had, but with
 whatever your terminal maps color inversion to overlaid.
 .Sh "EXIT STATUS"
@@ -419,7 +419,7 @@ being removed after readdir but before stat).
 .Bl -tag -width XDG_CONFIG_HOME
 .It Ev CLIGEN
 The path to the config file or directory for cligen CL framework configuration.
-This can tune \fI--help\fR colorization, layout, and content as well as a few CL
+This can tune \fI--help\fP colorization, layout, and content as well as a few CL
 syntax variations such as whether long options require unique prefixes or being
 fully spelled out.
 .It Ev LC_CONFIG
