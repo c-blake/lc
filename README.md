@@ -91,9 +91,9 @@ Output text can set foreground & background colors of text **independently**.
 I happen to like [st](https://git.suckless.org/st/) for its hackability.  That
 can *also* bold, italic, blink, underline, struck, and inverse *independently*.
 (Color inversion involves a mapping too complex to be a very useful visual aid.)
-So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions and colors
-having larger value ranges.  While subjective, I find it not hard to distinguish
-text with *all* those attributes varying.  Geographical map folk often call this
+So, 8 usable output dimensions, 6 shallow 1-bit dimensions & fg/bg color with
+larger value ranges.  While subjective, I find it not hard to distinguish text
+with *all* those attributes varying.  Geographical map folk often call this
 "layers" (such as political borders layered atop satellite imagery).  `lc` aids
 "aligning" rendered output traits with classified input traits.
 
