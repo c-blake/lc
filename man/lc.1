@@ -178,8 +178,8 @@ how certain value-dependent columns are rendered like file size & permissions
 via \fIpseudo-type-names\fP like \fBsizeM\fP for size in megabytes or \fBperm5\fP
 for the octal code indicating "r-x" permissions.
 .It Sy "-a=, --ageFmt=" ( Em "{}" )   Em FileAgeFormatStrings
-each with syntax: \fI<FileAge>@[-+]<STRFTIME_FMT>\fP where:
-.Bl -tag -width STRFTIME -compact -offset indent
+each with syntax: \fI<FileAge>@[-+]<STRFTIME_FMT|HumanDuration>\fP where:
+.Bl -tag -width HumanDuration -compact -offset indent
 .It Em FileAge
 is {seconds | 'FUTURE' | 'ANYTIME'}
 .It Em \&'+'
@@ -188,12 +188,28 @@ means the alternate format
 means plain mode format
 .It Em strftime
 %CODEs are any strftime & %DIGIT
-.It Order can matter here; Arrange oldest to youngest.
+.It Em HumanDuration
+is another way to format times -- relative to the time
+.Nm
+was run, divided by a unit number, and adorned by a unit string & attrs.
 .El
-For example, \fB-a86400@%{purple}y%{blue}m%{cyan}d
--a0@%{green}H%{yellow}M%{red}S\fP will render file times older than 86400
-seconds (1 day) in a "cooler" hue (blue side) by date (%y%m%d) but younger files
-in a "warmer" hue by time of day (%H%M%S).
+Order can matter here; Arrange oldest to youngest.  E.g.,
+\fB-a86400@%{purple}y%{blue}m%{cyan}d -a0@%{green}H%{yellow}M%{red}S\fP will
+render file times older than 86400 seconds (1 day) in a "cooler" hue (blue side)
+by date (%y%m%d) but younger files in a "warmer" hue by time of day (%H%M%S).
+.Pp
+\fIHumanDuration\fP is 3 space-separated columns: \fB/\fP\fIdivisor string
+attrs\fP with the \fB/\fR indicating this format.  So, e.g.:
+.nf
+-a "+86400@/86400 <day cyan"
+-a  "+6000@/3600  <hrs green"
+-a   "+100@/60    <min yellow"
+-a     "+0@/1     <sec red"
+.fi
+establishes units of seconds up to "99sec" before
+.Nm
+was run, then for earlier times 1-99min, then 1-23hrs, then days with the
+hopefully obvious colors.  \fB<\fR means to left-pad/right-align the field.
 .It \fB-o=, --order=\fP ( \fI''\fP ) [-]X[-]Y[-]Z... keys to multi-level sort files by.
 See FORMAT & ORDER CODES section of this page for X,Y,Z,...
 .It \fB-f=, --format=\fP ( \fI%f\fP ) "%X %{bold}Y %-Z .." dirent format; %-Z left-aligns.
