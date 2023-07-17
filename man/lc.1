@@ -171,13 +171,12 @@ independent slot.  In this way the independence of the input matches independent
 layering of the output.  How much you can layer is very limited.
 .Pp
 \fIICON\fP should be self-explanatory and \fIATTR\fP is covered in the below
-section: \fBTEXT ATTRIBUTE / COLOR SPECIFICATION\fP which gives this option its
-name.
+\fBTEXT ATTRIBUTE / COLOR SPECIFICATION\fP section.
 .Pp
 Besides text colors/attributes for file types, \fB--color\fR also lets you set
 how certain value-dependent columns are rendered like file size & permissions
-via pseudo-type-names like \fIsizeM\fP for size in megabytes or \fIperm5\fP for
-the octal code indicating "r-x" permissions.
+via \fIpseudo-type-names\fP like \fBsizeM\fP for size in megabytes or \fBperm5\fP
+for the octal code indicating "r-x" permissions.
 .It Sy "-a=, --ageFmt=" ( Em "{}" )   Em FileAgeFormatStrings
 each with syntax: \fI<FileAge>@[-+]<STRFTIME_FMT>\fP where:
 .Bl -tag -width STRFTIME -compact -offset indent
