@@ -8,9 +8,9 @@ apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
 ```
 though the Nim experience can sometimes have fairly rough-hewn edges.  You may
-even get interesting 8-level sort-colorized listings from (etc/lc has details):
+even get interesting 2-level sort-colorized listings from (etc/lc has details):
 ```
-~/.nimble/bin/lc -oDd0134EN /dev
+~/.nimble/bin/lc -oDd /dev
 ```
 
 What `lc` is Not
