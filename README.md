@@ -89,7 +89,7 @@ graphical file tree sense.  Examples of slots/dimensions/attributes may help.
 
 Output text can set foreground & background colors of text **independently**.
 I happen to like [st](https://git.suckless.org/st/) for its hackability.  That
-can do bold, italic, blink, underline, struck, inverse as 6 independent traits.
+can *also* bold, italic, blink, underline, struck, and inverse *independently*.
 (Color inversion involves a mapping too complex to be a very useful visual aid.)
 So, 7 usable output dimensions, with 5 being shallow 1-bit dimensions and colors
 having larger value ranges.  While subjective, I find it not hard to distinguish
