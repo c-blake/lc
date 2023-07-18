@@ -205,7 +205,7 @@ not unthinkable, though unlikely to be a popular default style.  Hard-coding Git
 support seems popular these days.  I don't do that yet.  I'm not sure I want a
 direct dependency, but you may be able to hack something together.
 
-[^1]: You may need `PATH` | `MANPATH` changes. `man path/to/lc.1` usually works.
+[^1]: You may need `PATH`|`MANPATH` changes.  Or `man -l path/to/lc.1` can work.
 
 [^2]: Operationally, users just pick small integer labels for kinds aka series
 of order-dependent tests aka classes.  The first passing kind test within a
