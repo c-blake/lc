@@ -623,6 +623,8 @@ var fmtOf: Table[char, tuple[ds: DataSrcs; left: bool; hdr: string;
 template fAdd(code, ds, left, hdr, toStr: untyped) {.dirty.} =
   fmtCodes.incl(code)                           #AVAILABLE: hjtyz HIJNOTWXYZ
   fmtOf[code] = (ds, left.bool, hdr, proc(f:var Fil):string {.closure.} = toStr)
+# Undelimited 1char-wide fields like '[lQI]' exist on purpose, but a junk way to
+# ensure delimits for sparser stuff is leading ' ' in hdr for left-align fields.
 fAdd('f', {}   ,1, " Nm"  ): f.fmtName(f.name)
 fAdd('F', {}   ,1, " Bs"  ): f.fmtName(f.name[f.base..^1])
 fAdd('r', {dsT},1, "ln"   ): f.fmtTgtU
