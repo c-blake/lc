@@ -30,3 +30,8 @@ selinux security context labels (ls -Z)
 Though current "just has it" kinding works to color by ACL/Linux capability,
 it'd be nicer to actually format out the text. { Capabilities are short-ish,
 but ACL spellings are typically not table-friendly.  So maybe just caps. }
+
+Make -H take an attr instead of being a bool; Render header only if .len>0.
+So, space can render without attrs.  Leading + can replicate headers across
+major columns.  Best to apply attr to start of 1st header and turn off attrs at
+end of last so intermediate space is all e.g., underlined.
