@@ -454,11 +454,11 @@ whatever your terminal maps color inversion to overlaid.
 .Nm
 is more an "ls construction toolkit" than most similar programs.
 .Pp
-While little is hard-coded, one exception is that the left most column is always
+Little is hard-coded, but one exception is that the leftmost column is always
 left-aligned.  This is to prevent empty columns in some rows for other tools
 that split on repeated whitespace but do not collapse newline->non-white space.
 For this reason you may want formats to start with naturally left aligned or
-fixed width fields, such as %U/%P.
+fixed width fields, such as %P.
 .Sh "EXIT STATUS"
 .Nm
 exits with a status which is the max of 127 (the biggest non-signal exit code
@@ -472,16 +472,17 @@ This can tune \fI--help\fP colorization, layout, and content as well as a few CL
 syntax variations such as whether long options require unique prefixes or being
 fully spelled out.
 .It Ev LC_CONFIG
-If set, this is a path to a Nim std/parsecfg configuration file or
-directory containing parameters processed by every invocation of
+If set, this is a path to a Nim std/parsecfg configuration file or directory
+containing parameters processed by every invocation of
 .Nm .
 If compiled with \fI-d:cgCfgToml\fP the format of this file is TOML, but you
 must first have installed github.com/NimParsers/parsetoml somewhere in your \fInim
-c --path:SEARCH\fP
+c --path:SEARCH\fP.  If a directory, \fB$LC_CONFIG/config\fR is the config file.
 .It Ev XDG_CONFIG_HOME
 XDG directory for configuration files; ~/.config is a common choice.
+\fB$XDG_CONFIG_HOME/lc\fP is used if \fBLC_CONFIG\fP is unset.
 .It Ev HOME
-Users home directory used here as a fallback parent for .config if neither
+Users home dir used as a fallback parent for ~/.config if neither
 LC_CONFIG nor XDG_CONFIG_HOME are set.
 .It Ev LC
 Additional command parameters for every invocation
