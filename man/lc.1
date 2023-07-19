@@ -346,8 +346,8 @@ file / path name
 baseName
 .It Em "s    SzDv"
 human readable size | dev number (if block | char).  This is rounded with
-a metric-ish prefix on it (or a pair of hex numbers) to only ever occupy 4
-terminal columns.
+a metric suffix (or pair of hex numbers) to only ever occupy 4 terminal
+columns.
 .It Em "K    Bk"
 file blocks
 .It Em "n    N"
@@ -403,13 +403,27 @@ rwx perms with space separators
 .It Em "l    l"
 ls-KindCode(dl-..)
 .It Em "L    L"
-ls-KindCode(/@\|=)
+ls-KindCode(*/@\|=)
 .It Em "e    e1"
 Output of External Program 1
 .It Em "E    e2"
 Output of External Program 2
 .It Em "x    XA"
-stxAttrCode
+has statx extended attribute:
+.Bl -tag -width " MM " -compact -indent
+.It Em " Im "
+Immutable
+.It Em " Ap "
+Append Only
+.It Em " Cp "
+Compressed
+.It Em " Ec "
+Encrypted
+.It Em " Nd "
+No Dump
+.It Em " Am "
+Auto Mount
+.El
 .It Em "@    I"
 Icon (4th :-sep Col Of --color spec)
 .It Em "0-8  D0-8"
