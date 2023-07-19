@@ -248,18 +248,31 @@ a few files where renaming to shorter names would allow more columns.
 .El
 .Ss "Table Controls"
 .Bl -hang -width MM
-.It \fB-n=, --nColumn=\fP (\fI999\fP) max major columns to use
-.It \fB-1, --n1\fP              same as \fB-n1\fP; Mostly to have a long option to bind short form \fB-1\fP commonly available in file listers.
-.It \fB-P=, --padMax=\fP (\fI999\fP)  max spaces by which to pad major columns
-.It \fB-W=, --width=\fP (\fI0\fP)     override auto-detected terminal width
-.It \fB-D, --dense\fP           no blanks between multiple dir listings
-.It \fB-u, --unzipF\fP          negate default all-after-%[fF] column zip
-.It \fB-H, --header\fP          add a row at start of data with col names
-.It \fB-t, --total\fP           print total of blocks before entries
+.It \fB-n=, --nColumn=\fP (\fI999\fP) max major columns to use (each directory
+entry occupies a "major" column while fields within it are "minor" columns).
+.It \fB-1, --n1\fP              same as \fB-n1\fP; Mostly to have a long option
+to bind short form \fB-1\fP commonly available in file listers.
+.It \fB-P=, --padMax=\fP (\fI999\fP)  max spaces by which to pad major columns;
+This space can help visually distinguish major from minor columns.
+.It \fB-W=, --width=\fP (\fI0\fP)     override auto-detected terminal width;
+E.g. --width=$((COLUMNS+5)) can do layout for a slightly wider terminal.  Useful
+especially in combination with \fB--widest\fR.
+.It \fB-D, --dense\fP           no blanks between multiple dir listings to
+conserve terminal row space for blanks (often less needed with good highlighting
+of directory types themselves).
+.It \fB-u, --unzipF\fP          negate default all-after-%[fF] column zip which
+happens by default to best support %f%r, %f%R, %f%L, etc. "overloading" of the
+rightmost column with "optional" suffixes.  By using --unzipF these columns no
+longer look optional, but get aligned like all the others.
+.It \fB-H, --header\fP          add a row at start of data with col names since
+with so many columns and numbers it can be easy to lose track.
+.It \fB-t, --total\fP           print total of blocks before entries in ancient
+.Xr ls 1 long format listing tradition
 .El
 .Ss "Auto-Abbreviation"
 .Bl -hang -width MM
-.It \fB-m=, --maxName=\fP (\fI''\fP) \fIAbbreviationSpecifier\fP where an abbreviation specifier can be:
+.It \fB-m=, --maxName=\fP (\fI''\fP) \fIAbbreviationSpecifier\fP where an
+abbreviation specifier can be:
 .Bl -tag -width "Number>0" -compact -offset indent
 .It Em "aANYTEXT"
 automatic - best unique same-location single-'*'
@@ -309,11 +322,16 @@ Basically, abbreviate only to the extent it helps a table have fewer columns.
 .Ss "Miscellaneous"
 .Bl -hang -width MM
 .It \fB-g=, --glyph=\fP (\fI" -> "\fP) how to render arrow in %r/%R readlink formats
-.It \fB-b, --binary\fP   K=size/1024, M=size/1024/1024 (vs \fI\,/1000\/\fP..)
-.It \fB-L, --deref\fP    deref symLinks generally
-.It \fB-l, --tgtDref\fP  fully classify \&%R formats on their own
-.It \fB-p, --plain\fP    plain text; No color escape sequences
-.It \fB-A, --access\fP   use 3*access(2) not st_mode for RWX perms
+.It \fB-b, --binary\fP   %s formats use "binary metric"; I.e. K => size/1024,
+M=size/1024/1024; Without this standard metric (\fI\,/1000\/\fP..) is used.
+.It \fB-L, --deref\fP    dereference symLinks generally; This can help since
+.Nm
+can actually assign 2 types to every symLink.
+.It \fB-l, --tgtDref\fP  fully classify \&%R formats on their own (to colorize
+targets of symbolic links).
+.It \fB-p, --plain\fP    render text without color escape sequences
+.It \fB-A, --access\fP   use 3*access(2) not st_mode for RWX perms; This is
+slower, but more precise especially for network filesystems.
 .It \fB--hyperlink\fP    add hyperlinks
 .It \fB--version\fP      print version and exit
 .El
