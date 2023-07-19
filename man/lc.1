@@ -16,29 +16,24 @@
 lists directory contents like
 .Xr ls 1
 in a filtered, sorted, tabular way, but with idea factoring tuned towards
-more customizability.
+user definability.
 .Nm
-does not come with any built-in configuration, but the distribution does ship
-with one which may serve as a starting point.
+ships with configuration files which may serve as a starting point.
 .Pp
-There are quite a few specification nano-languages with many sometimes terse
-codes { after the style of
-.Xr find 1
-&
+There are several specification nano-languages with terse codes { like
+.Xr printf 3
 .Xr strftime 3
-} that drive all of this.  Though the source code will always be the best
-reference, not everyone has the energy to learn Nim as well as all these bespoke
-nano-langs.  While \fBlc --help\fP gives a quick reference, this present
-document goes into more detail.  Even more details, rationale, and even screen
-shots are available at github.com/c-blake/lc .
+.Xr find 1
+.Xr stat 1
+} that drive things.  Though the source code will always be the best reference,
+not everyone has time to learn both Nim & bespoke nano-langs.  \fBlc --help\fP
+is a quick reference.  This present page details more.  More background and
+screen shots are available at: github.com/c-blake/lc
 .Sh "OPTIONS (AKA FLAGS)"
 Defaults are in () except for boolean flags which all default to false.
 It is not expected that you will often/ever issue more involved options like
 \fB--kind\fP, \fB--color\fP & \fB--ageFmt\fP interactively.  Rather they will
-be in a config file, but options syntax is unified with that.  It may be easier
-to learn how to drive
-.Nm
-from its example configuration files.
+be in a config file, but options syntax unifies with such.
 .Ss "File typology / taxonomy"
 .Bl -hang -width MM
 .It Sy "-k=, --kind=" ( Em "{}" ) Em "[TYPE-NAME-BINDINGS/DEFINITION STRINGS]"
@@ -277,7 +272,7 @@ automatic - best unique same-location single-'*'
 .br
     [,sep('*') - override separator, e.g. "..."
 .br
-    [,quoteChars]]]] - chars to be ?-pattern-quoted
+    [,?chars]]]] - chars to be ?-escaped
 .It Em "-2"
 shortest unique prefix
 .It Em "-3"
@@ -289,23 +284,22 @@ shortest 1-'*' anywhere glob with unique match
 .It Em "-6"
 shortest 2-'*' anywhere glob with unique match
 .El
-That is quite a lot.  There is much flexibility since circumstances vary enough
-that any one heuristic can fail badly.  While examples here might help, there is
-no substitute for images: https://github.com/c-blake/lc#automatic-abbreviations .
-The link at the end to a larger /usr/src/linux e.g. may also help.
+There is much flexibility since circumstances vary enough for any one idea to
+fail badly.  Examples here might help, but images help more:
+https://github.com/c-blake/lc#automatic-abbreviations .  The link at the end to
+a bigger example may also help.
 .Pp
-"pattern quoting" is AFAIK a term of my own invention but refers to the fact
-that in many shells '?' can match any character in filenames, even shell
-meta-characters.  So, assuming a unique match (which
+"?-escaping" is AFAIK a term of my own invention.  Most shells let '?' match any
+character in filenames, even shell meta-chars.  So, assuming a unique match
+(which
 .Nm
 abbreviation often ensures), one way to suppress the shell syntax effect of a
-shell-meta character is to use '?' instead - hence "pattern quoting".  In other
-words, if shell magic space / auto-expansion space is set up, you should be able
-to copy-paste unique globs, hit a <TAB>-equivalent, and see just one match, at
-least if the PWD is the same as what
+shell-meta chars is to use '?' instead - hence "?-escaping".  I.e., if shell
+magic TAB / auto-expand is on, you should be able to copy-paste unique globs,
+hit <TAB> and see just one match, at least if the PWD is the same as what
 .Nm
-is rendering for.  (Of course, you need not expand before using in commands.
-That is just a way to describe things.)
+is rendering for.  (You needn't expand before use in commands.  That is just a
+way to describe things.)
 .It \fB-M=, --maxTgt=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for symLink targets; No auto
 .It \fB-U=, --maxUnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for user names
 .It \fB-G=, --maxGnm=\fP (\fI""\fP) \fIAbbreviationSpecifier\fP for group names
@@ -401,7 +395,7 @@ stxAttrCode
 .It Em "@    I"
 Icon (4th :-sep Col Of --color spec)
 .It Em "0-8  D0-8"
-User-defined format components 0-8; See CONFIGURING
+User-defined format components 0-8; See CONFIGURATION
 .It Em "9./  L0-2"
 User-defined format components 0-2 for symLink target
 .El
@@ -456,6 +450,15 @@ While \fB--color\fP values are the primary use case, field & strftime formats
 both accept \fI%{ATTR..}CODE\fP.  E.g., \fBlc -f '%{inverse}f'\fP will list
 directory entries with whatever other colorization they would have had, but with
 whatever your terminal maps color inversion to overlaid.
+.Sh CONFIGURATION / CUSTOMIZATION
+.Nm
+is more an "ls construction toolkit" than most similar programs.
+.Pp
+While little is hard-coded, one exception is that the left most column is always
+left-aligned.  This is to prevent empty columns in some rows for other tools
+that split on repeated whitespace but do not collapse newline->non-white space.
+For this reason you may want formats to start with naturally left aligned or
+fixed width fields, such as %U/%P.
 .Sh "EXIT STATUS"
 .Nm
 exits with a status which is the max of 127 (the biggest non-signal exit code
