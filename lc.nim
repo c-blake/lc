@@ -548,6 +548,9 @@ proc fmtIcon(f: Fil): string =
 proc sp(cf: LsCf, st: Statx): string =          #sparse attribute
   if st.util < 75: cg.attrSize[ord('S') - ord('A')] else: ""
 
+let bDiv = max(1, if "POSIXLY_CORRECT".existsEnv: 1 else:
+  parseInt(getEnv("BLOCK_SIZE",getEnv("BLOCKSIZE", "1024").strip)) div 512).uint
+
 proc fmtSzDevNo(st: Statx): string =
   proc sizeFmt(sz: string): string =            #colorized file size
     let ix = (if sz[^1] in Digits: 'B'.ord else: sz[^1].ord) - 'A'.ord
@@ -630,7 +633,7 @@ fAdd('r', {dsT},1, "ln"   ): f.fmtTgtU
 fAdd('R', {dsT},1, "Ln"   ): f.fmtTgtD
 fAdd('S', {dsS},0, "ByDv" ): fmtSzDevNoL(f.st)
 fAdd('s', {dsS},0, "SzDv" ): fmtSzDevNo(f.st)
-fAdd('K', {dsS},0, "Bk"   ): $f.st.st_blocks.uint
+fAdd('K', {dsS},0, "Bk"   ): $(f.st.st_blocks.uint div bDiv)
 fAdd('k', {dsS},0, "BkZ"  ): $f.st.st_blksize.uint
 fAdd('o', {dsS},0, "%o"   ): (if f.st.util > 99.0: "99" else: $f.st.util.int)
 fAdd('n', {dsS},0, "N"    ): $f.st.st_nlink.uint
@@ -932,11 +935,11 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
   var labels: seq[string]
   let recurse = not cf.dirs and r < cf.recurse
   var j = 0
-  var tot = 0
+  var tot = 0'u
   for i, p in paths:
     var dt: int8 = if dts != nil: dts[][i] else: 0
     if not cf.mkFil(fils[j], p, dt, dsD in cf.need or recurse): fils[j].zeroCont
-    tot += fils[j].st.st_blocks
+    tot += fils[j].st.st_blocks.uint
     if r == 0 or not cf.failsFilters(fils[j]):  #A kept entry
       if dt == DT_DIR or (cf.deref and dt == DT_LNK and fils[j].isDir):
         if recurse:                             #will recurse: add dirs,labels
@@ -944,7 +947,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
           if r == 0: fils[j].zeroCont           #skip dir paths @1st recurse lvl
       j.inc
     else: fils[j].zeroCont                      #Re-use [j] safely
-  if cf.total and r > 0: stdout.write "total ", tot div 2, "\n"
+  if cf.total and r > 0: stdout.write "total ", tot div bDiv, "\n"
   if j > 0: fils.setLen j; cf.sortFmtWrite fils; cf.wrote = true
   if recurse:
     for k, i in dirs:
