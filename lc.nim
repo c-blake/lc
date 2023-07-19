@@ -944,7 +944,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
           if r == 0: fils[j].zeroCont           #skip dir paths @1st recurse lvl
       j.inc
     else: fils[j].zeroCont                      #Re-use [j] safely
-  if cf.total and r > 0: stdout.write "total ", tot, "\n"
+  if cf.total and r > 0: stdout.write "total ", tot div 2, "\n"
   if j > 0: fils.setLen j; cf.sortFmtWrite fils; cf.wrote = true
   if recurse:
     for k, i in dirs:
