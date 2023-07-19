@@ -264,7 +264,7 @@ rightmost column with "optional" suffixes.  By using --unzipF these columns no
 longer look optional, but get aligned like all the others.
 .It \fB-H, --header\fP          add a row at start of data with col names since
 with so many columns and numbers it can be easy to lose track.
-.It \fB-t, --total\fP           print total of blocks before entries in ancient
+.It \fB-t, --total\fP           print total KiB of listed before them in ancient
 .Xr ls 1 long format listing tradition
 .El
 .Ss "Auto-Abbreviation"
@@ -347,7 +347,7 @@ human readable size | dev number (if block | char).  This is rounded with
 a metric suffix (or pair of hex numbers) to only ever occupy 4 terminal
 columns.
 .It Em "K    Bk"
-file blocks
+file blocks in 512 byte units
 .It Em "n    N"
 link count; number of hard links | subdirs
 .It Em "u    uid"
@@ -373,7 +373,7 @@ birth time (~ when blocks first allocated for i-nodes)
 .It Em "i    inode"
 i-node number
 .It Em "k    BkZ"
-st_blksize
+st_blksize - "ideal" size for IO to the file
 .It Em "D    Mj"
 major dev number
 .It Em "d    Mn"
