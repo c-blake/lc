@@ -137,7 +137,7 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
                     "nColumn"  : "max major columns to use",
                     "widest"   : "only list this many widest entries",
                     "width"    : "override auto-detected terminal width",
-                    "maxName":"""a\*|M,head(M/2),tail(M-hdSep),sep(\*),quoChs()
+                    "maxName":"""a\*|M,head(M/2),tail(M-hdSep),sep(\*),?chars()
   a:bestPos -2:pfx -3:sfx -4:mfx -5:1\* -6:2\*
   POSITIVE_NUMBER=thatWidth/head/tail""",
                     "maxTgt"   : "like maxName for symlink targets; No auto",
