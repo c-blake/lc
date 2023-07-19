@@ -111,8 +111,8 @@ where <RELATION> says base names match:
   *ext*      x.so:func(qpath: cstring)->cint
 BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
  *+-sym* *hard* *exec* *sUGid* *tmpDir* *worldW* *unR* *odd*
- *Linux* *IMMUT* *APPEND* *COMPR* *ENCRYPT* *NODUMP*
-   *AUTOM* *CAP* hasLinuxCapability *ACL* hasACL""",
+ *Linux:* *COMPR* *IMMUT* *APPEND* *NODUMP* *ENCRYPT*
+        *CAP* hasLinuxCapability *ACL* hasACL""",
                       "colors" : "color aliases; Syntax: name = ATTR1 ATTR2..",
                       "color"  : """text attrs for file kind/fields. Syntax:
   **NAME[[:KEY][:DIM]] ATTR ATTR..**
@@ -166,6 +166,7 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
 var cg: ptr LsCf            #Lazy way out of making many little procs take LsCf
 
 ###### BUILT-IN CLASSIFICATION TESTS
+template `~`(num, mask): untyped = (num.uint64 and mask.uint64) != 0 #mask true
 proc qualPath(p: string): string =                        #maybe-pfx & name
   if cg.pfx.len > 0: cg.pfx & p else: p
 
@@ -179,9 +180,9 @@ template defPermOk(z, zOk, Z_OK, S_IZUSR, S_IZGRP, S_IZOTH): untyped {.dirty.} =
       result = access(f.name.qualPath.cstring, Z_OK) == 0
     else: #order: world,justMe,grpOfMine is designed to bool short circuit fast
       if myGrp.len == 0: getgroups(myGrp)
-      result = ((f.st.st_mode.cint and S_IZOTH)!=0) or
-              (((f.st.st_mode.cint and S_IZUSR)!=0) and myUid == f.st.st_uid) or
-              (((f.st.st_mode.cint and S_IZGRP)!=0) and f.st.st_gid in myGrp)
+      result = f.st.st_mode ~ S_IZOTH or
+              (f.st.st_mode ~ S_IZUSR and myUid == f.st.st_uid) or
+              (f.st.st_mode ~ S_IZGRP and f.st.st_gid in myGrp)
     f.z = if result: 2 else: 1
 defPermOk(r, rOk, R_OK, S_IRUSR, S_IRGRP, S_IROTH)
 defPermOk(w, wOk, W_OK, S_IWUSR, S_IWGRP, S_IWOTH)
@@ -201,7 +202,7 @@ template stModeOrDtype(f: Fil, stMoTy: proc(m:Mode):bool, dt: int8): bool =
 proc isReg(f: var Fil): bool = f.stModeOrDtype(S_ISREG, DT_REG)
 proc isDir(f: var Fil): bool = f.stModeOrDtype(S_ISDIR, DT_DIR)
 proc isLnk(f: var Fil): bool = f.stModeOrDtype(S_ISLNK, DT_LNK)
-proc isStickyDir(f: var Fil): bool = (f.st.st_mode and 0o1000) != 0 and f.isDir
+proc isStickyDir(f: var Fil): bool = f.st.st_mode ~ 0o1000 and f.isDir
 proc util(st: Statx): float =
   if st.st_blocks == 0 and st.st_size == 0: 100.0
   else: st.st_blocks.float * 51200.0 / max(st.st_size, 1).float
@@ -223,28 +224,27 @@ tAdd("-symlink",{dsD}): f.dtype == DT_LNK and not f.maybeSt   #Broken symlink
 tAdd("+symlink",{dsD}): f.dtype == DT_LNK and f.maybeSt       #Good symlink
 tAdd("executable",{dsD}): not (f.isDir or f.isLnk) and f.maybeSt and f.xOk
 tAdd("hardLinks" ,{dsD}): not f.isDir and f.maybeSt and f.st.st_nlink > 1.Nlink
-tAdd("suid"   ,{dsD}): f.isReg and f.maybeSt and(f.st.st_mode and 0o4000)!=0 and
-                       (f.st.st_mode and 0o0111) != 0         #exec by *someone*
-tAdd("sgid"   ,{dsS}): (f.st.st_mode and 0o2000) != 0
-tAdd("tmpDir" ,{dsS}): f.isStickyDir and (f.st.st_mode and 7) != 0
-tAdd("worldWritable",{dsS}): (f.st.st_mode and 2) != 0 and f.dtype != DT_LNK and
+tAdd("suid"   ,{dsD}): f.isReg and f.maybeSt and f.st.st_mode ~ 0o4000 and
+                       f.st.st_mode ~ 0o0111                  #exec by *someone*
+tAdd("sgid"   ,{dsS}): f.st.st_mode ~ 0o2000
+tAdd("tmpDir" ,{dsS}): f.isStickyDir and f.st.st_mode ~ 7
+tAdd("worldWritable",{dsS}): f.st.st_mode ~ 2 and f.dtype != DT_LNK and
                              not f.isStickyDir
 tAdd("unReadable", {dsS}): myUid != 0 and (not f.rOk or (f.isDir and not f.xOk))
 tAdd("oddPerm",{dsS}):    #Check very odd st_mode's. Rare but legit wr-only in:
   let m = f.st.st_mode    #.. /dev/tty* /var/cache/man /var/spool /proc /sys
-  ((m and 0o4000)!=0 and ((m and 0o111)==0 or not f.isReg)) or  #suid&(!x|!reg)
-   ((m and 0o2000)!=0 and (m and 0o010)==0) or                  #sgid & g-x
+  (m ~ 0o4000 and ((m and 0o111)==0 or not f.isReg)) or      #suid&(!x|!reg)
+   (m ~ 0o2000 and (m and 0o010)==0) or                      #sgid & g-x
    (f.isStickyDir and (m and 2) == 0) or                        #sticky & !o+w
    not (m.S_IUSR >= m.S_IGRP and m.S_IGRP >= m.S_IOTH) or       #!(u >= g >= o)
    (m.S_IUSR and 0o6)==2 or (m.S_IGRP and 0o6)==2 or (m.S_IOTH and 0o6)==2 #w&!r
 
 when haveStatx:           # Linux only via statx
- tAdd("IMMUTABLE" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_IMMUTABLE.uint64)
- tAdd("APPENDONLY",{dsS}):(f.st.stx_attributes and STATX_ATTR_APPEND.uint64)
- tAdd("COMPRESSED",{dsS}):(f.st.stx_attributes and STATX_ATTR_COMPRESSED.uint64)
- tAdd("ENCRYPTED" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_ENCRYPTED.uint64)
- tAdd("NODUMP"    ,{dsS}):(f.st.stx_attributes and STATX_ATTR_NODUMP.uint64)
- tAdd("AUTOMOUNT" ,{dsS}):(f.st.stx_attributes and STATX_ATTR_AUTOMOUNT.uint64)
+  tAdd("COMPRESSED",{dsS}): f.st.stx_attributes ~ STATX_ATTR_COMPRESSED
+  tAdd("IMMUTABLE" ,{dsS}): f.st.stx_attributes ~ STATX_ATTR_IMMUTABLE
+  tAdd("APPENDONLY",{dsS}): f.st.stx_attributes ~ STATX_ATTR_APPEND
+  tAdd("NODUMP"    ,{dsS}): f.st.stx_attributes ~ STATX_ATTR_NODUMP
+  tAdd("ENCRYPTED" ,{dsS}): f.st.stx_attributes ~ STATX_ATTR_ENCRYPTED
 when defined(linux): tAdd("CAPABILITY",{dsC}): f.cap
 tAdd("ACL",{dsA}): f.acl
 
@@ -583,12 +583,12 @@ proc fmtPerm*(m: Mode, s=""): string =
   const rwx = ["---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx" ]
   result = rwx[(m shr 6) and 7] & s & rwx[(m shr 3) and 7] & s & rwx[m and 7]
   let o = s.len
-  if (m and 0o4000) != 0 and (m and 0o100) != 0: result[2]   = 's' #setuid,+x
-  if (m and 0o4000) != 0 and (m and 0o100) == 0: result[2]   = 'S' #setuid,noX
-  if (m and 0o2000) != 0 and (m and 0o010) != 0: result[5+o] = 's' #setgid,+x
-  if (m and 0o2000) != 0 and (m and 0o010) == 0: result[5+o] = 'S' #setgid,noX
-  if (m and 0o1000) != 0 and (m and 0o001) != 0: result[8+o] = 't' #sticky,+x
-  if (m and 0o1000) != 0 and (m and 0o001) == 0: result[8+o] = 'T' #sticky,noX
+  if m ~ 0o4000 and      m ~ 0o100 : result[2]   = 's' # setuid, +x
+  if m ~ 0o4000 and not (m ~ 0o100): result[2]   = 'S' # setuid, noX
+  if m ~ 0o2000 and      m ~ 0o010 : result[5+o] = 's' # setgid, +x
+  if m ~ 0o2000 and not (m ~ 0o010): result[5+o] = 'S' # setgid, noX
+  if m ~ 0o1000 and      m ~ 0o001 : result[8+o] = 't' # sticky, +x
+  if m ~ 0o1000 and not (m ~ 0o001): result[8+o] = 'T' # sticky, noX
 
 proc fmtOperm(f: var Fil): string =
   let p = (f.rOk.uint shl 2) or (f.wOk.uint shl 1) or (f.xOk.uint)
@@ -598,15 +598,14 @@ proc fmtKindCode(st_mode: Mode): char =    #12=sticky,su,sg+9bits of UGO perms
   "-pc-d-b---l-s---"[st_mode.uint shr 12 and 0xF]  #Pretty standard across OSes
 
 proc fmtAttrCode(stx_attr: uint64): string =
-  when haveStatx:
-    if   (stx_attr and STATX_ATTR_IMMUTABLE.uint64 ) != 0: "Im"
-    elif (stx_attr and STATX_ATTR_APPEND.uint64    ) != 0: "Ap"
-    elif (stx_attr and STATX_ATTR_COMPRESSED.uint64) != 0: "Cp"
-    elif (stx_attr and STATX_ATTR_ENCRYPTED.uint64 ) != 0: "Ec"
-    elif (stx_attr and STATX_ATTR_NODUMP.uint64    ) != 0: "Nd"
-    elif (stx_attr and STATX_ATTR_AUTOMOUNT.uint64 ) != 0: "Am"
-    else: "--"
-  else: "--"
+  result = "------"                     # [5] presently unused; Sounds like..
+  when haveStatx:                       # VERITY=>IMMUTABLE=>maybe 0..4 enough.
+    if stx_attr ~ STATX_ATTR_COMPRESSED: result[0] = 'C'
+    if stx_attr ~ STATX_ATTR_IMMUTABLE : result[1] = 'I'
+    if stx_attr ~ STATX_ATTR_APPEND    : result[2] = 'A'
+    if stx_attr ~ STATX_ATTR_NODUMP    : result[3] = 'N'
+    if stx_attr ~ STATX_ATTR_ENCRYPTED : result[4] = 'E'
+#   if stx_attr ~ STATX_ATTR_VERITY    : result[5]='V' #Need glibc for 5.8+
 
 proc toHex(i: uint8): string = toHex(i.BiggestInt, 2)
 
@@ -657,7 +656,7 @@ fAdd('d', {dsS},0, "Mn"   ): $f.st.st_rmin
 fAdd('i', {dsS},0, "inode"): $f.st.st_ino.uint
 fAdd('l', {dsS},0, "l"    ): $f.st.st_mode.fmtKindCode
 fAdd('L', {dsS},1, "L"    ): f.fmtClassCode
-fAdd('x', {dsS},0, "XA"   ): fmtAttrCode(f.st.stx_attributes)
+fAdd('x', {dsS},0,"LinExA"): fmtAttrCode(f.st.stx_attributes)
 fAdd('Q', {dsA},0, "A"    ): ["", "+"][f.acl.int]
 fAdd('e', {}   ,0, "e1"   ): $cg.ext1c(f.name.qualPath.cstring)
 fAdd('E', {}   ,0, "e2"   ): $cg.ext2c(f.name.qualPath.cstring)

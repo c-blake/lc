@@ -111,20 +111,18 @@ world writable by user (but not sticky)
 unreadable (by user) file/untraversable dir
 .It Em oddPerm
 Has odd permissions: u+s & (!x | !reg), g+s & g-x, dir+t & !o+w, !(u >= g >= o), +w & -r
+.It Em COMPRESSED
+statx - has compressed attribute
 .It Em IMMUTABLE
 statx - has immutable attribute
 .It Em APPENDONLY
 statx - has append-only attribute
-.It Em COMPRESSED
-statx - has compressed attribute
-.It Em ENCRYPTED
-statx - has encrypted attribute
 .It Em NODUMP
 statx - has NoDump attribute
-.It Em AUTOMOUNT
-statx - has AutoMount attribute
+.It Em ENCRYPTED
+statx - has encrypted attribute
 .It Em CAPABILITY
-Linux - has some Linux FS Capability
+Linux - has SOME Linux FS Capability
 .It Em ACL
 has some ACL
 .El
@@ -408,21 +406,21 @@ ls-KindCode(*/@\|=)
 Output of External Program 1
 .It Em "E    e2"
 Output of External Program 2
-.It Em "x    XA"
-has statx extended attribute:
-.Bl -tag -width " MM " -compact -indent
-.It Em " Im "
-Immutable
-.It Em " Ap "
-Append Only
-.It Em " Cp "
+.It Em "x    LinExA"
+6 column mask of statx extended attributes:
+.Bl -tag -width " M " -compact -indent
+.It Em " C "
 Compressed
-.It Em " Ec "
-Encrypted
-.It Em " Nd "
+.It Em " I "
+Immutable
+.It Em " A "
+Append Only
+.It Em " N "
 No Dump
-.It Em " Am "
-Auto Mount
+.It Em " E "
+Encrypted
+.It Em " . "
+RESERVED
 .El
 .It Em "@    I"
 Icon (4th :-sep Col Of --color spec)
