@@ -333,14 +333,13 @@ fail badly.  Examples here might help, but images help more:
 https://github.com/c-blake/lc#automatic-abbreviations .  The link at the end to
 a bigger example may also help.
 .Pp
-"?-escaping" is AFAIK a term of my own invention.  Most shells let '?' match any
-character in filenames, even shell meta-chars.  So, assuming a unique match
-(which
+"?-escaping" is a term I made up.  Most shells let '?' match any character in
+filenames, even shell meta-chars.  So, assuming a unique match (which
 .Nm
-abbreviation often ensures), one way to suppress the shell syntax effect of a
-shell-meta chars is to use '?' instead - hence "?-escaping".  I.e., if shell
-magic TAB / auto-expand is on, you should be able to copy-paste unique globs,
-hit <TAB> and see just one match, at least if the PWD is the same as what
+abbreviation often ensures), one can suppress shell syntax effects of shell-meta
+chars by using '?' instead -- hence "?-escaping".  I.e., if shell magic TAB /
+auto-expand is on, you should be able to copy-paste unique globs, hit <TAB> and
+see just one match, at least if the PWD is the same as what
 .Nm
 is rendering for.  (You needn't expand before use in commands.  That is just a
 way to describe things.)
@@ -544,7 +543,7 @@ If compiled with \fI-d:cgCfgToml\fP the format of this file is TOML, but you
 must first have installed github.com/NimParsers/parsetoml somewhere in your \fInim
 c --path:SEARCH\fP.  If a directory, \fB$LC_CONFIG/config\fR is the config file.
 .It Ev XDG_CONFIG_HOME
-XDG directory for configuration files; ~/.config is a common choice.
+dir for config files; ~/.config is a common choice.
 \fB$XDG_CONFIG_HOME/lc\fP is used if \fBLC_CONFIG\fP is unset.
 .It Ev HOME
 Users home dir used as a fallback parent for ~/.config if neither
@@ -554,7 +553,7 @@ Additional command parameters for every invocation
 .El
 .Sh SEE ALSO
 .Xr ls 1 .
-Full
+More
 .Nm
 documentation is linked off of github.com/c-blake/lc
 .Sh HISTORY
