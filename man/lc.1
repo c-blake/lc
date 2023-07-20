@@ -146,11 +146,15 @@ optional UTF-8 icon string
 .It Em ATTR -
 color/text attr specs as in TEXT ATTRIBUTE section
 .El
-\fB--color\fP is really about more than colors.  It a meta-type specification
-directive.  The \fIKEY\fP lets you decide where in \fB--order\fP a given kind
-will fit as well as which slot is used for this kind \fINAME\fP.  E.g., you may
-want to give "interface files" a lower integer \fIKEY\fP than "implementations",
-if the alphabet swaps that (e.g. \fB.h\fP, \fB.c\fP).
+\fB--color\fP is a meta-type specification directive about more than colors.
+\fIKEY\fP lets you decide where in \fB--order\fP a given kind will fit as well
+as which slot is used for this kind \fINAME\fP.  E.g., you may want to give
+"interface files" a lower integer \fIKEY\fP than "implementations", if the
+alphabet swaps that (e.g. \fB.h\fP, \fB.c\fP).  As another e.g., you can make
+conventionally "hidden" dot files appear before alphabetically prior "-*" files
+(which could even be a new conventionally "option misinterpretation dangerous"
+type worthy of \fBblink\fP which you may want to sort so they show up at the
+end of listings where they cannot scroll off your terminal).
 .Pp
 When might you want a different slot?  When some quality is "importantly"
 independent of other qualities.  While typology is largely user-defined, a
@@ -209,13 +213,32 @@ See FORMAT & ORDER CODES section of this page for X,Y,Z,...
 See FORMAT & ORDER CODES section of this page for X,Y,Z,...
 .It \fB-q, --quote\fP "" "" "" "" "" "" quote filenames with unprintable chars
 .It \fB-e=, --ext1=\fP ( \fI''\fP )  %e output from x.so:func(qpath: cstr)->cstr
-.It \fB-E=, --ext2=\fP ( \fI''\fP )  %E output from x.so:func(qpath: cstr)->cstr
+.It \fB-E=, --ext2=\fP ( \fI''\fP )  %E output from x.so:func(qpath: cstr)->cstr;
+These two options make
+.Nm
+formats extensible with up to 2 new user columns.  These could be version
+control status, an indicator of symLink and symLink target owner discrepancy,
+recursive disk use for directories, or anything else one might be able to code
+up in a shared library.  These are likely to be bound to some \fB--style\fP
+under certain patience/interest assumptions.
+.Pp
+If you have special file system requirements (e.g. linking against a special
+shared lib), this lets you integrate that information gathering while using
+.Nm
+as a "formatting/display" harness.
 .El
 .Ss "Meta"
 .Bl -hang -width MM
 .It \fB-C=, --colors=\fP (\fI{}\fP)   color aliases; Syntax: name = ATTR1 ATTR2..
+When combined with environment variable (like \fBLC_THEME\fP)-triggered include
+syntax, this is enough to solve an ancient problem of maintaining high contrast
+with terminals of varying background colors.
 .It \fB-S=, --Style=\fP (\fI''\fP)    DEFINE an output style arg bundle
-.It \fB-s=, --style=\fP (\fI''\fP)    APPLY an output style
+.It \fB-s=, --style=\fP (\fI''\fP)    APPLY an output style; Together with
+defining this is basically an "alias" system built into the CL syntax, useful
+since
+.Nm
+is so user-defined.
 .It \fB-X=, --extra=\fP (\fI''\fP)    add params from config ARG where ARG means:
 .Bl -tag -width ROOT// -compact -offset 2n
 .It "\fIROOT\fP."
