@@ -73,8 +73,8 @@ task installData, "installMan;Conf": installManTask(); installConfTask()
 task uninstallData, "uninstallMan;Conf": uninstallManTask(); uninstallConfTask()
 
 proc absent(evs: openArray[string]): bool =             # True if *NONE* of evs
+  result = true
   for ev in evs: result = result and not ev.existsEnv   #..is set to anything.
-before install: discard # Both may be needed for either to work..
 after install:          # Evidently, `after uninstall:` is not honored
   if ["NIMBLE_MINI","mini"].absent:
     if ["NIMBLE_NOMAN","noman"].absent: installManTask()
