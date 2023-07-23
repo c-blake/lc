@@ -231,8 +231,8 @@ as a "formatting/display" harness.
 .Bl -hang -width MM
 .It \fB-C=, --colors=\fP (\fI{}\fP)   color aliases; Syntax: name = ATTR1 ATTR2..
 When combined with environment variable (like \fBLC_THEME\fP)-triggered include
-syntax, this is enough to solve an ancient problem of maintaining high contrast
-with terminals of varying background colors.
+config file syntax, this is enough to solve an ancient problem of maintaining
+high contrast with terminals of varying background colors.
 .It \fB-S=, --Style=\fP (\fI''\fP)    DEFINE an output style arg bundle
 .It \fB-s=, --style=\fP (\fI''\fP)    APPLY an output style; Together with
 defining this is basically an "alias" system built into the CL syntax, useful
@@ -514,15 +514,46 @@ While \fB--color\fP values are the primary use case, field & strftime formats
 both accept \fI%{ATTR..}CODE\fP.  E.g., \fBlc -f '%{inverse}f'\fP will list
 directory entries with whatever other colorization they would have had, but with
 whatever your terminal maps color inversion to overlaid.
-.Sh CONFIGURATION / CUSTOMIZATION
+.Sh CONFIGURATION / CUSTOMIZATION FILES
 .Nm
-is more an "ls construction toolkit" than most similar programs.
-.Pp
-Little is hard-coded, but one exception is that the leftmost column is always
-left-aligned.  This is to prevent empty columns in some rows for other tools
-that split on repeated whitespace but do not collapse newline->non-white space.
-For this reason you may want formats to start with naturally left aligned or
-fixed width fields, such as %P.
+is more an "ls construction toolkit" than most similar programs that tries to
+hard-code nothing.  As such, it relies more heavily on config files (which use
+std/parsecfg ini-like or TOML syntax).  Config files also have an "include"
+syntax to help organize things.  The search path for config data is:
+.Bl -tag -width "INSTALL_ROOT/etc/lcXX" -compact -offset indent
+.It Em LC_CONFIG
+| ${XDG_CONFIG_HOME:-${HOME/.config}}/lc
+.It Em $LC
+if any - any options, not only long
+.It Em INSTALL_ROOT/etc/lc
+unless LC_CONFIG.. was found
+.It Em "invoking CL params"
+if any
+.It Em "--extra sources"
+if a \fB.lc\fP file is found
+.El
+.Ss "Config File Format"
+Depending on your preferences, you may want one big config file or a few little
+ones.  Config files have no conditionals beyond enVar-keyed include files (any
+all caps name, following enVar naming conventions).  The include syntax is
+simply an ini/TOML section name starting with "include__".  So, the top level
+file named "config" might look like:
+.nf
+  [include__kind]     # Define file typology in "../lc/kind"
+  [include__LC_THEME] # include file "../lc/$LC_THEME"
+  [include__color]    # Assign colors/meta-type data to kinds
+  [include__style]    # Define --style/-s aliases
+.fi
+In the above, several to many \fB--kind\fP options will be in "lc/kind", and
+similarly \fB--colors\fP in the theme file, \fB--color\fP in "color", and
+\fB--style\fP in "style".  Study a distributed config is probably the best way
+to master doing your own.
+.Ss "Oddities"
+One exception to "hard-code nothing" is that the leftmost column is always
+left-aligned.  This prevents empty columns in some rows for other tools that
+split on repeated whitespace but do not collapse newline->non-white space.  For
+this reason you may want formats to start with naturally left-aligned or fixed-
+width fields, such as %P.
 .Sh "EXIT STATUS"
 .Nm
 exits with a status which is the max of 127 (the biggest non-signal exit code
@@ -536,8 +567,8 @@ This can tune \fI--help\fP colorization, layout, and content as well as a few CL
 syntax variations such as whether long options require unique prefixes or being
 fully spelled out.
 .It Ev LC_CONFIG
-If set, this is a path to a Nim std/parsecfg configuration file or directory
-containing parameters processed by every invocation of
+If set, this is a path to a Nim std/parsecfg config file or directory containing
+parameters processed by every invocation of
 .Nm .
 If compiled with \fI-d:cgCfgToml\fP the format of this file is TOML, but you
 must first have installed github.com/NimParsers/parsetoml somewhere in your \fInim
