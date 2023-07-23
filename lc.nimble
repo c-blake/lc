@@ -8,7 +8,7 @@ installDirs = @["man", "configs"]
 # Dependencies
 requires "nim >= 1.6.0", "cligen >= 1.6.9"
 
-import os #XXX from os import parentDir, getEnv, dirExists fails
+import os, strutils #XXX from os import parentDir, getEnv, dirExists fails
 proc getNimbleDir: string =
   result = getEnv("NIMBLE_DIR", getEnv("nimbleDir", ""))
   if result.len > 0: return
@@ -74,6 +74,7 @@ task uninstallData, "uninstallMan;Conf": uninstallManTask(); uninstallConfTask()
 
 proc absent(evs: openArray[string]): bool =             # True if *NONE* of evs
   for ev in evs: result = result and not ev.existsEnv   #..is set to anything.
+before install: discard # Both may be needed for either to work..
 after install:          # Evidently, `after uninstall:` is not honored
   if ["NIMBLE_MINI","mini"].absent:
     if ["NIMBLE_NOMAN","noman"].absent: installManTask()
