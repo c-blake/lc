@@ -978,15 +978,15 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
       cg = cg0
 
 when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
+  const lcEtc {.strdefine.} = ""    # Override smart-ish etc search w/-d:lcEtc=
   from nativesockets import getHostname
   try:
     let cfd = getEnv("LC_CONFIG", getConfigDir() & "/lc")
     var cl0 = cfToCL(if cfd.dirExists: cfd&"/config" else: cfd, "", true, true)
-    cl0.add envToCL("LC")
-    if cl0.len == 0:    # No config; Try "system" config; Use e.g. LC=-w0 to cf
-      let argv {.importc: "cmdLine".}: cstringArray #.. all in wrapper script.
-      let et = ($argv[0]).parentDir.parentDir.parentDir & "/etc/lc"
-      cl0.add cfToCL(if et.dirExists: et&"/config" else: et, "", true, true)
+    cl0.add envToCL("LC")   # Can use e.g. LC=-w0 to cfg all in wrapper script
+    if cl0.len == 0:        # No config; Try "system" config
+      let etc = if lcEtc.len > 0: lcEtc else: findAssociated("etc/lc")
+      cl0.add cfToCL(if etc.dirExists: etc/"config" else: etc, "", true, true)
     let nCl0 = cl0.len; cl0.add os.commandLineParams()
     var cf = lsCfFromCL(cl0); cl0.setLen nCl0
     cf.fin(cl0, os.commandLineParams() - cf.paths)
