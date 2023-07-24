@@ -91,16 +91,15 @@ can *also* bold, italic, blink, underline, struck, and inverse *independently*.
 So, 8 usable output dimensions, 6 shallow 1-bit dimensions & fg/bg color with
 larger value ranges.  While subjective, I find it not hard to distinguish text
 with *all* those attributes varying.  Geographical map folk often call this
-"layers" (such as political borders layered atop satellite imagery).  `lc` aids
-"aligning" rendered output traits with classified input traits.
+"layering" (such as political borders layered atop satellite imagery).
 
-The input/data side has *many* more independent fields & bits.  While
-`dirent.d_type` is mutually exclusive type codes, most types aren't.  E.g., a
-file can be both an executable regular file and some kind of script source or
-both a directory and a directory with a sticky bit set.  Independently of all
-that, it can begin with a '.' or not.  Add all of `struct stat` and deep file
-header inspection and the type space just explodes both in kinds and independent
-sub-kinds/dimensions (stripped or not, 32-bit, 64-bit binaries, etc., etc.).
+The input/data side has *many* independent fields & bits.  While `dirent.d_type`
+is mutually exclusive type codes (like directory/named pipe/..), most types
+aren't.  E.g., a file can be ***both*** an executable regular file ***and***
+some kind of script source or both a directory and a directory with a sticky bit
+set.  Independently of all that, it can begin with a '.' or not.  Add all of
+`struct stat` and deep file header inspection and the type space explodes both
+in kinds & independent sub-kinds/dimensions (stripped|not, 32|64-bit, etc.).
 
 Only end users can prioritize use of precious few output dimensions.  To aid
 this use, `lc` users can configure file kinds to pair with picked poisons of
@@ -110,6 +109,8 @@ This may sound daunting, but many highlighting systems follow this model - e.g.
 a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
 simply models this structure explicitly to try to enable better allocation over
 more dimensions than just the 2 (misspelling,comment) due to diverse file types.
+Most briefly, `lc` aids "aligning" rendered output traits with classified input
+traits.
 
 Configurability
 ===============
