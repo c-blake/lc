@@ -68,8 +68,9 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - is extensible with fully user-defined file type tests & field formats
 
- - is compact (~1000 lines; ~300 is tables&help, ~300 of `cligen/[tab, humanUt]`
-   might be part of `lc` if I didn't write both pkgs.)
+ - is compact (~900 non-comment/blank lines; ~300 is just code dispatch tables &
+   help, ~650 in `cligen/[tab, humanUt, abbrev]` might be in `lc` had I not done
+   both pkgs.)
 
  - has few dependencies (just `cligen` and the Nim stdlib)
 
