@@ -101,16 +101,16 @@ set.  Independently of all that, it can begin with a '.' or not.  Add all of
 `struct stat` and deep file header inspection and the type space explodes both
 in kinds & independent sub-kinds/dimensions (stripped|not, 32|64-bit, etc.).
 
-Only end users can prioritize use of precious few output dimensions.  To aid
-this use, `lc` users can configure file kinds to pair with picked poisons of
-output traits.[^2]
+Only end users can prioritize use of precious few output layers.  To aid this
+use, `lc` users can configure file kinds to pair with picked poisons of output
+traits.[^2]
 
 This may sound daunting, but many highlighting systems follow this model - e.g.
 a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
-simply models this structure explicitly to try to enable better allocation over
-more dimensions than just the 2 (misspelling,comment) due to diverse file types.
-Most briefly, `lc` aids "aligning" rendered output traits with classified input
-traits.
+simply models this structure explicitly to try to enable better allocation by
+end users over more dimensions than just the 2 (misspelling, comment) due to
+diverse file types.  Most briefly, `lc` aids "aligning" rendered output traits
+with classified input traits.
 
 Configurability
 ===============
