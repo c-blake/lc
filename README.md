@@ -79,9 +79,10 @@ yet another file lister?  What's the point?  Well, `lc`
 
 Vector Type/Multi-dimensionality/Attribute Layers
 =================================================
-The most obscure idea is likely "multi-dimensional".  I mean this in the
-mathematical "**INDEPENDENT coordinate**" sense **not** a Jurassic Park (1993)-esque
-graphical file tree sense.  Examples of slots/dimensions/attributes may help.
+The most obscure idea is likely "multi-dimensional".  I mean this in an abstract
+"**INDEPENDENT coordinate**" sense **not** a [Jurassic Park
+(1993)-esque](https://www.youtube.com/watch?v=URVS4H7vrdU) IRIX fsn graphical
+file browser sense.  Examples of slots/dimensions/attributes may help.
 
 Output text can set foreground & background colors of text **independently**.
 I happen to like [st](https://git.suckless.org/st/) for its hackability.  That
