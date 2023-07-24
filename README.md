@@ -120,11 +120,10 @@ Assuming you define a "dot" or "dotfile" type `lc -xdot` will probably exclude
 those from a listing.  (Unique prefixes being adequate may mean a longer string
 if you define other file kinds with names starting with "dot".)
 
-I usually have a shell alias that does the `-xdot` and a related alias ending
-with an "a" that does not.  That mimics `ls` usage, but without spaces and '-'s
-to enter.  If the listing is well organized, seeing dot files by default may be
-considered as much a feature as a bug.  Including everything by default lets
-"dot" be user-defined.
+I usually have an alias that does `-xdot` and a related one ending with an "a"
+that does not.  That mimics `ls` usage.  If the listing is well organized,
+seeing dot files by default may be considered as much a feature as a bug.
+Including everything by default lets "dot" be user-defined.
 
 You can also do `-idot` to list *only* the dot files (or any other user/system
 defined file kind) which is not something available in most file listers.  It's
@@ -133,9 +132,9 @@ also not always easy to replicate via shell globbing the input list.  Eg., `lc
 
 Multi-level sorting and user format strings are similar ideas to other tools
 like the Linux `ps`, `stat -c`, and `find -printf`.  Sorting by file kind is
-possible and "kind orders" are user-configurable.  Between kind order assignment
+possible and "kind order" is user-configurable.  Between kind order assignment
 and multi-dimensionality you can filter & group almost any way that makes sense,
-and none of that needs any changing of `lc` proper - just your configuration.
+and none of that needs any hacking on `lc` proper - just your configuration.
 Less can be more with good factoring.  `lc` is more an "`ls` framework".
 
 Because of all that flexibility, `lc` has a built in style/aliasing system.
