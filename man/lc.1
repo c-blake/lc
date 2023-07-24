@@ -549,7 +549,10 @@ conditionals beyond enVar-keyed include files (any ALL_CAP name, following eVar
 naming conventions, after "__").
 .Pp
 Studying a distributed config is probably the best way to master the "some
-assembly required" ideas.
+assembly required" ideas.  If
+.Nm
+cannot find a user-configuration, it tries to find a system config in locations
+associated with the binary executable.
 .Ss "Oddities"
 One exception to "hard-code less" is that the leftmost column is always
 left-aligned.  This prevents empty columns in some rows for other tools that
