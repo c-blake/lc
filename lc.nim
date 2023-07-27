@@ -485,14 +485,14 @@ proc parseOrder(cf: var LsCf) =
   cf.cmps.setLen(0)
   if cf.order == "-": return
   var sgn = +1
-  var cmpEntry: tuple[ds: DataSrcs, cmp: proc(x, y: ptr Fil): int]
   for c in cf.order:
     if   c == '-': sgn = -1; continue
     elif c == '+': sgn = +1; continue
-    try      : cmpEntry = cmpOf[c]
+    try:
+      let cmpE = cmpOf[c]
+      cf.cmps.add (sgn, cmpE.cmp)
+      cf.need = cf.need + cmpE.ds
     except Ce: raise newException(ValueError, "unknown sort key code " & c.repr)
-    cf.cmps.add((sgn, cmpEntry.cmp))
-    cf.need = cf.need + cmpEntry.ds
     if   c == 'U' and cf.usr.len == 0: cf.usr = users()
     elif c == 'G' and cf.grp.len == 0: cf.grp = groups()
     elif c in {'0'..'9', '.', '/'}: cf.needKin = true       #bludgeon
@@ -689,33 +689,30 @@ proc parseFormat(cf: var LsCf) =
   var leftMost = true; var algn = '\0'
   var state = inPrefix
   var prefix = ""
-  var fmtEntry: tuple[ds: DataSrcs; left: bool; hdr: string,
-                      fmt: proc(f: var Fil): string]
-  cf.fields.setLen(0)
+  cf.fields.setLen 0
   for c in specifierHighlight(cf.format, fmtCodes, cf.plain):
     case state
     of inField:
       if c in {'-', '+'}: algn = c; continue  #Any number of 'em;Last one wins
       state = inPrefix
-      try      : fmtEntry = fmtOf[c]
+      try:
+        let fmtE = fmtOf[c]
+        let leftAlign = if algn != '\0': algn == '-' #User spec always wins else..
+                        else:                        #..1st col left&field default
+                          if leftMost: true else: fmtE.left
+        cf.fields.add (prefix[0..^1], leftAlign, c, fmtE.hdr[0..^1], fmtE.fmt)
+        leftMost = false; algn = '\0'
+        prefix.setLen 0
+        cf.need = cf.need + fmtE.ds
       except Ce: raise newException(ValueError, "unknown format code " & c.repr)
-      let leftAlign = if algn != '\0': algn == '-' #User spec always wins else..
-                      else:                        #..1st col left&field default
-                        if leftMost: true else: fmtEntry.left
-      cf.fields.add((prefix, leftAlign, c, fmtEntry.hdr, fmtEntry.fmt))
-      leftMost = false; algn = '\0'
-      prefix = ""
-      cf.need = cf.need + fmtEntry.ds
       if   c == 'U' and cf.usr.len == 0: cf.usr = users()
       elif c == 'G' and cf.grp.len == 0: cf.grp = groups()
       elif c == '0': cf.needKin = not cf.plain          #heuristic only
       elif c in {'f', 'F', '1'..'9', '.', '/'}: cf.needKin = true
-      elif c == 'r' or c == 'R': cf.need.incl(dsT)
+      elif c == 'r' or c == 'R': cf.need.incl dsT
     of inPrefix:
-      if c == '%':
-        state = inField
-        continue
-      prefix.add(c)
+      if c == '%': state = inField; continue
+      prefix.add c
 
 proc fieldF(cf: LsCf): int =  #Helper for zip (%f%R | %f%R%L etc.) to keep RHS
   result = -1                 #..maj col narrow & avoid high variation=>~dblspc.
