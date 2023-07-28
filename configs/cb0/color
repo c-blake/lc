@@ -2,10 +2,10 @@
 # WITHIN a (string, dtype, inode) slot decides KIND WITHIN that slot/dimension.
 # Optional :KEY is a 0..255 overall order for that kind.  3rd :-separated field
 # is SLOT NUMBER.  Attributes overlay ACROSS slots/dimensions, but not within.
-# After the slot number, you can also include an optional "icon" for %I formats.
+# After the slot number, you can also include an optional "icon" for %@ formats.
 #
-# Design language: non-link specials are "more boxy" bkgd on_(purple|blue|green)
-#   Likely problems get on_RED|blinking, soft|hard links ~ italic|underlined.
+# General theme here: non-link specials get "boxy" BG on_(purple|blue|green),
+# likely problem files get on_RED|blinking, soft|hard links ~ italic|underlined.
 
 #      nm:ord:dim      attrs             #overall test number for reference
 color="dot:0x04:0      NONE"             #0x00
