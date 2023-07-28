@@ -1,30 +1,34 @@
-#TIME STYLES (6 char fmts w/heatmap color scheme for variable radix).
-#Syntax: [tag]SecondsOld@highlightableStrftimeFormat (augmented with %<DIGIT>)
-#     OR [tag]SecondsOld@/divisor[/digits] [<]unitString attributes
-#        where tag=='+' => alt/caps Fmt (%A%M etc); tag=='-' => plain format
+# TIME STYLES (6 char fmts w/(hue|heat)map color scheme for variable radix).
+# Syntax: [tag]SecondsOld@highlightableStrftimeFormat (augmented with %<DIGIT>)
+#      OR [tag]SecondsOld@/divisor[/digits] [<]unitString attributes
+#         where tag=='+' => alt/caps Fmt (%A%M etc); tag=='-' => plain format
 
-ageFmt = "86400@%{fhue0}y%{fhue1}m%{fhue2}d"  #older files lower res in cool
-ageFmt = "0@%{fhue3}H%{fhue4}M%{fhue5}S"      #<1 day old files higher res fhue
-#ageFmt = "3600@%{fhue3}H%{fhue4}M%{fhue5}S" #<1 day old files higher res fhue
-#ageFmt = "0@%{fhue4}M%{fhue5}S.%{PURPLE}1"  #<1 hr old files v.high res fhue
-ageFmt = "FUTURE@%{red}Y%{white}m"          #make future times standout-ugly
+ageFmt = "86400@%{fhue0}y%{fhue1}m%{fhue2}d"  # older files lower res in cool
+ageFmt = "0@%{fhue3}H%{fhue4}M%{fhue5}S"      # <1 day old files higher res fhue
+#ageFmt = "3600@%{fhue3}H%{fhue4}M%{fhue5}S" # <1 day old files higher res fhue
+#ageFmt = "0@%{fhue4}M%{fhue5}S.%{PURPLE}1"  # <1 hr old files v.high res fhue
+ageFmt = "FUTURE@%{red}Y%{white}m"          # make future times standout-ugly
 
 #ageFmt = "+ANYTIME@%{fhue0}y%{fhue1}m%{fhue2}d%{fhue3}H%{fhue4}M%{fhue5}S"
 
-#Put times to the millisecond in this one
-ageFmt = "-ANYTIME@%y/%m/%d:%H:%M:%S.%3"      #'-' => plain mode formats
+# Put times to the millisecond in this one; Just do .%6 for usec, .%9 for ns
+ageFmt = "-ANYTIME@%y/%m/%d:%H:%M:%S.%3"      # '-' => plain mode formats; lc -p
 
-#ageFmt = "+31556952@/31556952 yrs fhue0"     #1 year&older:   years; 365.2425
-#ageFmt =  "+2678400@/604800   wks fhue1"     #31 days..1 yr:  weeks;Mos=unevnUnit
-#ageFmt =    "+86400@/86400    dys fhue2"     #1 day..31 days: days
-#ageFmt =     "+6000@/3600     hrs fhue3"     #99 min..1 day:  hours
-#ageFmt =      "+100@/60       min fhue4"     #99 sec..99 min: min
-#ageFmt =        "+0@/1        sec fhue5"     #0..99 sec: sec with no num-unit spc
+#ageFmt = "+31556952@/31556952 yrs fhue0"  # 1 year&older:   years; 365.2425
+#ageFmt =  "+2678400@/604800   wks fhue1"  # 31 days..1 yr:  weeks;Mos=unevnUnit
+#ageFmt =    "+86400@/86400    dys fhue2"  # 1 day..31 days: days
+#ageFmt =     "+6000@/3600     hrs fhue3"  # 99 min..1 day:  hours
+#ageFmt =      "+100@/60       min fhue4"  # 99 sec..99 min: min
+#ageFmt =        "+0@/1        sec fhue5"  # 0..99 sec: sec with no num-unit spc
 
-ageFmt = "+31556952@/31556952   <y fhue0"    #Similar to above but using '<'
-ageFmt =  "+2678400@/604800     <w fhue1"    #..throughout to make the 1char unit
-ageFmt =    "+86400@/86400      <d fhue2"    #..flush with likely 2 char number.
-ageFmt =     "+6000@/3600       <h fhue3"    #So, basically 3 columns no matter
-ageFmt =      "+100@/60         <m fhue4"    #..the age.  Same heatmap colors
-ageFmt =        "+0@/1          <s fhue5"    #..as above.
-ageFmt =   "+FUTURE@/3600       <h FHUE+"    #Weird in-the-future-from now times
+ageFmt="+262974600@/31556952 <y fhue0" # Like above but < to left pad.  2 digs &
+ageFmt= "+60480000@/2629746  <m fhue1" # unit => 3 char cells for any age, BUT
+ageFmt=  "+8640000@/604800   <w fhue2" # this does make scales NOT "unit round".
+ageFmt=   "+360000@/86400    <d fhue3" # Rather for (sec, min, hour, day, week,
+ageFmt=     "+6000@/3600     <H fhue4" #  month, year) one sees: (0-999, 17-99M,
+ageFmt=     "+1000@/60       <M fhue5" #  2-99H, 4-99d, 14-99w, 23-99m, 8+y).
+ageFmt=        "+0@/1        <  fhue+" # Sub-second file ages deemed unworthy.
+ageFmt=   "+FUTURE@/3600     <H FHUE+ inverse" # Weird in-the-future "ages"
+# In above 1 month = 365.2425 days/12 = 30.436875 days, NOT "calendar months".
+# At 23-99 months out, the difference is unlikely to be important (or just use
+# another more precise format if you want).
