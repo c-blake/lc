@@ -3,15 +3,18 @@
 
 [include__kind]     #Define our file typology
 
+#These next 2 are already done by ~/.config/cligen; comment out if you do those.
 [include__lightBG]  #Default to lightBG [fg][hue|HUE] defs but clobber if..
 [include__LC_THEME] #..LC_THEME set.  Defs used by color, ageFmt, maybe style.
+
 [include__color]    #Decide test order,colors,sort order,dimension of kind tests
 [include__ageFmt]   #Define various file age/timestamp formats & colors
 [include__style]    #Define a bunch of styles/aliases for use with `-s`
 
 #Just some global default overrides.  All easily overridden on cmd line/by ".lc"
-glyph  = "▶ "  #UTF8 "play button+SPC", not " -> "; FONT/TERMINAL SENSITIVE
-order  = 0134EN   #Default sort order:
+glyph  = "➤ "  #" -> " ~> Black Right Arrowhead U+27A4; FONT/TERMINAL SENSITIVE
+ 
+order  = 0134EN   #Default multi-level sort order:
                   #  kind-order0,1; fmtKindNum0,1;
                   #    longExtension (.tar.gz .tar.xz together), Numeric-y Name
 format = %f       #Default format; easily overridden on cmd-line or by style
