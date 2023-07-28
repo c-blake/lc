@@ -15,7 +15,7 @@ proc getNimbleDir: string =
   if (let (installDir, ex) = gorgeEx("nimble path lc"); ex == 0):
     result = installDir.strip.parentDir.parentDir  # Hopefully .ini nimbleDir
 
-# While becoming rare, for a CLI tool like `ls` a man page seems expected.
+# 1) While becoming rare, for a CLI tool like `ls` a man page seems expected.
 proc getManDir: string =
   result = getEnv("MAN_DIR", getEnv("MANDIR", getEnv("manDir", "")))
   if result.len > 0: return
@@ -44,9 +44,9 @@ task uninstallMan, "uninstall the man page lc.1":
 `MAN_DIR=/x/y/share/man nimble uninstallMan` may work"""; return
   exec "rm -vf "&mD&"/man1/lc.1 && rmdir -v "&mD&"/man1 && rmdir -v "&mD&";:"
 
-# The next bits populate an `etc/lc/` directory used by `lc` If a user gives
-# neither config nor CLI options.  `lc` finds this from its $0 which may not
-# work in all shells (such users should just not get a fallback config..).
+# 2) The next bits populate an `etc/lc/` directory used by `lc` If a user gives
+# neither config nor CLI options.  `lc` finds this from /proc/PID | $0 which may
+# not work in all OSes/shells (then users just do not get a fallback config..).
 proc getEtcDir: string =
   result = getEnv("ETC_DIR", getEnv("ETCDIR", getEnv("etcDir", "")))
   if result.len > 0: return
@@ -72,6 +72,7 @@ task uninstallConf, "uninstall the default config from \".../etc/lc/\"":
 task installData, "installMan;Conf": installManTask(); installConfTask()
 task uninstallData, "uninstallMan;Conf": uninstallManTask(); uninstallConfTask()
 
+# 3) Allow nimble to drive both man & conf installation if it has permission.
 proc absent(evs: openArray[string]): bool =             # True if *NONE* of evs
   result = true
   for ev in evs: result = result and not ev.existsEnv   #..is set to anything.
