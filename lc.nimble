@@ -6,7 +6,7 @@ license     = "MIT/ISC"
 bin         = @["lc"]
 installDirs = @["man", "configs"]
 # Dependencies
-requires "nim >= 1.6.0", "cligen >= 1.6.12"
+requires "nim >= 1.6.0", "cligen >= 1.6.13"
 
 import os, strutils #XXX from os import parentDir, getEnv, dirExists fails
 proc getNimbleDir: string =

@@ -62,20 +62,17 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
 
 ###### Documentation/CLI; Early to use lsCfFromCL in for local config tweaks.
 const nimbleFile = staticRead "lc.nimble"
-clCfg.version = nimbleFile.fromNimble "version"
+clCfg.version = nimbleFile.fromNimble("version") &
+  "\n\nTEXT ATTRIBUTE SPECIFICATION:\n" & addPrefix("  ", textAttrHelp)
 proc c_getenv(env: cstring): cstring {.importc: "getenv", header: "<stdlib.h>".}
 let cfDfl* = LsCf(format: "%f", glyph: " -> ", recurse: 1, nColumn: 999,
                   padMax: 999, plain: (c_getenv("NO_COLOR") != nil))
 
 const ess: seq[string] = @[]
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
-dispatchGen(inLsCf,"lc",usage="Usage:\n  $command $args\n${doc}$options",doc="""
-L)ist C)lassified|C)olored|C)ustomized files in *paths* (CWD if empty) in a
-filtered, sorted, tabular way (like `ls` with better idea factoring).  Pre-cmd
-options from ${LC_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/lc} & $LC.  Config
-files support [include__{relPath|ENVVAR}] & take only long-form options.
-
-The following 1-letter codes work for **BOTH format AND order specs**:
+dispatchGen(inLsCf, "lc", usage="$command $args\n${doc}$options", doc="""
+List Classified files in *paths* (CWD if none).  The following 1-letter codes
+work for **BOTH format AND order specs**:
   *f* fileName      *u* numeric uid *a*|*A* access time  *i* inode-number *0* ord0|fmtDim0
   *F* baseName      *U* user name   *m*|*M* modify time  *k* st_blksize   *1* ord1|fmtDim1
   *s* humRdSz|devNo *g* numeric gid *c*|*C* create time  *D* major devno  *2* ord2|fmtDim2
@@ -85,42 +82,36 @@ The following 1-letter codes work for **BOTH format AND order specs**:
 For **format specs ONLY** capitals mean an alternate time format & there are also:
   *r* readlink        *S* size(bytes)  *l* ls-KindCode(dl-..)  *x* stxAttrCode
   *R* lnk w/color tgt *P* Octal Perms  *L* ls-KindCode(/@\\*|=)  *Q* "+" if hasAcl
-  *Z* selinux label   *q* "rwx" perms *e|E* ExternProgOutput   *@* 4th:Col Of colorKind
+  *Z* selinux label   *q* "rwx" perms *e|E* ExternProgOutput   *I* ICON from --color
  *3-8* fmtDim3-8     *9./* tgtFmtDim0-2
 
 For **MULTI-LEVEL order specs ONLY** +- mean incr(dfl)/decreasing &there are also:
   *e* shortestExtension(LAST'.'->END) *N* NumericFileName *A* AbbreviatedFileName
-  *E* longestExtension(FIRST'.'->END) *L* fileNameLength  *3-5|6-8|9./* ~ fK|tkO|tK
-
-**ATTR specs**: *plain*, *bold*, *italic*, *underline*, *blink*, *inverse*, *struck*, *NONE*,
-*black*, *red*, *green*, *yellow*, *blue*, *purple*, *cyan*, *white*; UPPERCASE =>HIGH intensity
-while *on_* prefix => BACKGROUND color; 256-color xterm attrs are *[fb][0..23]*
-for FORE/BACKgrnd grey scale & *[fb]RGB* a 6x6x6 color cube; each [RGB] is on
-[0,5].  xterm/st true colors are *[fb]HHHHHH* (usual R,G,B mapping).  Field AND
-strftime formats both accept *%{ATTR1 ATTR2..}CODE* to set colors.""",
-            help = { "kind":  """file kinds: **NAME**<WSPC>**RELATION**<WSPC>**PARAMS**
+  *E* longestExtension(FIRST'.'->END) *L* fileNameLength  *3-5|6-8|9./* ~ fK|tkO|tK""",
+            help = {"version": "Emit Version & *HELP SETTING COLORS*",
+                    "kind":"""file kinds: **NAME**<WSPC>**RELATION**<WSPC>**PARAMS**
 where <RELATION> says base names match:
   *cset* param=str of chars base name can have
-  *SFX|sfx*  case-(|in)sensitive name suffixes
-  *PFX|pfx*  case-(|in)sensitive name prefixes
-  *uid|gid*  numeric uids|gids (or Uid|Gid)
-  *usr|grp*  exact string users or groups
+  *SFX|sfx* case-(|in)sensitive name suffixes
+  *PFX|pfx* case-(|in)sensitive name prefixes
+  *uid|gid* numeric uids|gids (or Uid|Gid)
+  *usr|grp* exact string users or groups
   *pcr*  White-sep Perl-Compatible Regexes
   *mag*  pcRegexs against file(1) type descrip
   *any|all|none*  earlier defd kind test names
   *ext*      x.so:func(qpath: cstring)->cint
 BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
  *+-sym* *hard* *exec* *sUGid* *tmpDir* *worldW* *unR* *odd*
- *Linux:* *COMPR* *IMMUT* *APPEND* *NODUMP* *ENCRYPT*
-        *CAP* hasLinuxCapability *ACL* hasACL""",
-                      "colors" : "color aliases; Syntax: name = ATTR1 ATTR2..",
-                      "color"  : """text attrs for file kind/fields. Syntax:
-  **NAME[[:KEY][:DIM]] ATTR ATTR..**
+ *Linux COMPR IMMUT APPEND NODUMP ENCRYPT*
+       *CAP* hasLinuxCapability *ACL* hasACL""",
+                    "colors" : "color aliases; Syntax: name = ATTR1 ATTR2..",
+                    "color"  : """text attrs for file kind/fields. Syntax:
+  **NAME[[:KEY][:SLOT]] ATTR ATTR..**
 **NAME** kind as above | *size{BKMGT}* | *perm{0-7}*
-**KEY** a 0..255 *SORT/ORD* key **DIM** dimension no.
-**ATTR** specs as above""",
-                      "ageFmt":"""Syntax: *<FILEAGE>@[-+]<STRFTIME_FMT>* where:
-  *FILEAGE* is in {seconds,'FUTURE','ANYTIME'}
+**KEY** a 0..255 *SORT/ORD* key **SLOT** dimension no.
+**ATTR** specs: see --version output""",
+                    "ageFmt":"""Syntax: *FILEAGE@[-+]STRFTIME_FMT* where:
+  *FILEAGE* in {seconds,'FUTURE','ANYTIME'}
   '+' means AltFmt, '-' means plain mode fmt
   strftime %CODEs are any strftime & %DIGIT""",
                     "order"    : "[-]x[-]y[-]z.. keys to sort files by",
@@ -137,9 +128,7 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
                     "nColumn"  : "max major columns to use",
                     "widest"   : "only list this many widest entries",
                     "width"    : "override auto-detected terminal width",
-                    "maxName":"""a\*|M,head(M/2),tail(M-hdSep),sep(\*),?chars()
-  a:bestPos -2:pfx -3:sfx -4:mfx -5:1\* -6:2\*
-  POSITIVE_NUMBER=thatWidth/head/tail""",
+                    "maxName"  : parseAbbrevHelp,
                     "maxTgt"   : "like maxName for symlink targets; No auto",
                     "maxUnm"   : "like maxName for user names",
                     "maxGnm"   : "like maxName for group names",
