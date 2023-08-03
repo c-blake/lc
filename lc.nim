@@ -675,7 +675,7 @@ fAdd('/', {dsS},0, "L2"): tBody(2)
 
 proc parseFormat(cf: var LsCf) =
   type State = enum inPrefix, inField
-  var leftMost = true; var algn = '\0'
+  var frst = true; var algn = '\0'
   var state = inPrefix
   var prefix = ""
   cf.fields.setLen 0
@@ -686,13 +686,11 @@ proc parseFormat(cf: var LsCf) =
       state = inPrefix
       try:
         let fmtE = fmtOf[c]
-        let leftAlign = if algn != '\0': algn == '-' #User spec always wins else..
-                        else:                        #..1st col left&field default
-                          if leftMost: true else: fmtE.left
-        cf.fields.add (prefix[0..^1], leftAlign, c, fmtE.hdr[0..^1], fmtE.fmt)
-        leftMost = false; algn = '\0'
-        prefix.setLen 0
+        let lA = if algn != '\0': algn=='-'   # User spec always wins else frst
+                 else: (if frst: true else: fmtE.left) #..left else field dflt
+        cf.fields.add (prefix[0..^1], lA, c, fmtE.hdr[0..^1], fmtE.fmt)
         cf.need = cf.need + fmtE.ds
+        frst = false; algn = '\0'; prefix.setLen 0
       except Ce: raise newException(ValueError, "unknown format code " & c.repr)
       if   c == 'U' and cf.usr.len == 0: cf.usr = users()
       elif c == 'G' and cf.grp.len == 0: cf.grp = groups()
