@@ -800,8 +800,8 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.wrote = false
   cf.cl0   = cl0
   cf.cl1   = cl1
-  try      : cf.cwd = getCurrentDir()
-  except Ce: discard # quit "PWD deleted" # quit nicer, but not what GNU ls does
+  try      : cf.cwd = getCurrentDir() # Caller can validly `lc` absolute paths
+  except Ce: discard                  #.. from inside a deleted directory.
   template x(e, d): untyped =
     cast[ExtFmt](if e.len > 0: e.loadSym else: cast[pointer](d))
   cf.ext1c = x(cf.ext1, efRef)
