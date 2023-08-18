@@ -800,8 +800,10 @@ proc fin*(cf: var LsCf, cl0: seq[string] = @[], cl1: seq[string] = @[],
   cf.wrote = false
   cf.cl0   = cl0
   cf.cl1   = cl1
-  cf.cwd   = getCurrentDir()
-  template x(e,d):untyped=cast[ExtFmt](if e.len>0:e.loadSym else:cast[pointer](d))
+  try      : cf.cwd = getCurrentDir()
+  except Ce: discard # quit "PWD deleted" # quit nicer, but not what GNU ls does
+  template x(e, d): untyped =
+    cast[ExtFmt](if e.len > 0: e.loadSym else: cast[pointer](d))
   cf.ext1c = x(cf.ext1, efRef)
   cf.ext2c = x(cf.ext2, efRef)
   cg       = cf.addr                          #Init global ptr
