@@ -35,49 +35,44 @@ What `lc` is
 Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
 
- - is clearly factored into independent actions and very configurable
+ - is clearly factored into independent actions and very configurable with good
+   CLI ergonomics (unique prefixes good enough, spellcheck, etc.)
 
- - has good CLI ergonomics (unique prefixes good enough, spellcheck, etc.)
+ - supports ***multi-level sorting*** for many forward/reverse attributes
 
- - supports multi-level sorting for many forward/reverse attributes
-
- - supports arbitrary assignment of "file kind order" for use in sorting (note
-   how, in the screenshot, dot-directories precede dot files precede directories
-   precede regular files)
+ - supports arbitrary assignment of "***file kind order***" for use in sorting
+   (note how, in the screenshot, dot-directories precede dot files precede
+    directories precede regular files)
 
  - supports a kind/type-**vector** for multi-dimensional reasoning, including
    text attribute layers and an "icon vector" (for utf8 "icons", anyway)
 
- - supports both latter-day nanosecond file times and *very* abbreviated ages
+ - supports from ***nanosecond file times*** to ***very*** abbreviated ages
 
- - has value-dependent coloring for file times, sizes, permissions, etc.
+ - has ***value-dependent coloring*** for file times, sizes, permissions, etc.
 
  - can emit "hyperlink" escape codes to make entries clickable in some terminals
 
- - supports file/user/group/link target abbreviation via `-mNum`, `-ma`, etc.
+ - supports file/user/group/link target ***abbreviation*** via `-mNum`, etc.
 
- - supports "local tweak files" - extra config options in a local `.lc` (or a
-   `.lc` in a shadow tree under a user's control if needed).  Nice to eg, avoid
-   NFS automounts or inversely to engage expensive classification, for dirs with
-   special sorts, formats, ..
+ - supports "***local tweak files***" - extra config options in a local `.lc`
+   (or a `.lc` in a shadow tree under a user's control if needed).  Nice to eg,
+   avoid NFS automounts or inversely to engage expensive classification, for
+   dirs with special sorts, formats, ..
 
- - supports "theming" (operationally, environment-variable-keyed cfg includes)
+ - supports "***theming***" (operationally, environ-variable-keyed cfg includes)
 
- - supports latter-day Linux statx/b)irth times (but works on non-Linux, too)
+ - supports latter-day Linux ***statx/b)irth*** times
 
- - supports `file(1)`/`libmagic` deep file inspection-based classification
+ - supports `file(1)`/`libmagic` ***deep file inspection-based classification***
    (though using this with large directories can be woefully slow)
 
- - is extensible with fully user-defined file type tests & field formats
+ - is ***extensible*** with fully user-defined file type tests & field formats
 
- - is compact (~900 non-comment/blank lines; ~300 is just code dispatch tables &
-   help, ~650 in `cligen/[tab, humanUt, abbrev]` might be in `lc` had I not done
-   both pkgs.)
-
- - has few dependencies (just `cligen` and the Nim stdlib)
-
- - is a work in progress, but a unique enough bundle of useful ideas to share.
-   With so many features and few users, there are likely bugs.
+With so many features you might think `lc` is huge, but it is also ***compact***
+(~900 non-comment/blank lines; ~300 is just code dispatch tables & help, ~650 in
+ `cligen/[tab, humanUt, abbrev]` might be in `lc` had I not done both pkgs) with
+only `cligen` and the Nim stdlib as dependencies.
 
 Vector Type/Multi-dimensionality/Attribute Layers
 =================================================
