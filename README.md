@@ -1,6 +1,6 @@
 For the impatient, here is a screenshot:
 
-![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/main.png)
+![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/multi.png)
 
 Getting an `lc` config going *should* be as easy as (on Debian):[^1]
 ```
@@ -41,7 +41,9 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - supports multi-level sorting for many forward/reverse attributes
 
- - supports arbitrary assignment of "file kind order" for use in sorting
+ - supports arbitrary assignment of "file kind order" for use in sorting (note
+   how, in the screenshot, dot-directories precede dot files precede directories
+   precede regular files)
 
  - supports a kind/type-**vector** for multi-dimensional reasoning, including
    text attribute layers and an "icon vector" (for utf8 "icons", anyway)
@@ -79,38 +81,42 @@ yet another file lister?  What's the point?  Well, `lc`
 
 Vector Type/Multi-dimensionality/Attribute Layers
 =================================================
-The most obscure idea is likely "multi-dimensional".  I mean this in an abstract
+The trickiest idea is (likely) "multi-dimensional".  I mean this in an abstract
 "**INDEPENDENT coordinate**" sense **not** a [Jurassic Park
 (1993)-esque](https://www.youtube.com/watch?v=URVS4H7vrdU) IRIX fsn graphical
 file browser sense.  Examples of slots/dimensions/attributes may help.
 
-Output text can set foreground & background colors of text **independently**.
+In the screenshot at the top of this text, "foo.c" and "bar.c" are *both* source
+code files (highlighted green) *and* hard-links (underlined) to each other.
+Similarly, "/tmp/root" is a directory - so it is `WHITE on_blue` - ***but***
+inaccessible to the user running `lc` and so "struck through" text.  This all
+matters since listing files is often a precursor to acting upon them.
+
+Most any terminal can set text fore- & background colors **independently**.
 I happen to like [st](https://git.suckless.org/st/) for its hackability.  That
 can *also* bold, italic, blink, underline, struck, and inverse *independently*.
 (Color inversion involves a mapping too complex to be a very useful visual aid.)
-So, 8 usable output dimensions, 6 shallow 1-bit dimensions & fg/bg color with
+So, 8 usable output dimensions, 6 shallow 1-bit dimensions + fg/bg color with
 larger value ranges.  While subjective, I find it not hard to distinguish text
 with *all* those attributes varying.  Geographical map folk often call this
 "layering" (such as political borders layered atop satellite imagery).
 
 The input/data side has *many* independent fields & bits.  While `dirent.d_type`
-is mutually exclusive type codes (like directory/named pipe/..), most types
+is a mutually exclusive type code (like directory/named pipe/..), most types
 aren't.  E.g., a file can be ***both*** an executable regular file ***and***
 some kind of script source or both a directory and a directory with a sticky bit
 set.  Independently of all that, it can begin with a '.' or not.  Add all of
 `struct stat` and deep file header inspection and the type space explodes both
 in kinds & independent sub-kinds/dimensions (stripped|not, 32|64-bit, etc.).
+Only end users can prioritize use of precious few output layers to represent the
+huge space of input kinds.
 
-Only end users can prioritize use of precious few output layers.  To aid this
-use, `lc` users can configure file kinds to pair with picked poisons of output
-traits.[^2]
-
-This may sound daunting, but many highlighting systems follow this model - e.g.
+This may sound daunting, but other highlighting systems follow this model - e.g.
 a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
-simply models this structure explicitly to try to enable better allocation by
-end users over more dimensions than just the 2 (misspelling, comment) due to
-diverse file types.  Most briefly, `lc` aids "aligning" rendered output traits
-with classified input traits.
+simply explicitly models this structure to try to enable better allocation by
+end users over more dimensions than just 2 (misspelling, comment) due to diverse
+file types.  Most briefly, `lc` aids "aligning" rendered output traits with
+classified input traits.[^2]
 
 Configurability
 ===============
