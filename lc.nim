@@ -715,26 +715,29 @@ proc encodeHyperlink(s: string): string =
       result.add '%'
       result.add toHex(ord(c), 2)
 
-proc getHyperlinkPrefix(cf: LsCf): string =
+proc getHyperlinkPrefix(cf: LsCf, pathAbsolute: bool): string =
   let path =
-    if cf.pfx.isAbsolute:
-      if cf.pfx == "//":
-        "/"
-      else:
-        cf.pfx
+    if pathAbsolute:
+      ""
+    elif cf.pfx.len == 0:
+      cf.cwd & '/'
+    elif cf.pfx == "//":
+      "/"
+    elif cf.pfx.isAbsolute:
+      cf.pfx
     else:
       cf.cwd / cf.pfx
   result = "\e]8;;file://" & encodeHyperlink(cf.hostname & path)
-  if result[^1] != '/': result.add '/'
 
 proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
-            m, jRet: var int; reFit: bool): seq[string] =
+            m, jRet: var int; reFit, toplevel: bool): seq[string] =
   let fj = if cf.unzipF: -1 else: cf.fieldF         #specific %[fF].. col zip
   m = if fj != -1: fj + 1 else: cf.fields.len
   let hdr = cf.header and filps.len > 0
   let i0 = if hdr: 1 else: 0                        #AKA hdr.int
   let n = filps.len + i0
-  let pfx = if cf.hyperlink: getHyperlinkPrefix(cf) else: ""
+  let pfx = if not toplevel and cf.hyperlink:
+              getHyperlinkPrefix(cf, filps[0].name.isAbsolute) else: ""
   result.setLen(n * m)
   wids.setLen(n * m)
   if reFit:
@@ -756,8 +759,12 @@ proc format(cf: LsCf; filps: seq[ptr Fil]; ab0, ab1, wids: var seq[int];
         let formatted = cf.fields[j].fmt(file[])
         if formatted.len > 0:
           if cf.hyperlink:
-            let encodedPath = pfx & file[].name.encodeHyperlink
-            result[idx].add encodedPath & "\e\\"
+            result[idx].add if toplevel:
+              getHyperlinkPrefix(cf, file[].name.isAbsolute)
+            else:
+              pfx
+            result[idx].add file[].name.encodeHyperlink
+            result[idx].add "\e\\"
           result[idx].add formatted
           if cf.hyperlink:
             result[idx].add "\e]8;;\e\\"
@@ -873,7 +880,8 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
     f.kind.setLen(cf.ukind.len)
     for d in 0 ..< cf.ukind.len: f.kind[d] = cf.classify(f, d)
 
-proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
+proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil],
+                  toplevel: bool) {.inline.} =   ###ONE-BATCH
   var nmAbb = cf.nAbb           #realize can mutate cf.nAbb; So use a copy.
   if nmAbb.isAbstract:
     var nms: seq[string]
@@ -887,7 +895,7 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil]) {.inline.} =   ###ONE-BATCH
   var ab0, ab1, wids: seq[int]
   var nrow, ncol, m, j: int
   let reFit = cf.reFit and nmAbb.isAbstract
-  var strs = format(cf, filps, ab0, ab1, wids, m, j, reFit)
+  var strs = format(cf, filps, ab0, ab1, wids, m, j, reFit, toplevel)
   for i in 0 ..< fils.len: fils[i].tgt = nil
   var colWs = layout(wids, cf.width, gap=1, cf.nColumn, m, nrow, ncol)
   if reFit:
@@ -908,7 +916,8 @@ proc maybeGetDents(cf:var LsCf, path: string, dts: ptr seq[int8]): seq[string] =
   stderr.write "\nlc: skipping symlink loop at \"", path, "\"\n"
   dts[].add 1                           #Inform caller recursive loop detected
 
-proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
+proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil,
+         toplevel=true) =
   proc maybePfx(cwd, h: string): string =
     if h.startsWith("/"): h else: cwd & "/" & h
   template zeroCont(x) {.dirty.} =
@@ -934,7 +943,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
       j.inc
     else: fils[j].zeroCont                      #Re-use [j] safely
   if cf.total and r > 0: stdout.write "total ", tot div bDiv, "\n"
-  if j > 0: fils.setLen j; cf.sortFmtWrite fils; cf.wrote = true
+  if j > 0: fils.setLen j; cf.sortFmtWrite(fils, toplevel); cf.wrote = true
   if recurse:
     for k, i in dirs:
       let here = pf & paths[i]
@@ -960,7 +969,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil)=
                (cf.extra == "./" and d.len < 1) or d.len < cf.extra.len:
             break           #Either not looking in par dirs or topped out @root
           d = d.parentDir   #No .lc file here, look in parent
-      cg[].ls(ents, here, r + 1, dts.addr)
+      cg[].ls(ents, here, r + 1, dts.addr, toplevel=false)
       cg = cg0
 
 when isMainModule:                      ### DRIVE COMMAND-LINE INTERFACE
