@@ -253,18 +253,18 @@ Load \fB.lc\fP in parent dirs of those listed (--recurse)
 If you have durable write access, e.g. a subdir of $HOME, "." can be a useful
 value for \fIROOT\fP.  Then you can put \fB--order=WHAT"\fP in some \fB.lc\fP
 file to give a special default order when running
-.Nm Em -X.
+.Nm Em -X..
 on that subdir.  Or you could put some \fB.lc\fP in \fB$HOME/share\fP to cover
-that and \fIany subdirs\fP with \fB-X/\fP.
+that and \fIany subdirs\fP with \fB-X./\fP.
 .Pp
 With no durable/write access, you can make a shadow tree, e.g. \fBmkdir -p
 /tmp/blah/dev; printf "%s" "--order=Dd01EN" > /tmp/blah/dev/.lc\fP.  Then
-.Nm Em "-X/tmp/blah /dev"
+.Nm Em "-X/tmp/blah. /dev"
 should find \fB.lc\fP for \fB/dev\fP in \fB/tmp/blah/dev/.lc\fP.
 .Pp
-These \fB.lc\fP files, like all
+These \fB.lc\fP files, like any
 .Nm
-config files, require long options syntax.
+config file, require long options syntax.
 .El
 .Ss "Content Generation & Filtering"
 .Bl -hang -width MM
