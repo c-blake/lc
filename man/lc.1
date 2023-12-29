@@ -257,8 +257,12 @@ file to give a special default order when running
 on that subdir.  Or you could put some \fB.lc\fP in \fB$HOME/share\fP to cover
 that and \fIany subdirs\fP with \fB-X./\fP.
 .Pp
-With no durable/write access, you can make a shadow tree, e.g. \fBmkdir -p
-/tmp/blah/dev; printf "%s" "--order=Dd01EN" > /tmp/blah/dev/.lc\fP.  Then
+With no durable/write access, you can make a shadow tree, e.g.
+.nf
+    mkdir -p /tmp/blah/dev
+    printf "%s" "--order=Dd01EN" > /tmp/blah/dev/.lc
+.fi
+Then
 .Nm Em "-X/tmp/blah. /dev"
 should find \fB.lc\fP for \fB/dev\fP in \fB/tmp/blah/dev/.lc\fP.
 .Pp
