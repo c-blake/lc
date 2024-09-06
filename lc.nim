@@ -538,7 +538,8 @@ proc sp(cf: LsCf, st: Statx): string =          #sparse attribute
   if st.util < 75: cg.attrSize[ord('S') - ord('A')] else: ""
 
 let bDiv = max(1, if "POSIXLY_CORRECT".existsEnv: 1 else:
-  parseInt(getEnv("BLOCK_SIZE",getEnv("BLOCKSIZE", "1024").strip)) div 512).uint
+  try: (parseInt(getEnv("BLOCK_SIZE",getEnv("BLOCKSIZE", "1024").strip))div 512)
+  except: 2).uint
 
 proc fmtSzDevNo(st: Statx): string =
   proc sizeFmt(sz: string): string =            #colorized file size
