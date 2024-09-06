@@ -9,8 +9,11 @@ Getting an `lc` config going *should* be as easy as (on Debian):[^1]
 apt install nim  #(https://nim-lang.org/ has other options)
 nimble install lc
 ```
-though the Nim experience can sometimes have fairly rough-hewn edges.  You may
-even get interesting 2-level sort-colorized listings from (etc/lc has details):
+though the Nim experience can sometimes have fairly rough-hewn edges.
+Worst case you can just build the nim compiler from source in a large
+one-liner that takes a minute or two.[^2]
+
+One maybe interesting 2-level sort-colorized listing (etc/lc has details) is:
 ```
 ~/.nimble/bin/lc -oDd /dev
 ```
@@ -113,7 +116,7 @@ a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
 simply explicitly models this structure to try to enable better allocation by
 end users over more dimensions than just 2 (misspelling, comment) due to diverse
 file types.  Most briefly, `lc` aids "aligning" rendered output traits with
-classified input traits.[^2]
+classified input traits.[^3]
 
 Configurability
 ===============
@@ -212,7 +215,14 @@ direct dependency, but you may be able to hack something together.
 
 [^1]: You may need `PATH`|`MANPATH` changes.  Or `man -l path/to/lc.1` can work.
 
-[^2]: Operationally, users just pick small integer labels for kinds aka series
+[^2]: `git clone https://github.com/nim-lang/Nim;
+git clone https://github.com/c-blake/cligen;
+git clone https://github.com/c-blake/lc;
+cd Nim; sh build_all.sh;
+cd ../lc; ../Nim/bin/nim c -d=danger -p=../cligen lc;
+cp -pr configs/cb0 $HOME/.config/lc; ./lc`
+
+[^3]: Operationally, users just pick small integer labels for kinds aka series
 of order-dependent tests aka classes.  The first passing kind test within a
 dimension wins that dimension.  To aid debugging kind assignments you can do
 things like `lc -f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.  The
