@@ -8,7 +8,7 @@ installDirs = @["man", "configs"]
 # Dependencies
 requires "nim >= 1.6.0", "cligen >= 1.7.4"
 
-import os, strutils #XXX from os import parentDir, getEnv, dirExists fails
+import std/[os, strutils] #XXX from os import parentDir, getEnv, dirExists fails
 proc getNimbleDir: string =
   result = getEnv("NIMBLE_DIR", getEnv("nimbleDir", ""))
   if result.len > 0: return
