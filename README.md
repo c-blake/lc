@@ -41,13 +41,16 @@ Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
 
  - is clearly factored into independent actions and very configurable with good
-   CLI ergonomics (unique prefixes good enough, spellcheck, etc.)
+   CLI ergonomics (unique prefixes good enough, spellcheck, built-in aliasing
+   system for user styles (option packages, really), etc.)
 
- - supports ***multi-level sorting*** for many forward/reverse attributes
+ - supports ***multi-level sorting*** for many forward/reverse attributes (NOTE
+   longest/shortest file extensions are one BUT foo-nums-with-'.'s...tar.gz type
+   names with internal field structure make certain sorts ill-posed.)[^3]
 
  - supports arbitrary assignment of "***file kind order***" for use in sorting
    (note how, in the screenshot, dot-directories precede dot files precede
-    directories precede regular files)
+   directories precede regular files)
 
  - supports a kind/type-**vector** for multi-dimensional reasoning, including
    text attribute layers and an "icon vector" (for utf8 "icons", anyway)
@@ -116,7 +119,7 @@ a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
 simply explicitly models this structure to try to enable better allocation by
 end users over more dimensions than just 2 (misspelling, comment) due to diverse
 file types.  Most briefly, `lc` aids "aligning" rendered output traits with
-classified input traits.[^3]
+classified input traits.[^4]
 
 Configurability
 ===============
@@ -222,7 +225,16 @@ cd Nim; sh build_all.sh;
 cd ../lc; ../Nim/bin/nim c -d=danger -p=../cligen lc;
 cp -pr configs/cb0 $HOME/.config/lc; ./lc`
 
-[^3]: Operationally, users just pick small integer labels for kinds aka series
+[^3]: E.g. if you have a dir with foo-1.2.3.tar.gz foo-2.1.0.tar.xz then you may
+want to sort by the longest "extension" (E) while if you have a file set like in
+https://github.com/c-blake/lc/issues/5 then you probably want to sort by the
+shortest extension (e).  You can pick one default and then dump a `.lc` "tweak
+file" into whichever is the other kind of directory to change the sort.  Since
+directories like `/usr/lib64/` may be unwritable (so no `.lc` can be put),
+`--extra` has a mode to reference a "shadow file tree" for such so that every
+user on a system can have their own per-file-subtree tweaks.
+
+[^4]: Operationally, users just pick small integer labels for kinds aka series
 of order-dependent tests aka classes.  The first passing kind test within a
 dimension wins that dimension.  To aid debugging kind assignments you can do
 things like `lc -f%0%1%2%3%4%5\ %f` to see coordinates in the first 6 dims.  The
