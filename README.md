@@ -41,7 +41,7 @@ What `lc` is
 Enough disclaimers about what `lc` is *not*.  What *is* `lc`?  Why do we need
 yet another file lister?  What's the point?  Well, `lc`
 
- - is clearly factored into independent actions and very configurable with good
+ - is ***clearly factored*** & [very configurable](#configurability) with good
    CLI ergonomics (unique prefixes good enough, spellcheck, built-in aliasing
    system for user styles (option packages, really), etc.)
 
@@ -53,8 +53,9 @@ yet another file lister?  What's the point?  Well, `lc`
    (note how, in the screenshot, dot-directories precede dot files precede
    directories precede regular files)
 
- - supports a kind/type-**vector** for multi-dimensional reasoning, including
-   text attribute layers and an "icon vector" (for utf8 "icons", anyway)
+ - supports [kind/type-**vectors** for
+   multi-dimensional](#vector-typemulti-dimensionalityattribute-layers) ideas,
+   including text attribute layers and "icon vectors" (for utf8 "icons", anyway)
 
  - supports from ***nanosecond file times*** to ***very*** abbreviated ages
 
@@ -62,7 +63,8 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - can emit "hyperlink" escape codes to make entries clickable in some terminals
 
- - supports file/user/group/link target ***abbreviation*** via `-mNum`, etc.
+ - supports file/user/group/link target ***abbreviation*** [via `-mNum`,
+   etc.](#automatic-abbreviations)
 
  - supports "***local tweak files***" - extra config options in a local `.lc`
    (or a `.lc` in a shadow tree under a user's control if needed).  Nice to eg,
