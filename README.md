@@ -17,6 +17,7 @@ One maybe interesting 2-level sort-colorized listing (etc/lc has details) is:
 ```
 ~/.nimble/bin/lc -oDd /dev
 ```
+If you like `lc`, you may also like [`procs`](https://github.com/c-blake/procs).
 
 What `lc` is Not
 ================
