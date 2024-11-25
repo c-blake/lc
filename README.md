@@ -1,5 +1,5 @@
 For the impatient, here is a screenshot (NOTE: my terminal is set up to
-embellish bold text with dark orange and italic with light orange which
+embellish bold text with light orange and italic with dark orange which
 is..uncommon at best.):
 
 ![screenshot](https://raw.githubusercontent.com/c-blake/lc/master/screenshots/multi.png)
