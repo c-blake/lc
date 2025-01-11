@@ -105,7 +105,11 @@ can *also* bold, italic, blink, underline, struck, and inverse *independently*.
 So, 8 usable output dimensions, 6 shallow 1-bit dimensions + fg/bg color with
 larger value ranges.  While subjective, I find it not hard to distinguish text
 with *all* those attributes varying.  Geographical map folk often call this
-"layering" (such as political borders layered atop satellite imagery).
+"layers" (such as political borders layered atop satellite imagery).  Lately,
+kitty/patched-st/etc. have true color
+[undercurls](https://unix.stackexchange.com/questions/696210/how-to-check-if-a-terminal-can-display-undercurl-from-within-a-bash-zsh-script)
+instead of just underlines (sometimes of varying styles like wavy/triangular),
+adding another deep (like fore/background) output dimension/layer.
 
 The input/data side has *many* independent fields & bits.  While `dirent.d_type`
 is a mutually exclusive type code (like directory/named pipe/..), most types
@@ -115,7 +119,7 @@ set.  Independently of all that, it can begin with a '.' or not.  Add all of
 `struct stat` and deep file header inspection and the type space explodes both
 in kinds & independent sub-kinds/dimensions (stripped|not, 32|64-bit, etc.).
 Only end users can prioritize use of precious few output layers to represent the
-huge space of input kinds.
+much larger space of input kinds.
 
 This may sound daunting, but other highlighting systems follow this model - e.g.
 a misspelled word bolded inside an elsewise colorized source code comment.  `lc`
