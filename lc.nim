@@ -2,7 +2,7 @@ import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre,critbits],
   cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
 import cligen; from std/unicode import runeLen
 when not declared(File): import std/syncio
-{.warning[Uninit]:off, warning[ProveInit]:off.} # Should be verbosity:2 not 1
+
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
   DataSrc* = enum dsD, dsS, dsT, dsA, dsM, dsC ## Dirent,Stat,Tgt,Access,Mag,Cap
   DataSrcs* = set[DataSrc]
