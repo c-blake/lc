@@ -1,6 +1,6 @@
 import std/[os,posix,sets,tables,terminal,strutils,algorithm,nre,critbits],
   cligen/[osUt,posixUt,unixUt,statx,strUt,textUt,humanUt,abbrev,cfUt,tab,magic]
-import cligen; from std/unicode import runeLen
+import cligen, cligen/sysUt; from std/unicode import runeLen
 when not declared(File): import std/syncio
 
 type       # fileName Dtype Stat lnTgt ACL Magic Capability
@@ -314,7 +314,7 @@ proc addCombo(cf: var LsCf; tester: auto; nm, s: string) =
   for t in s.splitWhitespace:
     try:
       let tt = cf.tests[t]; tsts.add tt; ds = ds + tt.ds
-    except Ce: raise newException(ValueError, "bad kind: \"" & t & "\"")
+    except Ce: Value !! "bad kind: \"" & t & "\""
   cf.tests[nm] = (ds, proc(f: var Fil): bool = tester(tsts, f))
 
 proc addExt(cf: var LsCf; nm, s: string) =
@@ -349,7 +349,7 @@ else:
 proc parseKind(cf: var LsCf) =
   for kin in cf.kind:
     let col = kin.splitWhitespace(maxsplit=2)
-    if col.len < 3: raise newException(ValueError, "bad kind: \"" & kin & "\"")
+    if col.len < 3: Value !! "bad kind: \"" & kin & "\""
     if col[1].toLower in ["pcr","perlRx"]: cf.addPCRegex(col[1], col[0], col[2])
     elif col[1] in ["cset", "asciiChars"]: cf.addCSet(col[0], col[2])
     elif col[1].toLower.endsWith("fx") or col[1].toLower.endsWith("fix"):
@@ -362,13 +362,13 @@ proc parseKind(cf: var LsCf) =
     elif col[1] == "none": cf.addCombo(testNone, col[0], col[2])
     elif col[1] in ["ext", "extension"]: cf.addExt(col[0], col[2])
     elif col[1] in ["mag", "magic"]: cf.addMagic(col[1], col[0], col[2])
-    else: raise newException(ValueError, "bad kind: \"" & kin & "\"")
+    else: Value !! "bad kind: \"" & kin & "\""
 
 proc parseColor(cf: var LsCf) =
   var unknown = 255.uint8
   for spec in cf.color:
     let cols = spec.splitWhitespace()
-    if cols.len<2: raise newException(ValueError, "bad color: \"" & spec & "\"")
+    if cols.len<2: Value !! "bad color: \"" & spec & "\""
     let nmKoD = cols[0].split(':')
     let nm    = nmKoD[0].strip()
     let ko    = (if nmKoD.len>1: parseHexInt(nmKoD[1].strip()) else: 255).uint8
@@ -389,13 +389,12 @@ proc parseColor(cf: var LsCf) =
       if nm.len == 5:
         if   nm.startsWith("size"):
           if nm[4] notin { 'B', 'K', 'M', 'G', 'T', 'S' }:
-            raise newException(ValueError, "unknown color key: \""&nm&"\"")
+            Value !! "unknown color key: \""&nm&"\""
           cf.attrSize[ord(nm[4]) - ord('A')] = attrs
         elif nm.startsWith("perm"):
-          if nm[4] notin { '0' .. '7' }:
-            raise newException(ValueError, "bad perm \""&nm&"\". Octal digit.")
+          if nm[4] notin {'0'..'7'}: Value!!"bad perm \""&nm&"\". Octal digit."
           cf.attrPerm[ord(nm[4]) - ord('0')] = attrs
-      else: raise newException(ValueError, "unknown color key: \""&nm&"\"")
+      else: Value !! "unknown color key: \""&nm&"\""
   if unknown == 255: # auto-terminate .kinds if usr gave no attrs for "unknown"
     cf.kinds.add ("", 255.uint8, "", proc(f: var Fil): bool {.closure.} = true)
 
@@ -407,7 +406,7 @@ proc compileFilter(cf: var LsCf, spec: seq[string], msg: string): set[uint8] =
       result.incl(k.slot)
       cf.need = cf.need + k.ds
       cf.needKin = true   #must fully classify if any kind is used as a filter
-    except Ce: raise newException(ValueError, msg & " name \"" & nm & "\"")
+    except Ce: Value !! msg & " name \"" & nm & "\""
 
 proc parseFilters(cf: var LsCf) =
   cf.sin = cf.compileFilter(cf.incl, "incl filter"); cf.nin = cf.sin.card
@@ -481,7 +480,7 @@ proc parseOrder(cf: var LsCf) =
       let cmpE = cmpOf[c]
       cf.cmps.add (sgn, cmpE.cmp)
       cf.need = cf.need + cmpE.ds
-    except Ce: raise newException(ValueError, "unknown sort key code " & c.repr)
+    except Ce: Value !! "unknown sort key code " & c.repr
     if   c == 'U' and cf.usr.len == 0: cf.usr = users()
     elif c == 'G' and cf.grp.len == 0: cf.grp = groups()
     elif c in {'0'..'9', '.', '/'}: cf.needKin = true       #bludgeon
@@ -498,7 +497,7 @@ proc parseAge(cf: var LsCf) =
   template hl(sp, co, pl): auto {.dirty.} = specifierHighlight(sp, co, pl)
   for aFs in cf.ageFmt:
     let aF = aFs.split('@')
-    if aF.len != 2: raise newException(ValueError, "bad ageFmt:\"" & aFs & "\"")
+    if aF.len != 2: Value !! "bad ageFmt:\"" & aFs & "\""
     if aF[0].startsWith('+'): #2**31 =~ 68 yrs in future from when fin is run.
      try      :cf.tmFmtU.add((aF[0].parseInt, hl(aF[1],strftimeCodes,cf.plain)))
      except Ce:cf.tmFmtU.add((-2147483648.int,hl(aF[1],strftimeCodes,cf.plain)))
@@ -692,7 +691,7 @@ proc parseFormat(cf: var LsCf) =
         cf.fields.add (prefix[0..^1], lA, c, fmtE.hdr[0..^1], fmtE.fmt)
         cf.need = cf.need + fmtE.ds
         frst = false; algn = '\0'; prefix.setLen 0
-      except Ce: raise newException(ValueError, "unknown format code " & c.repr)
+      except Ce: Value !! "unknown format code " & c.repr
       if   c == 'U' and cf.usr.len == 0: cf.usr = users()
       elif c == 'G' and cf.grp.len == 0: cf.grp = groups()
       elif c == '0': cf.needKin = not cf.plain          #heuristic only
