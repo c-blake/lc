@@ -927,7 +927,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil,
     x.tgt = nil; zeroMem(x.addr, x.sizeof); continue
   let pf = if pfx.len > 0 and pfx != ".": pfx & $DirSep else: ""
   cg.pfx = pf
-  cf.dirLabel = r > 0 or paths.len > 1 or cf.recurse > 1
+  cf.dirLabel = r > 0 or paths.len > 1 or cf.recurse > 1 or cf.indent > 0
   var fils = newSeq[Fil](paths.len)
   var dirs: seq[int]
   var labels: seq[string]
