@@ -12,7 +12,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     kind: seq[uint8]             ##kind nums for independent format dimensions
     dtype, r, w, x, brok: int8   ##dtype, perms, lnSt (0 unknown, 1: no, 2: yes)
     acl, cap: bool               ##flags: has an ACL, has a Linux capability
-    base, sext, lext: int16      ##offset of basenms,shortest|longest extens
+    base, sext, lext, depth: int16 ##offset of basenms,shortest|longest extens
     usr, grp, name, abb, mag: string ##ids; here to sort, name, abbrev, magic
     tgt: ref Fil                 ##symlnk target
 
@@ -29,7 +29,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     incl*, excl*: seq[string]                               ##usrDefd filters
     order*, format*, glyph*, extra*, ext1*, ext2*,
      maxName*, maxTgt*, maxUnm*, maxGnm*: string
-    recurse*, nColumn*, padMax*, widest*, width*: int       ##recursion,tweaks
+    recurse*, nColumn*, padMax*, widest*, width*,indent*: int ##recursion,tweaks
     dirs*, binary*, dense*, deref*, tgtDref*, plain*,       ##various bool flags
      unzipF*, header*, access*, total*, quote*, n1*, reFit*, hyperlink*: bool
     paths*: seq[string]                                     ##paths to list
@@ -83,7 +83,7 @@ For **format specs ONLY** capitals mean an alternate time format & there are als
   *r* readlink        *S* size(bytes)  *l* ls-KindCode(dl-..)  *x* stxAttrCode
   *R* lnk w/color tgt *P* Octal Perms  *L* ls-KindCode(/@\\*|=)  *Q* "+" if hasAcl
   *Z* selinux label   *q* "rwx" perms *e|E* ExternProgOutput   *I* ICON from --color
- *3-8* fmtDim3-8     *9./* tgtFmtDim0-2
+ *3-8* fmtDim3-8     *9./* tgtFmtDim0-2 *t* tree indent
 
 For **MULTI-LEVEL order specs ONLY** +- mean incr(dfl)/decreasing &there are also:
   *e* shortestExtension(LAST'.'->END) *N* NumericFileName *A* AbbreviatedFileName
@@ -128,6 +128,7 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
                     "nColumn"  : "max major columns to use",
                     "widest"   : "only list this many widest entries",
                     "width"    : "override auto-detected terminal width",
+                    "indent"   : "size of indent for %t tree indent",
                     "maxName"  : parseAbbrevHelp,
                     "maxTgt"   : "like maxName for symlink targets; No auto",
                     "maxUnm"   : "like maxName for user names",
@@ -146,7 +147,7 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
                     "excl"     : "kinds to exclude",
                     "incl"     : "kinds to include" },
             short = {"deref":'L', "dense":'D', "access":'A', "width":'W',
-                     "padMax":'P', "excl":'x', "n1":'1', "header":'H',
+                     "padMax":'P',"excl":'x',"n1":'1',"header":'H',"indent":'I',
                      "maxTgt":'M', "maxUnm":'U', "maxGnm":'G', "tgtDref":'l',
                      "extra":'X', "colors":'C', "ext2":'E', "reFit":'F'},
             alias = @[ ("Style",'S',"DEFINE an output style arg bundle",@[ess]),
@@ -612,7 +613,7 @@ var fmtCodes: set[char]   #left below is just dflt alignment. User can override.
 var fmtOf: Table[char, tuple[ds: DataSrcs; left: bool; hdr: string;
                  fmt: proc(x: var Fil): string]]
 template fAdd(code, ds, left, hdr, toStr: untyped) {.dirty.} =
-  fmtCodes.incl(code)                           #AVAILABLE: hjtyz HJNOTWXYZ
+  fmtCodes.incl(code)                           #AVAILABLE: hjyz HJNOTWXYZ
   fmtOf[code] = (ds, left.bool, hdr, proc(f:var Fil):string {.closure.} = toStr)
 # Undelimited 1char-wide fields like '[lQI]' exist on purpose, but a junk way to
 # ensure delimits for sparser stuff is leading ' ' in hdr for left-align fields.
@@ -654,6 +655,8 @@ fAdd('e', {}   ,0, "e1"   ): $cg.ext1c(f.name.qualPath.cstring)
 fAdd('E', {}   ,0, "e2"   ): $cg.ext2c(f.name.qualPath.cstring)
 fAdd('@', {}   ,0, "I"    ): f.fmtIcon
 fAdd('I', {}   ,0, "I"    ): f.fmtIcon
+fAdd('t', {}   ,0, ""     ):(if cg.indent>0:repeat(' ',cg.indent*max(0,f.depth))
+                             else: "")
 
 template dBody(i): untyped {.dirty.} =
   if f.kind.len>i: cg.kinds[f.kind[i]].attr & f.kind[i].toHex & cg.a0 else: "xx"
@@ -934,6 +937,7 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil,
   for i, p in paths:
     var dt: int8 = if dts != nil: dts[][i] else: 0
     if not cf.mkFil(fils[j], p, dt, dsD in cf.need or recurse): fils[j].zeroCont
+    fils[j].depth = r.int16
     tot += fils[j].st.st_blocks.uint
     if r == 0 or not cf.failsFilters(fils[j]):  #A kept entry
       if dt == DT_DIR or (cf.deref and dt == DT_LNK and fils[j].isDir):
@@ -945,13 +949,14 @@ proc ls*(cf: var LsCf, paths: seq[string], pfx="", r=0, dts: ptr seq[int8]=nil,
   if cf.total and r > 0: stdout.write "total ", tot div bDiv, "\n"
   if j > 0: fils.setLen j; cf.sortFmtWrite(fils, toplevel); cf.wrote = true
   if recurse:
+    let indent = if cg.indent>0: repeat(' ', cg.indent*max(0, r)) else: ""
     for k, i in dirs:
       let here = pf & paths[i]
       var dts: seq[int8]                        #Inits to 0 == DT_UNKNOWN
       let ents = cf.maybeGetDents(here, dts.addr)
       if cf.dirLabel and ents.len == dts.len:   #Blocked rec.loop gets no label
         if not cf.dense and cf.wrote: stdout.write "\n"
-        stdout.write labels[k], ":\n"; cf.wrote = true
+        stdout.write indent, labels[k], ":\n"; cf.wrote = true
       cf.dirLabel = true
       var c: LsCf; let cg0 = cg                 #Maybe merge local extras
       if cf.extra.len > 0 and (cf.recurse == 1 or (cf.recurse > 1 and

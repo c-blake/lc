@@ -80,6 +80,8 @@ yet another file lister?  What's the point?  Well, `lc`
 
  - is ***extensible*** with fully user-defined file type tests & field formats
 
+ - supports primitive file tree drawing via --indent/%t/-1
+
 With so many features you might think `lc` is huge, but it is also ***compact***
 (~900 non-comment/blank lines; ~300 is just code dispatch tables & help, ~650 in
  `cligen/[tab, humanUt, abbrev]` might be in `lc` had I not done both pkgs) with

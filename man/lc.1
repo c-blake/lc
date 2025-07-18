@@ -291,6 +291,10 @@ This space can help visually distinguish major from minor columns.
 .It \fB-W=, --width=\fP (\fI0\fP)     override auto-detected terminal width;
 E.g. --width=$((COLUMNS+5)) can do layout for a slightly wider terminal.  Useful
 especially in combination with \fB--widest\fR.
+.It \fB-I=, --indent=\fP (\fI0\fP)    add this many spaces to directory labels
+and for %t tree indent format.  Combining %t, recursion & -1, indents a tree.
+E.g., inside an lc/ clone, \fBlc -H1DI5 -r9 -f%t%s\ %f [mes]*\fP.  If you like
+this then you can, of course, make a style for yourself, like `lc -st`.
 .It \fB-D, --dense\fP           no blanks between multiple dir listings to
 conserve terminal row space for blanks (often less needed with good highlighting
 of directory types themselves).
