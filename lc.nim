@@ -10,7 +10,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
   Fil {.acyclic.}= object #Abstract file metadata including classification stuff
     st: Statx                    ##filesystem metadata
     kind: seq[uint8]             ##kind nums for independent format dimensions
-    dtype, r, w, x, brok: int8   ##dtype & file perms (0 unknown, 1: no, 2: yes)
+    dtype, r, w, x, brok: int8   ##dtype, perms, lnSt (0 unknown, 1: no, 2: yes)
     acl, cap: bool               ##flags: has an ACL, has a Linux capability
     base, sext, lext: int16      ##offset of basenms,shortest|longest extens
     usr, grp, name, abb, mag: string ##ids; here to sort, name, abbrev, magic
@@ -612,7 +612,7 @@ var fmtCodes: set[char]   #left below is just dflt alignment. User can override.
 var fmtOf: Table[char, tuple[ds: DataSrcs; left: bool; hdr: string;
                  fmt: proc(x: var Fil): string]]
 template fAdd(code, ds, left, hdr, toStr: untyped) {.dirty.} =
-  fmtCodes.incl(code)                           #AVAILABLE: hjtyz HIJNOTWXYZ
+  fmtCodes.incl(code)                           #AVAILABLE: hjtyz HJNOTWXYZ
   fmtOf[code] = (ds, left.bool, hdr, proc(f:var Fil):string {.closure.} = toStr)
 # Undelimited 1char-wide fields like '[lQI]' exist on purpose, but a junk way to
 # ensure delimits for sparser stuff is leading ' ' in hdr for left-align fields.
