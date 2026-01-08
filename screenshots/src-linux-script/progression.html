@@ -59,8 +59,8 @@
   <p>Skipped for brevity, but with <code>-m-4</code> compression <code>-F</code>
   winds up <em>fully</em> expanding 20% of dirents at no layout cost. </p>
 
-  <p>On directories with thousands of entries or more that <code>-m-[456]</code>
-  can take from 10 seconds to <em>minutes</em>.  I am unsure much faster algos
+  <p>On directories with many thousands of entries, <code>-m-[456]</code>
+  can take from seconds to <em>minutes</em>.  I am unsure much faster algos
   exist.  Sadly, large dirs are also when this kind of visual compression might
   help most.  However, <code>-Fma</code> may be the most that remains easily
   interpretable anyway and that is always fast.</p>

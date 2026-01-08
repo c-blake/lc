@@ -29,7 +29,7 @@ type       # fileName Dtype Stat lnTgt ACL Magic Capability
     incl*, excl*: seq[string]                               ##usrDefd filters
     order*, format*, glyph*, extra*, ext1*, ext2*,
      maxName*, maxTgt*, maxUnm*, maxGnm*: string
-    recurse*, nColumn*, padMax*, widest*, width*,indent*: int ##recursion,tweaks
+    recurse*, nColumn*, padMax*, widest*, width*, indent*, jobs*, jobsN*: int
     dirs*, binary*, dense*, deref*, tgtDref*, plain*,       ##various bool flags
      unzipF*, header*, access*, total*, quote*, n1*, reFit*, hyperlink*: bool
     paths*: seq[string]                                     ##paths to list
@@ -65,8 +65,8 @@ const nimbleFile = staticRead "lc.nimble"
 clCfg.version = nimbleFile.fromNimble("version") &
   "\n\nTEXT ATTRIBUTE SPECIFICATION:\n" & addPrefix("  ", textAttrHelp)
 proc c_getenv(env: cstring): cstring {.importc: "getenv", header: "<stdlib.h>".}
-let cfDfl* = LsCf(format: "%f", glyph: " -> ", recurse: 1, nColumn: 999,
-                  padMax: 999, plain: (c_getenv("NO_COLOR") != nil))
+let cfDfl* = LsCf(format: "%f", glyph: " -> ", recurse: 1, nColumn: 999, jobs:1,
+                  jobsN: 150, padMax: 999, plain: (c_getenv("NO_COLOR") != nil))
 
 const ess: seq[string] = @[]
 initGen(cfDfl, LsCf, "paths", @["ALL AFTER paths"], "inLsCf")
@@ -129,6 +129,8 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
                     "widest"   : "only list this many widest entries",
                     "width"    : "override auto-detected terminal width",
                     "indent"   : "size of indent for %t tree indent",
+                    "jobs"     : "parallelism for -5|-6 abbrevs; 0 => nCPU",
+                    "jobsN"    : "threshold num dirents to go parallel",
                     "maxName"  : parseAbbrevHelp,
                     "maxTgt"   : "like maxName for symlink targets; No auto",
                     "maxUnm"   : "like maxName for user names",
@@ -147,9 +149,9 @@ BUILTIN *reg* *dir* *block* *char* *fifo* *sock* *symlink*
                     "excl"     : "kinds to exclude",
                     "incl"     : "kinds to include" },
             short = {"deref":'L', "dense":'D', "access":'A', "width":'W',
-                     "padMax":'P',"excl":'x',"n1":'1',"header":'H',"indent":'I',
-                     "maxTgt":'M', "maxUnm":'U', "maxGnm":'G', "tgtDref":'l',
-                     "extra":'X', "colors":'C', "ext2":'E', "reFit":'F'},
+              "padMax":'P', "excl":'x', "n1":'1', "header":'H', "indent":'I',
+              "maxTgt":'M', "maxUnm":'U', "maxGnm":'G', "tgtDref":'l',
+              "extra":'X', "colors":'C', "ext2":'E', "reFit":'F', "jobsN":'J'},
             alias = @[ ("Style",'S',"DEFINE an output style arg bundle",@[ess]),
                        ("style",'s',"APPLY an output style",@[ess]) ],
             dispatchName = "lsCfFromCL")
@@ -889,7 +891,7 @@ proc sortFmtWrite(cf: var LsCf, fils: var seq[Fil],
   if nmAbb.isAbstract:
     var nms: seq[string]
     for f in fils: nms.add cf.maybeQuote(f.name)
-    nmAbb.realize nms
+    nmAbb.realize nms, cf.jobs, cf.jobsN
   if nmAbb.mx != 0:
     for i, f in fils: fils[i].abb = nmAbb.abbrev(f.name)
   var filps = newSeq[ptr Fil](fils.len)    #Fil is 200B-ish => sort by ptr
