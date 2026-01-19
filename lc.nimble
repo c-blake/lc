@@ -1,12 +1,12 @@
 # Package
-version     = "0.21.3"
+version     = "0.21.4"
 author      = "Charles Blake"
 description = "A post-modern, \"multi-dimensional\", configurable, abbreviating, extensible ls/file lister"
 license     = "MIT/ISC"
 bin         = @["lc"]
 installDirs = @["man", "configs"]
 # Dependencies
-requires "nim >= 1.6.0", "cligen >= 1.8.7"
+requires "nim >= 1.6.0", "cligen >= 1.9.6"
 
 import std/[os, strutils] #XXX from os import parentDir, getEnv, dirExists fails
 proc getNimbleDir: string =
