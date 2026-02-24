@@ -1,0 +1,57 @@
+# A WHITE on_black (fhue+ BHUE-) color theme w/hue in rainbow purple..red order.
+# Exchanged cases (fhueX BHUEX | FHUEX bhueX) are high contrast while +- flips
+# polarity for fg/bg.  So, 2 grays are: fhue- & FHUE+ (in order of contrast to
+# bg) while fhue+ == bhue+ and FHUE- == BHUE-.
+
+colors = "fhue- = BLACK"
+colors = "fhue0 = PURPLE"
+colors = "fhue1 = BLUE"
+colors = "fhue2 = CYAN"
+
+# `st` has no notion of default FG color (I use GREEN) separate from the active
+# SGR color.  bold/italic/underline activate coordinated colors very different
+# from GREEN on purpose.  For hue scale use, it helps to preserve "greenness".
+# So, we define fhue3 to be a color-cube green near GREEN.
+colors = "fhue3 = f28FFA0"      #GREEN
+
+colors = "fhue4 = YELLOW"
+colors = "fhue5 = RED"
+colors = "fhue+ = WHITE"        #default fg => no-op
+
+colors = "pgreen = WHITE"
+# For uses where we just want a high contrast color very different from default
+# FG (such as "diff" highlights) we introduce "pgreen" (for pseudogreen).  Many
+# might change default terminal FG to WHITE and just use GREEN, but 40 years of
+# green-on-black has me more conditioned than a few years of color diff.
+
+colors = "FHUE- = black"        #FHUE- BHUE- is invisible
+colors = "FHUE0 = purple"
+colors = "FHUE1 = blue"
+colors = "FHUE2 = cyan"
+colors = "FHUE3 = green"
+colors = "FHUE4 = yellow"
+colors = "FHUE5 = red"
+colors = "FHUE+ = white"
+
+colors = "bhue- = on_BLACK"
+colors = "bhue0 = on_PURPLE"
+colors = "bhue1 = on_BLUE"
+colors = "bhue2 = on_CYAN"
+colors = "bhue3 = on_GREEN"
+colors = "bhue4 = on_YELLOW"
+colors = "bhue5 = on_RED"
+colors = "bhue+ = on_WHITE"     #fhue+ bhue+ is invisible
+
+colors = "BHUE- = on_black"     #default bg => no-op
+colors = "BHUE0 = on_purple"
+colors = "BHUE1 = on_blue"
+colors = "BHUE2 = on_cyan"
+colors = "BHUE3 = on_green"
+colors = "BHUE4 = on_yellow"
+colors = "BHUE5 = on_red"
+colors = "BHUE+ = on_white"
+
+colors = "onDBlue   = b101070"
+colors = "onDPurple = b682090"
+colors = "onDGreen  = b087020"
+colors = "onDRed    = b700000"

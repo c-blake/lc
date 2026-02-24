@@ -1,0 +1,87 @@
+# Value-conditional attr settings; %[fFrR] first; ORDER MATTERS: 1st ck passed
+# WITHIN a (string, dtype, inode) slot decides KIND WITHIN that slot/dimension.
+# Optional :KEY is a 0..255 overall order for that kind.  3rd :-separated field
+# is SLOT NUMBER.  Attributes overlay ACROSS slots/dimensions, but not within.
+# After the slot number, you can also include an optional "icon" for %@ formats.
+#
+# General theme here: non-link specials get "boxy" BG on_(purple|blue|green),
+# likely problem files get on_RED|blinking, soft|hard links ~ italic|underlined.
+
+#      nm:ord:dim      attrs             #overall test number for reference
+color="dot:0x04:0      NONE"             #0x00
+#color="test1:0x24:0    GREEN on_black"   #0x00
+#color="test2:0x24:0    CYAN on_black"    #0x00
+color="onOutErr:0xF0:0 fhue-"            #0x01
+color="compress:0x3D:0 fhue0"            #0x02   #cold storage
+color="tarchive:0x3E:0 fhue0"            #0x03
+color="archive:0x3F:0  fhue0"            #0x04
+color="audio:0x70:0    fhue1"            #0x05   #warmer, but still compressed
+color="image:0x71:0    fhue1"            #0x06
+color="video:0x72:0    fhue1"            #0x07
+#color="media:0x72:0    fhue1"            #0x07
+#color="special:0x72:2  blink"            #0x07
+#color="combo:0x00:0    blink"            #0x07
+color="script:0x40:0   fhue4"            #0x08
+color="pointer:0x50:0:ɷ FHUE0"           #0x09   #pointers odd ducks=>alt bank
+color="header:0x58:0   fhue2"            #0x0A   #Interfaces are cooler prelude
+color="source:0x60:0   fhue3"            #0x0B   #..to neutral warmth impls.
+color="object:0x68:0   fhue5"            #0x0C   #Could arguably swap obj&exec
+color="core:0x68:0     fhue5"            #0x0D
+color="backup:0x80:0   FHUE4"            #0x0E   #backups odd ducks=>alt bank
+color="capsdoc:0x23:0  FHUE+"            #0x0F   #Docs are just a different
+color="numeric:0x21:0  FHUE+"            #0x00   #process entirely => gray scl
+color="document:0x24:0 FHUE+"            #0x11
+
+color="symlink:0x10:1  italic"           #0x12
+color="dir:0x20:1      WHITE  onDBlue"   #0x13  # directory; white on vdark blue
+color="regular:0x65:1  NONE"             #0x14
+color="char:0x30:1     YELLOW onDPurple" #0x15  # char device  on dark purple
+color="block:0x40:1    CYAN   onDPurple" #0x16  # block device
+color="fifo:0x50:1     BLUE   onDPurple" #0x17
+color="socket:0x60:1   WHITE  onDPurple" #0x18
+
+color="-symlink:0x10:2  blink"           #0x19 # early since no stat data to use
+#color="CAPABILITY:0x10:2 blink"               # has some linux FS capability
+#color="ACL:0x10:2     blink"                  # has some Access Control List
+color="hardLinks:0x80:2 underline"       #0x1A # maybe inverse | struck?
+
+color="oddPerm:0x30:3  on_RED"           #0x1B # early since combines much
+color="tmpDir:0x20:3   YELLOW"           #0x1C # clobber FG only->yellow on_blue
+color="suid:0x50:3     on_CYAN"          #0x1D #pastel backgrounds for sXid
+color="sgid:0x60:3     onDGreen"         #0x1E # dark-ish green
+
+color="+symlink:0x18:4 italic"           #0x1F
+color="worldWr:0x40:4  on_RED"           #0x20 # world writable;HigherD 2clobber
+
+#struck text can sometimes be hard to read; Hence put on hard to read dirents:
+color="unR:0xF8:5      struck"           #0x21  # unreadable | isDir & no-exec
+
+color="executable:0x70:6:¶   bold"        #0x22 # goofy ¶ "icon" for kicks
+
+#color="ELF:0x71:7      RED"              #0x23 #Another dimension for magics
+
+#color="sysOwn:0x80:7     blink"          #0x23 #really just for testing
+#color="sysGrp:0x80:8     struck"         #0x23
+#color="rootOrCb:0x80:7   blink"          #0x23
+#color="wheelOrCb:0x80:8  struck"         #0x23
+#color="mye1:0x80:7   blink"              #0x23
+#color="mye2:0x95:8   struck"             #0x23
+
+color="unknown:0x23:0  NONE"             #0x23 #Added if missing;Here to set ord
+
+# In string test fields, values are roughly hue-ordered.
+color = "sizeB   fhue1"                 #Value-conditional fields besides paths
+color = "sizeK   fhue2"
+color = "sizeM   fhue3"
+color = "sizeG   fhue4"
+color = "sizeT   fhue5 inverse"    #TB-scl individual files are likely a problem
+color = "sizeS   italic"           #Additive text attr for sparse files (u<75%)
+#Color all 4 octal digs as how only one affects invoking process (dep on owners)
+color = "perm0   WHITE on_purple"  #000: ---  #Not so rare, but very restrictive
+color = "perm1   fhue1"            #001: --x  #rare, but happens w/eg. suid
+color = "perm2   CYAN  onDRed"     #010: -w-  #unlikely to be correct
+color = "perm3   GREEN onDRed"     #011: -wx  #unlikely to be correct
+color = "perm4   fhue2"            #100: r--  #RO: pretty normal.
+color = "perm5   fhue3"            #101: r-x  #color like 'exec' is colored.
+color = "perm6   fhue4"            #110: rw-  #RW: even more normal
+color = "perm7   fhue5"            #111: rwx  #Only so many yellows..Orange?

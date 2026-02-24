@@ -1,0 +1,47 @@
+# A black on_WHITE (fhue+ BHUE-) color theme w/hue in rainbow purple..red order.
+# Exchanged cases (fhueX BHUEX | FHUEX bhueX) are high contrast while +- flips
+# polarity for fg/bg.  So, 2 grays are: fhue- & FHUE+ (in order of contrast to
+# bg) while fhue+ == bhue+ and FHUE- == BHUE-.
+
+colors = "fhue- = white"
+colors = "fhue0 = purple"
+colors = "fhue1 = blue"
+colors = "fhue2 = cyan"
+colors = "fhue3 = green"
+colors = "fhue4 = yellow"
+colors = "fhue5 = red"
+colors = "fhue+ = black"        #default fg => no-op
+
+colors = "pgreen = green"       #See darkBG for notes
+
+colors = "FHUE- = WHITE"        #FHUE- BHUE- is invisible
+colors = "FHUE0 = PURPLE"
+colors = "FHUE1 = BLUE"
+colors = "FHUE2 = CYAN"
+colors = "FHUE3 = GREEN"
+colors = "FHUE4 = YELLOW"
+colors = "FHUE5 = RED"
+colors = "FHUE+ = BLACK"
+
+colors = "bhue- = on_white"
+colors = "bhue0 = on_purple"
+colors = "bhue1 = on_blue"
+colors = "bhue2 = on_cyan"
+colors = "bhue3 = on_green"
+colors = "bhue4 = on_yellow"
+colors = "bhue5 = on_red"
+colors = "bhue+ = on_black"     #fhue+ bhue+ is invisible
+
+colors = "BHUE- = on_WHITE"     #default bg => no-op
+colors = "BHUE0 = on_PURPLE"
+colors = "BHUE1 = on_BLUE"
+colors = "BHUE2 = on_CYAN"
+colors = "BHUE3 = on_GREEN"
+colors = "BHUE4 = on_YELLOW"
+colors = "BHUE5 = on_RED"
+colors = "BHUE+ = on_BLACK"
+
+colors = "onDBlue   = b101070"
+colors = "onDPurple = b682090"
+colors = "onDGreen  = b087020"
+colors = "onDRed    = b700000"
