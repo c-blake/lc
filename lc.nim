@@ -834,8 +834,8 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
   template iqP(): string = (if qP.len == 0: (qP = name.qualPath; qP) else: qP)
   f.name = name
   f.base = (1 + rfind(name, {DirSep, AltSep})).int16    #ix(basenm);0 if unqual
-  f.sext = max(0, rfind(name, '.', f.base)).int16       #ix(shortest exten|0)
-  f.lext = max(0, name.find('.', f.base)).int16         #ix(longest exten|0)
+  f.sext = max(0, rfind(name, '.', f.base.Natural)).int16 #ix(shortest exten|0)
+  f.lext = max(0, name.find('.', f.base.Natural)).int16   #ix(longest exten|0)
   if nDt and dt == DT_UNKNOWN:
     if lstat(iqP.cstring, f.st) == -1:  #vanished|->inaccessible since readdir
       stderr.write qP, ": ", strerror(errno), "\n"
@@ -867,8 +867,8 @@ proc mkFil(cf: var LsCf; f: var Fil; name: string; dt: var int8, nDt:bool):bool=
     elif cf.tgtDref:                    #Below -> lstat? Maybe -L<number|enum>?
       f.tgt.brok = if stat(qP.cstring, f.tgt.st) == -1: 2 else: 1
       f.tgt.base = (1 + rfind(f.tgt.name, {DirSep, AltSep})).int16
-      f.tgt.sext = max(0, rfind(f.tgt.name, '.', start=f.tgt.base)).int16
-      f.tgt.lext = max(0, f.tgt.name.find('.', start=f.tgt.base)).int16
+      f.tgt.sext = max(0, rfind(f.tgt.name, '.',start=f.tgt.base.Natural)).int16
+      f.tgt.lext = max(0, f.tgt.name.find('.', start=f.tgt.base.Natural)).int16
       f.tgt.dtype = stat2dtype(f.tgt.st.st_mode)
       if cf.needKin:                    #tgtDref populates f.st via stat.  So,
         when haveMagic:                 #..only dsNm really changes for classify
