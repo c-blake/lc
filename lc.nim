@@ -87,7 +87,8 @@ For **format specs ONLY** capitals mean an alternate time format & there are als
 
 For **MULTI-LEVEL order specs ONLY** +- mean incr(dfl)/decreasing &there are also:
   *e* shortestExtension(LAST'.'->END) *N* NumericFileName *A* AbbreviatedFileName
-  *E* longestExtension(FIRST'.'->END) *L* fileNameLength  *3-5|6-8|9./* ~ fK|tkO|tK""",
+  *E* longestExtension(FIRST'.'->END) *L* fileNameLength  *3-5|6-8|9./* ~ fK|tkO|tK
+  *<* reversedFileName""",
             help = {"version": "Emit Version & *HELP SETTING COLORS*",
                     "kind":"""file kinds: **NAME**<WSPC>**RELATION**<WSPC>**PARAMS**
 where <RELATION> says base names match:
@@ -438,6 +439,7 @@ cAdd('F', {}   , cmp , string  ): f.name[f.base..^1]  # Just *base*name(if diff)
 cAdd('e', {}   , cmpN, string  ): f.name[f.sext..^1]  # File extensions; See..
 cAdd('E', {}   , cmpN, string  ): f.name[f.lext..^1]  #.. cligen/humanUt.cmpN
 cAdd('N', {}   , cmpN, string  ): f.name              # Name w/number tuples
+cAdd('<', {}   , cmp , string  ): cast[string](f.name.reversed)    # Super/ManyPart-Extension
 cAdd('L', {}   , cmp , uint    ): f.abbr.len.uint     # Savagely compact table
 cAdd('s', {dsS}, cmp , uint    ): f.st.st_size.uint   # File-address space
 cAdd('K', {dsS}, cmp , uint    ): f.st.st_blocks.uint  # KiB usually cap 'K'
